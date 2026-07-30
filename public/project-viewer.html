@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Media | NEURO Business Futures</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #06111f;
+        --panel: rgba(255, 255, 255, 0.06);
+        --line: rgba(255, 255, 255, 0.12);
+        --text: #f8fafc;
+        --muted: #b6c2d1;
+        --accent: #67e8f9;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(14, 165, 233, 0.26), transparent 32rem),
+          radial-gradient(circle at 88% 18%, rgba(103, 232, 249, 0.14), transparent 28rem),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+
+      .back {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: var(--muted);
+      }
+
+      .panel {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+      }
+
+      .media {
+        background: rgba(0, 0, 0, 0.28);
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        max-height: 72vh;
+        object-fit: contain;
+      }
+
+      .content {
+        padding: 28px;
+      }
+
+      .category {
+        display: inline-flex;
+        margin-bottom: 16px;
+        border: 1px solid rgba(103, 232, 249, 0.28);
+        border-radius: 999px;
+        background: rgba(103, 232, 249, 0.1);
+        padding: 7px 11px;
+        color: #a5f3fc;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 820px;
+        font-size: clamp(32px, 5vw, 56px);
+        line-height: 1;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        border-radius: 8px;
+        padding: 11px 16px;
+        text-decoration: none;
+        font-weight: 800;
+      }
+
+      .primary {
+        background: var(--accent);
+        color: #06111f;
+      }
+
+      .secondary {
+        border: 1px solid var(--line);
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <div class="brand">NEURO Business Futures</div>
+        <a class="back" href="/">Back to website</a>
+      </div>
+
+      <article class="panel">
+        <div class="media">
+          <img id="media" alt="" />
+        </div>
+        <div class="content">
+          <span class="category" id="category"></span>
+          <h1 id="title"></h1>
+          <div class="actions">
+            <a class="button primary" id="source" target="_blank" rel="noopener noreferrer">Open Project Link</a>
+            <a class="button secondary" id="media-link" target="_blank" rel="noopener noreferrer">Open Media</a>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const title = params.get("title") || "Project Media";
+      const category = params.get("category") || "Project";
+      const media = params.get("media") || "";
+      const link = params.get("link") || "";
+
+      document.title = `${title} | NEURO Business Futures`;
+      document.getElementById("title").textContent = title;
+      document.getElementById("category").textContent = category;
+
+      const mediaElement = document.getElementById("media");
+      mediaElement.src = media;
+      mediaElement.alt = `${title} media`;
+
+      const mediaLink = document.getElementById("media-link");
+      mediaLink.href = media;
+
+      const sourceLink = document.getElementById("source");
+      sourceLink.href = link || media;
+    </script>
+  </body>
+</html>

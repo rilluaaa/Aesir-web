@@ -1,0 +1,34 @@
+{
+  "name": "neuro-business-futures",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "hls.js": "^1.6.16",
+    "lucide-react": "^1.27.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.0.8"
+  },
+  "keywords": [
+    "neuro",
+    "business",
+    "school",
+    "ai",
+    "human-centered",
+    "education"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "NEURO Business Futures - Gateway to the Human-Centered Future Economy"
+}
