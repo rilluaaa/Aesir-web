@@ -52,17 +52,6 @@ const evidenceLinks = [
   }
 ];
 
-const bannerText = [
-  'Evidence-Based Immersive Intelligence',
-  'AI AR VR Gaming',
-  'Human-Computer Interaction',
-  'Inclusive Digital Infrastructure',
-  'APAC Smart Cities',
-  'Clinical Empathy',
-  'Market-Validated Social Technology'
-];
-
-const repeatedBanner = Array(4).fill(bannerText.join('  /  ')).join('  /  ');
 const founderAsset = (fileName) => `${import.meta.env.BASE_URL}assets/founders/${fileName}`;
 
 const founderImages = [
@@ -220,13 +209,6 @@ export const ImmersiveIntelligenceSite = () => {
           </div>
         </div>
       </section>
-
-      <div className="archive-marquee">
-        <span>{repeatedBanner}</span>
-      </div>
-      <div className="archive-marquee reverse">
-        <span>{repeatedBanner}</span>
-      </div>
 
       <section className="relative bg-[#070b0a] px-4 py-20 sm:px-6">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_1.1fr]">
