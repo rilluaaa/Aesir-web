@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Hls from 'hls.js';
-import { ArrowRight, Menu, X } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import RoundCarousel from './RoundCarousel';
 
 const videoStream = 'https://stream.mux.com/tLkHO1qZoaaQOUeVWo8hEBeGQfySP02EPS02BmnNFyXys.m3u8';
@@ -60,13 +60,6 @@ const bannerText = [
   'APAC Smart Cities',
   'Clinical Empathy',
   'Market-Validated Social Technology'
-];
-
-const navLinks = [
-  { href: '#founder-archive', label: 'PROJECTS' },
-  { href: '#outputs', label: 'BLOG' },
-  { href: '#areas', label: 'ABOUT' },
-  { href: '#outputs', label: 'RESUME' }
 ];
 
 const repeatedBanner = Array(4).fill(bannerText.join('  /  ')).join('  /  ');
@@ -133,13 +126,10 @@ const LiquidGlassCard = () => (
 
 export const ImmersiveIntelligenceSite = () => {
   const [activeArea, setActiveArea] = useState(areas[0].id);
-  const [menuOpen, setMenuOpen] = useState(false);
   const selectedArea = useMemo(
     () => areas.find((area) => area.id === activeArea) || areas[0],
     [activeArea]
   );
-
-  const closeMenu = () => setMenuOpen(false);
 
   return (
     <main id="top" className="relative min-h-screen overflow-hidden bg-[#070b0a] text-white">
@@ -161,52 +151,12 @@ export const ImmersiveIntelligenceSite = () => {
         </svg>
 
         <header className="absolute left-0 right-0 top-0 z-40 px-5 py-6 sm:px-8 lg:px-12">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-6">
+          <div className="mx-auto flex max-w-7xl items-center">
             <a href="#top" className="font-inter text-xl font-extrabold uppercase tracking-tight text-white">
               Founders
             </a>
-            <nav className="hidden items-center gap-10 font-inter text-base font-medium text-white lg:flex">
-              {navLinks.map((item) => (
-                <a key={item.href} href={item.href} className="transition hover:text-[#5ed29c]">
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-            <button
-              type="button"
-              onClick={() => setMenuOpen(true)}
-              className="rounded-full border border-white/15 p-3 text-white transition hover:border-[#5ed29c] hover:text-[#5ed29c] lg:hidden"
-              aria-label="Open navigation menu"
-            >
-              <Menu size={22} />
-            </button>
           </div>
         </header>
-
-        {menuOpen && (
-          <div className="fixed inset-0 z-50 bg-[#070b0a]/98 px-5 py-6 backdrop-blur-xl lg:hidden">
-            <div className="flex items-center justify-between">
-              <a href="#top" onClick={closeMenu} className="font-inter text-xl font-extrabold uppercase tracking-tight text-white">
-                Founders
-              </a>
-              <button
-                type="button"
-                onClick={closeMenu}
-                className="rounded-full border border-white/15 p-3 text-white transition hover:border-[#5ed29c] hover:text-[#5ed29c]"
-                aria-label="Close navigation menu"
-              >
-                <X size={22} />
-              </button>
-            </div>
-            <nav className="mt-20 flex flex-col gap-8 font-inter text-4xl font-extrabold uppercase tracking-tight text-white">
-              {navLinks.map((item) => (
-                <a key={item.href} href={item.href} onClick={closeMenu} className="transition hover:text-[#5ed29c]">
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-          </div>
-        )}
 
         <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col justify-end pb-8 pt-40 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end lg:gap-14 lg:pb-16">
           <div>
