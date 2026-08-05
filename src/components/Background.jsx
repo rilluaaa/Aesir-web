@@ -4,13 +4,19 @@ const vertexShader = `
   uniform float uTime;
   uniform float uSize;
   uniform float uDrift;
+  uniform float uPreviousDrift;
   uniform float uDepth;
   uniform float uTwinkle;
   uniform float uAspect;
   uniform vec3 uCursor;
+  uniform vec3 uPreviousCursor;
   uniform float uRepelRadius;
   uniform float uRepelStrength;
   uniform float uActivity;
+  uniform float uPreviousActivity;
+  uniform float uHasPreviousFrame;
+  uniform mat4 uPreviousModelMatrix;
+  uniform mat4 uPreviousViewProjectionMatrix;
   uniform vec3 uColorA;
   uniform vec3 uColorB;
   uniform vec3 uColorC;
@@ -20,7 +26,7 @@ const vertexShader = `
   attribute float aBright;
   varying vec3 vColor;
   varying float vTwinkle;
-  varying float vTailAngle;
+  varying vec2 vMotionDirection;
   varying float vScale;
   varying float vTrailVisible;
 
@@ -39,22 +45,20 @@ const vertexShader = `
     float falloff = smoothstep(uRepelRadius, 0.0, dist);
     modelPosition.xyz += normalize(toParticle + vec3(0.0001)) * falloff * uRepelStrength * uActivity;
 
-    float nextDrift = uDrift + 0.04;
-    vec3 nextPos = position;
-    nextPos.x = mod(nextPos.x + nextDrift * 0.12 + 12.0, 24.0) - 12.0;
-    nextPos.y = mod(nextPos.y - nextDrift * 0.2 + 8.0, 16.0) - 8.0;
-    nextPos.z = mod(nextPos.z + nextDrift + (uDepth * 0.5), uDepth) - (uDepth * 0.5);
-    vec4 nextModelPosition = modelMatrix * vec4(nextPos, 1.0);
-    vec3 nextToParticle = nextModelPosition.xyz - uCursor;
-    float nextDist = length(nextToParticle);
-    float nextFalloff = smoothstep(uRepelRadius, 0.0, nextDist);
-    nextModelPosition.xyz += normalize(nextToParticle + vec3(0.0001)) *
-      nextFalloff * uRepelStrength * uActivity;
+    vec3 previousPos = position;
+    previousPos.x = mod(previousPos.x + uPreviousDrift * 0.12 + 12.0, 24.0) - 12.0;
+    previousPos.y = mod(previousPos.y - uPreviousDrift * 0.2 + 8.0, 16.0) - 8.0;
+    previousPos.z = mod(previousPos.z + uPreviousDrift + (uDepth * 0.5), uDepth) - (uDepth * 0.5);
+    vec4 previousModelPosition = uPreviousModelMatrix * vec4(previousPos, 1.0);
+    vec3 previousToParticle = previousModelPosition.xyz - uPreviousCursor;
+    float previousDist = length(previousToParticle);
+    float previousFalloff = smoothstep(uRepelRadius, 0.0, previousDist);
+    previousModelPosition.xyz += normalize(previousToParticle + vec3(0.0001)) *
+      previousFalloff * uRepelStrength * uPreviousActivity;
 
     vec4 viewPosition = viewMatrix * modelPosition;
-    vec4 nextViewPosition = viewMatrix * nextModelPosition;
     vec4 clipPosition = projectionMatrix * viewPosition;
-    vec4 nextClipPosition = projectionMatrix * nextViewPosition;
+    vec4 previousClipPosition = uPreviousViewProjectionMatrix * previousModelPosition;
     gl_Position = clipPosition;
     gl_PointSize = min(
       uSize * (0.65 + aScale * 0.45) * (1.0 / max(0.6, -viewPosition.z)),
@@ -64,22 +68,23 @@ const vertexShader = `
     vec3 base = aPalette < 0.5 ? uColorA : (aPalette < 1.5 ? uColorB : uColorC);
     vColor = base * aBright;
     float currentW = abs(clipPosition.w) < 0.0001 ? 0.0001 : clipPosition.w;
-    float nextW = abs(nextClipPosition.w) < 0.0001 ? 0.0001 : nextClipPosition.w;
+    float previousW = abs(previousClipPosition.w) < 0.0001 ? 0.0001 : previousClipPosition.w;
     vec2 currentNdc = clipPosition.xy / currentW;
-    vec2 nextNdc = nextClipPosition.xy / nextW;
+    vec2 previousNdc = previousClipPosition.xy / previousW;
     vec2 screenDirection = vec2(
-      (nextNdc.x - currentNdc.x) * uAspect,
-      nextNdc.y - currentNdc.y
+      (currentNdc.x - previousNdc.x) * uAspect,
+      currentNdc.y - previousNdc.y
     );
     if (length(screenDirection) < 0.00001) {
       screenDirection = vec2(0.65, -1.0);
     }
-    vTailAngle = atan(screenDirection.y, screenDirection.x);
+    vMotionDirection = normalize(screenDirection);
     vScale = aScale;
-    float crossedWrap = step(1.0, length(nextPos - pos));
-    float crossedCamera = 1.0 - step(0.0, clipPosition.w * nextClipPosition.w);
-    float tooClose = 1.0 - step(0.35, min(abs(clipPosition.w), abs(nextClipPosition.w)));
-    vTrailVisible = 1.0 - max(crossedWrap, max(crossedCamera, tooClose));
+    float crossedWrap = step(1.0, length(pos - previousPos));
+    float crossedCamera = 1.0 - step(0.0, clipPosition.w * previousClipPosition.w);
+    float tooClose = 1.0 - step(0.35, min(abs(clipPosition.w), abs(previousClipPosition.w)));
+    vTrailVisible = (1.0 - max(crossedWrap, max(crossedCamera, tooClose))) *
+      uHasPreviousFrame;
   }
 `;
 
@@ -88,13 +93,13 @@ const fragmentShader = `
   uniform float uBrightness;
   varying vec3 vColor;
   varying float vTwinkle;
-  varying float vTailAngle;
+  varying vec2 vMotionDirection;
   varying float vScale;
   varying float vTrailVisible;
 
   void main() {
     vec2 uv = gl_PointCoord - 0.5;
-    vec2 direction = vec2(cos(vTailAngle), sin(vTailAngle));
+    vec2 direction = normalize(vMotionDirection);
     vec2 perpendicular = vec2(-direction.y, direction.x);
     float along = dot(uv, direction);
     float across = dot(uv, perpendicular);
@@ -177,13 +182,19 @@ export default function Background({ active = true }) {
         uSize: { value: isMobile ? 92 : 116 },
         uOpacity: { value: 0 },
         uDrift: { value: 0 },
+        uPreviousDrift: { value: 0 },
         uDepth: { value: depth },
         uTwinkle: { value: reduceMotion ? 0.25 : 0.9 },
         uAspect: { value: 1 },
         uCursor: { value: new THREE.Vector3() },
+        uPreviousCursor: { value: new THREE.Vector3() },
         uRepelRadius: { value: 4.2 },
         uRepelStrength: { value: 0.28 },
         uActivity: { value: 0 },
+        uPreviousActivity: { value: 0 },
+        uHasPreviousFrame: { value: 0 },
+        uPreviousModelMatrix: { value: new THREE.Matrix4() },
+        uPreviousViewProjectionMatrix: { value: new THREE.Matrix4() },
         uColorA: { value: new THREE.Color('#aef6cf') },
         uColorB: { value: new THREE.Color('#5fe6a0') },
         uColorC: { value: new THREE.Color('#eafff2') },
@@ -211,6 +222,7 @@ export default function Background({ active = true }) {
       const pointerTarget = new THREE.Vector3();
       const rayPoint = new THREE.Vector3();
       const rayDirection = new THREE.Vector3();
+      const previousViewProjection = new THREE.Matrix4();
       let pointerActive = false;
       let pointerActivity = 0;
       let lastPointerMove = 0;
@@ -268,6 +280,21 @@ export default function Background({ active = true }) {
         uniforms.uActivity.value = pointerActivity;
       };
 
+      const capturePreviousFrame = () => {
+        scene.updateMatrixWorld(true);
+        camera.updateMatrixWorld(true);
+        previousViewProjection.multiplyMatrices(
+          camera.projectionMatrix,
+          camera.matrixWorldInverse,
+        );
+        uniforms.uPreviousDrift.value = uniforms.uDrift.value;
+        uniforms.uPreviousCursor.value.copy(uniforms.uCursor.value);
+        uniforms.uPreviousActivity.value = uniforms.uActivity.value;
+        uniforms.uPreviousModelMatrix.value.copy(points.matrixWorld);
+        uniforms.uPreviousViewProjectionMatrix.value.copy(previousViewProjection);
+        uniforms.uHasPreviousFrame.value = 1;
+      };
+
       const renderFrame = (now) => {
         animationFrame = window.requestAnimationFrame(renderFrame);
         if (document.hidden) return;
@@ -276,6 +303,7 @@ export default function Background({ active = true }) {
         if (now - lastFrame < minimumFrameTime) return;
 
         const delta = Math.min(0.05, (now - lastFrame) / 1000);
+        capturePreviousFrame();
         lastFrame = now;
         scrollSmooth += (scrollTarget - scrollSmooth) * 0.06;
         updatePointer(now);
@@ -295,12 +323,15 @@ export default function Background({ active = true }) {
       };
 
       const renderStatic = () => {
+        capturePreviousFrame();
+        uniforms.uPreviousDrift.value = uniforms.uDrift.value - 0.04;
         uniforms.uOpacity.value = 0.8;
         renderer.render(scene, camera);
       };
 
       const handleResize = () => {
         updateSize();
+        uniforms.uHasPreviousFrame.value = 0;
         if (reduceMotion) renderStatic();
       };
 
