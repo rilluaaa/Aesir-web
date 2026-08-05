@@ -59,17 +59,19 @@ export const FormatCard = ({ label, title, description }) => (
   </div>
 );
 
-export const ModuleCard = ({ module }) => (
-  <div data-reveal className="border border-white/10 bg-[#080808] p-6">
-    <div className="mb-4 flex items-start gap-4">
-      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-sm font-black text-cyan-200">
-        {module.number}
-      </span>
-      <h4 className="text-lg font-black uppercase leading-snug text-white">{module.title}</h4>
-    </div>
-    <div className="space-y-3 text-sm leading-relaxed text-gray-300">
-      <p><span className="font-semibold text-cyan-200">Focus:</span> {module.focus}</p>
-      <p><span className="font-semibold text-cyan-200">Application:</span> {module.application}</p>
+export const ModuleCard = ({ module, className = '', wide = false }) => (
+  <div data-reveal className={`h-full min-w-0 border border-white/10 bg-[#080808] p-6 ${className}`}>
+    <div className={wide ? 'lg:grid lg:grid-cols-[minmax(260px,0.9fr)_minmax(0,1.1fr)] lg:items-start lg:gap-8' : ''}>
+      <div className={`${wide ? 'lg:mb-0' : ''} mb-4 flex min-w-0 items-start gap-4`}>
+        <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-sm font-black text-cyan-200">
+          {module.number}
+        </span>
+        <h4 className="min-w-0 break-words text-lg font-black uppercase leading-snug text-white">{module.title}</h4>
+      </div>
+      <div className="min-w-0 space-y-3 text-sm leading-relaxed text-gray-300">
+        <p><span className="font-semibold text-cyan-200">Focus:</span> {module.focus}</p>
+        <p><span className="font-semibold text-cyan-200">Application:</span> {module.application}</p>
+      </div>
     </div>
   </div>
 );
