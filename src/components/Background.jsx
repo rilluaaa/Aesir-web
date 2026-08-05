@@ -22,6 +22,7 @@ const vertexShader = `
   varying float vTwinkle;
   varying float vTailAngle;
   varying float vScale;
+  varying float vTrailVisible;
 
   void main() {
     vec3 pos = position;
@@ -38,39 +39,47 @@ const vertexShader = `
     float falloff = smoothstep(uRepelRadius, 0.0, dist);
     modelPosition.xyz += normalize(toParticle + vec3(0.0001)) * falloff * uRepelStrength * uActivity;
 
-    vec3 previousPos = pos - vec3(0.12, -0.2, 1.0) * 0.18;
-    vec4 previousModelPosition = modelMatrix * vec4(previousPos, 1.0);
-    vec3 previousToParticle = previousModelPosition.xyz - uCursor;
-    float previousDist = length(previousToParticle);
-    float previousFalloff = smoothstep(uRepelRadius, 0.0, previousDist);
-    previousModelPosition.xyz += normalize(previousToParticle + vec3(0.0001)) *
-      previousFalloff * uRepelStrength * uActivity;
+    float nextDrift = uDrift + 0.04;
+    vec3 nextPos = position;
+    nextPos.x = mod(nextPos.x + nextDrift * 0.12 + 12.0, 24.0) - 12.0;
+    nextPos.y = mod(nextPos.y - nextDrift * 0.2 + 8.0, 16.0) - 8.0;
+    nextPos.z = mod(nextPos.z + nextDrift + (uDepth * 0.5), uDepth) - (uDepth * 0.5);
+    vec4 nextModelPosition = modelMatrix * vec4(nextPos, 1.0);
+    vec3 nextToParticle = nextModelPosition.xyz - uCursor;
+    float nextDist = length(nextToParticle);
+    float nextFalloff = smoothstep(uRepelRadius, 0.0, nextDist);
+    nextModelPosition.xyz += normalize(nextToParticle + vec3(0.0001)) *
+      nextFalloff * uRepelStrength * uActivity;
 
     vec4 viewPosition = viewMatrix * modelPosition;
-    vec4 previousViewPosition = viewMatrix * previousModelPosition;
+    vec4 nextViewPosition = viewMatrix * nextModelPosition;
     vec4 clipPosition = projectionMatrix * viewPosition;
-    vec4 previousClipPosition = projectionMatrix * previousViewPosition;
+    vec4 nextClipPosition = projectionMatrix * nextViewPosition;
     gl_Position = clipPosition;
     gl_PointSize = min(
       uSize * (0.65 + aScale * 0.45) * (1.0 / max(0.6, -viewPosition.z)),
-      24.0
+      48.0
     );
 
     vec3 base = aPalette < 0.5 ? uColorA : (aPalette < 1.5 ? uColorB : uColorC);
     vColor = base * aBright;
     float currentW = abs(clipPosition.w) < 0.0001 ? 0.0001 : clipPosition.w;
-    float previousW = abs(previousClipPosition.w) < 0.0001 ? 0.0001 : previousClipPosition.w;
+    float nextW = abs(nextClipPosition.w) < 0.0001 ? 0.0001 : nextClipPosition.w;
     vec2 currentNdc = clipPosition.xy / currentW;
-    vec2 previousNdc = previousClipPosition.xy / previousW;
+    vec2 nextNdc = nextClipPosition.xy / nextW;
     vec2 screenDirection = vec2(
-      (currentNdc.x - previousNdc.x) * uAspect,
-      currentNdc.y - previousNdc.y
+      (nextNdc.x - currentNdc.x) * uAspect,
+      nextNdc.y - currentNdc.y
     );
     if (length(screenDirection) < 0.00001) {
       screenDirection = vec2(0.65, -1.0);
     }
     vTailAngle = atan(screenDirection.y, screenDirection.x);
     vScale = aScale;
+    float crossedWrap = step(1.0, length(nextPos - pos));
+    float crossedCamera = 1.0 - step(0.0, clipPosition.w * nextClipPosition.w);
+    float tooClose = 1.0 - step(0.35, min(abs(clipPosition.w), abs(nextClipPosition.w)));
+    vTrailVisible = 1.0 - max(crossedWrap, max(crossedCamera, tooClose));
   }
 `;
 
@@ -81,6 +90,7 @@ const fragmentShader = `
   varying float vTwinkle;
   varying float vTailAngle;
   varying float vScale;
+  varying float vTrailVisible;
 
   void main() {
     vec2 uv = gl_PointCoord - 0.5;
@@ -89,15 +99,15 @@ const fragmentShader = `
     float along = dot(uv, direction);
     float across = dot(uv, perpendicular);
 
-    float lineWidth = mix(0.046, 0.064, clamp(vScale / 2.6, 0.0, 1.0));
+    float lineWidth = mix(0.023, 0.032, clamp(vScale / 2.6, 0.0, 1.0));
     float lengthMask = smoothstep(-0.48, -0.35, along) *
       (1.0 - smoothstep(0.27, 0.42, along));
     float tailFade = pow(smoothstep(-0.48, 0.31, along), 1.55);
     float fineCore = smoothstep(lineWidth, 0.0, abs(across)) * lengthMask * tailFade;
     float softEdge = smoothstep(lineWidth * 2.8, 0.0, abs(across)) *
       lengthMask * tailFade * 0.2;
-    float head = smoothstep(0.09, 0.0, length(vec2(along - 0.3, across)));
-    float strength = max(head, fineCore + softEdge);
+    float head = smoothstep(0.045, 0.0, length(vec2(along - 0.3, across)));
+    float strength = max(head, fineCore + softEdge) * vTrailVisible;
 
     if (strength < 0.01) discard;
     vec3 color = vColor * uBrightness * (0.7 + strength * 0.5);
@@ -164,7 +174,7 @@ export default function Background({ active = true }) {
 
       const uniforms = {
         uTime: { value: 0 },
-        uSize: { value: isMobile ? 46 : 58 },
+        uSize: { value: isMobile ? 92 : 116 },
         uOpacity: { value: 0 },
         uDrift: { value: 0 },
         uDepth: { value: depth },
