@@ -6,7 +6,7 @@ export const ProgramFormatSection = () => {
   const labImage = `${import.meta.env.BASE_URL}assets/images/advantage-neuro-lab.jpg?v=1`;
 
   return (
-    <section className="editorial-section border-y border-white/10 px-6 py-20">
+    <section className="editorial-section px-6 py-20">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>

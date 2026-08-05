@@ -5,7 +5,7 @@ import { contentData } from "../constants";
 export const ProgramsSection = () => (
   <section
     id="programs"
-    className="editorial-section border-y border-white/10 px-6 py-20"
+    className="editorial-section px-6 py-20"
   >
     <div className="mx-auto max-w-7xl">
       <SectionTitle

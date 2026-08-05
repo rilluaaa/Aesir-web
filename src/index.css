@@ -136,9 +136,7 @@ body::before {
 
 .editorial-section {
   position: relative;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(103, 232, 249, 0.1), transparent 32rem),
-    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0));
+  background: transparent;
 }
 
 .archive-marquee {

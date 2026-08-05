@@ -3,7 +3,7 @@ import { PartnershipCard, SectionTitle } from './Common';
 import { contentData } from '../constants';
 
 export const PartnershipsSection = () => (
-  <section id="partnerships" className="editorial-section border-y border-white/10 py-20 px-6">
+  <section id="partnerships" className="editorial-section py-20 px-6">
     <div className="max-w-7xl mx-auto">
       <SectionTitle 
         title={contentData.partnerships.title}

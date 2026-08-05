@@ -74,7 +74,7 @@ export default function Background({ active = true }) {
       const canvas = canvasRef.current;
       const isMobile = window.matchMedia('(max-width: 767px)').matches;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const count = isMobile ? 1800 : 4200;
+      const count = isMobile ? 1000 : 3000;
       const depth = 30;
 
       const renderer = new THREE.WebGLRenderer({
@@ -222,7 +222,7 @@ export default function Background({ active = true }) {
         updatePointer(now);
 
         uniforms.uTime.value = now / 1000;
-        uniforms.uDrift.value += delta * (1.35 + scrollSmooth * 3.2);
+        uniforms.uDrift.value += delta * (0.72 + scrollSmooth * 1.6);
         uniforms.uOpacity.value = Math.min(1.25, Math.max(0, (now - appearStart - 250) / 1400) * 1.25);
 
         camera.position.set(
@@ -231,7 +231,7 @@ export default function Background({ active = true }) {
           5 - scrollSmooth * 2.2,
         );
         camera.lookAt(pointerSmooth.x * 0.28, pointerSmooth.y * 0.2, -10);
-        group.rotation.z += delta * (0.018 + scrollSmooth * 0.045);
+        group.rotation.z += delta * (0.009 + scrollSmooth * 0.022);
         renderer.render(scene, camera);
       };
 

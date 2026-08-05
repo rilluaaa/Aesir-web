@@ -35,7 +35,7 @@ export const AchievementsSection = () => {
   }, [isPaused]);
 
   return (
-    <section id="achievements" className="editorial-section border-y border-white/10 px-6 py-20">
+    <section id="achievements" className="editorial-section px-6 py-20">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <SectionTitle

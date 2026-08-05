@@ -3,7 +3,7 @@ import { SectionTitle, FeatureCard } from './Common';
 import { contentData } from '../constants';
 
 export const VisionSection = () => (
-  <section id="vision" className="editorial-section border-y border-white/10 py-20 px-6">
+  <section id="vision" className="editorial-section py-20 px-6">
     <div className="max-w-7xl mx-auto">
       <SectionTitle 
         eyebrow="Vision"
