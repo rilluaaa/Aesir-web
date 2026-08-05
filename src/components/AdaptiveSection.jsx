@@ -14,7 +14,7 @@ export const AdaptiveSection = () => (
         {contentData.adaptive.aspects.map((aspect, idx) => (
           <div 
             key={idx}
-            className="bg-dark-800/50 border border-dark-700 rounded-xl p-8 hover:border-cyan-400/50 transition-all text-center"
+            className="bg-dark-800/50 border border-dark-700 rounded-xl p-8 text-center"
           >
             <div className="text-4xl mb-3">{['📊', '⚡', '🎯', '🌟'][idx]}</div>
             <h3 className="font-bold text-lg mb-2">{aspect.title}</h3>

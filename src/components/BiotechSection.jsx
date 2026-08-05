@@ -22,7 +22,7 @@ export const BiotechSection = () => (
           {contentData.biotech.futureLeaders.map((topic, idx) => (
             <div 
               key={idx}
-              className="bg-dark-700/30 border border-dark-700 rounded-lg p-4 flex items-center gap-3 hover:border-cyan-400/50 transition-all"
+              className="bg-dark-700/30 border border-dark-700 rounded-lg p-4 flex items-center gap-3"
             >
               <div className="w-2 h-2 bg-cyan-400 rounded-full flex-shrink-0"></div>
               <p className="text-gray-300">{topic}</p>

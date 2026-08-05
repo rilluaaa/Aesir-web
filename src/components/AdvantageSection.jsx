@@ -23,7 +23,7 @@ export const AdvantageSection = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {contentData.advantage.items.map((item, idx) => (
-            <div key={idx} className="bg-dark-700/30 border border-dark-700 rounded-lg p-6 hover:border-cyan-400/50 transition-all">
+            <div key={idx} className="bg-dark-700/30 border border-dark-700 rounded-lg p-6">
               <div className="flex items-start gap-4">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 flex-shrink-0 flex items-center justify-center text-sm font-bold">
                   ✓

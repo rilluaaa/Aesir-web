@@ -322,7 +322,7 @@ export const ImmersiveIntelligenceSite = () => {
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
             {outputs.map((output) => (
-              <div key={output.title} data-reveal className="border border-white/10 bg-white/[0.025] p-6 transition hover:-translate-y-1 hover:border-[#5ed29c]/70">
+              <div key={output.title} data-reveal className="border border-white/10 bg-white/[0.025] p-6">
                 <h3 className="font-inter text-xl font-extrabold uppercase leading-none text-white">{output.title}</h3>
                 <p className="mt-5 font-jakarta text-xs font-bold uppercase tracking-[0.2em] text-[#5ed29c]">{output.label}</p>
               </div>

@@ -21,7 +21,7 @@ export const AITechSection = () => (
           {contentData.aiTech.pathways.map((pathway, idx) => (
             <div 
               key={idx}
-              className="bg-gradient-to-br from-blue-900/40 to-cyan-900/20 border border-cyan-400/30 rounded-lg p-4 hover:border-cyan-400/70 transition-all text-center"
+              className="bg-gradient-to-br from-blue-900/40 to-cyan-900/20 border border-cyan-400/30 rounded-lg p-4 text-center"
             >
               <p className="text-gray-200 font-medium">{pathway}</p>
             </div>

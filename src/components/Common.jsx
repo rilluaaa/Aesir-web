@@ -30,7 +30,7 @@ export const SectionTitle = ({ eyebrow, title, subtitle, align = "center" }) => 
 );
 
 export const FeatureCard = ({ title, description, icon }) => (
-  <div data-reveal className={`${cardBase} p-7 hover:-translate-y-1 hover:border-cyan-300/50 hover:bg-[#0d0d0d]`}>
+  <div data-reveal className={`${cardBase} p-7`}>
     {icon && <div className="mb-10 text-5xl font-black uppercase text-white/10">{icon}</div>}
     <h3 className="mb-3 text-2xl font-black uppercase leading-none text-white">{title}</h3>
     <p className="leading-relaxed text-gray-300">{description}</p>
@@ -38,7 +38,7 @@ export const FeatureCard = ({ title, description, icon }) => (
 );
 
 export const AxisCard = ({ title, label, description, index }) => (
-  <div data-reveal className={`${cardBase} relative overflow-hidden p-7 hover:-translate-y-1 hover:border-cyan-300/60`}>
+  <div data-reveal className={`${cardBase} relative overflow-hidden p-7`}>
     <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
     <div className="mb-8 flex items-center justify-between gap-4">
       <span className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200">
@@ -52,7 +52,7 @@ export const AxisCard = ({ title, label, description, index }) => (
 );
 
 export const FormatCard = ({ label, title, description }) => (
-  <div data-reveal className={`${cardBase} p-7 hover:border-blue-300/50`}>
+  <div data-reveal className={`${cardBase} p-7`}>
     <p className="mb-3 text-[11px] font-black uppercase tracking-[0.28em] text-cyan-300">{label}</p>
     <h3 className="mb-4 text-3xl font-black uppercase leading-none text-white">{title}</h3>
     <p className="leading-relaxed text-gray-300">{description}</p>
@@ -60,7 +60,7 @@ export const FormatCard = ({ label, title, description }) => (
 );
 
 export const ModuleCard = ({ module }) => (
-  <div data-reveal className="border border-white/10 bg-[#080808] p-6 transition-all hover:border-cyan-300/50 hover:bg-[#101010]">
+  <div data-reveal className="border border-white/10 bg-[#080808] p-6">
     <div className="mb-4 flex items-start gap-4">
       <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-white/20 text-sm font-black text-cyan-200">
         {module.number}
@@ -75,7 +75,7 @@ export const ModuleCard = ({ module }) => (
 );
 
 export const HighlightCard = ({ title, description, index }) => (
-  <div data-reveal className={`${cardBase} p-7 hover:-translate-y-1 hover:border-cyan-300/50`}>
+  <div data-reveal className={`${cardBase} p-7`}>
     <span className="mb-8 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/20 text-sm font-black text-cyan-200">
       {index + 1}
     </span>
@@ -119,20 +119,20 @@ export const ProjectCard = ({ project }) => (
 );
 
 export const ImpactCard = ({ title, description }) => (
-  <div data-reveal className={`${cardBase} p-7 hover:border-blue-300/50`}>
+  <div data-reveal className={`${cardBase} p-7`}>
     <h3 className="mb-3 text-2xl font-black uppercase leading-none text-cyan-200">{title}</h3>
     <p className="leading-relaxed text-gray-300">{description}</p>
   </div>
 );
 
 export const PartnershipCard = ({ title }) => (
-  <div data-reveal className={`${cardBase} p-6 text-center hover:border-cyan-300/50 hover:bg-[#0d0d0d]`}>
+  <div data-reveal className={`${cardBase} p-6 text-center`}>
     <p className="text-sm font-black uppercase tracking-[0.16em] text-gray-100">{title}</p>
   </div>
 );
 
 export const DecisionCard = ({ title, question, index }) => (
-  <div data-reveal className={`${cardBase} p-7 hover:border-cyan-300/50`}>
+  <div data-reveal className={`${cardBase} p-7`}>
     <p className="mb-4 text-[11px] font-black uppercase tracking-[0.28em] text-cyan-300">Decision 0{index + 1}</p>
     <h3 className="mb-4 text-2xl font-black uppercase leading-none text-white">{title}</h3>
     <p className="leading-relaxed text-gray-300">{question}</p>
@@ -144,7 +144,7 @@ export const CTASection = ({ headline, subtext, buttonText }) => (
     <div className="mx-auto max-w-5xl overflow-hidden border border-white/15 bg-[#080808] p-8 text-center md:p-14">
       <h2 className="mx-auto max-w-4xl text-4xl font-black uppercase leading-[0.94] tracking-tight text-white md:text-6xl">{headline}</h2>
       <p className="mx-auto mt-6 max-w-3xl text-lg leading-relaxed text-gray-300">{subtext}</p>
-      <button className="mt-8 rounded-full bg-white px-8 py-3 text-sm font-black uppercase tracking-[0.16em] text-black transition hover:bg-cyan-200">
+      <button className="mt-8 rounded-full bg-white px-8 py-3 text-sm font-black uppercase tracking-[0.16em] text-black">
         {buttonText}
       </button>
     </div>
