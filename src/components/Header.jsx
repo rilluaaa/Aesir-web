@@ -47,15 +47,15 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050505]/82 px-3 py-3 backdrop-blur-2xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 rounded-full border border-white/10 bg-white/[0.035] px-3 py-2 shadow-[0_20px_80px_rgba(0,0,0,0.32)]">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 lg:rounded-full lg:border lg:border-white/10 lg:bg-white/[0.035] lg:px-3 lg:py-2 lg:shadow-[0_20px_80px_rgba(0,0,0,0.32)]">
         <button
           onClick={() => scrollToSection("top")}
-          className="group flex min-w-0 items-center rounded-full bg-white px-3 py-1.5 text-left shadow-[0_0_24px_rgba(255,255,255,0.08)] transition hover:bg-cyan-50"
+          className="group flex min-w-0 items-center rounded-full bg-white px-2.5 py-1 text-left shadow-[0_0_24px_rgba(255,255,255,0.08)] transition hover:bg-cyan-50 sm:px-3 sm:py-1.5"
         >
           <img
             src={logoPath}
             alt={contentData.header.logo}
-            className="h-9 w-[185px] object-contain sm:w-[220px]"
+            className="h-8 w-[155px] object-contain sm:h-9 sm:w-[185px] lg:w-[220px]"
           />
         </button>
 
@@ -66,7 +66,7 @@ export const Header = () => {
           aria-label="Toggle navigation"
         >
           <svg
-            className="w-6 h-6"
+            className="h-5 w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
