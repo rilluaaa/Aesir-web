@@ -61,28 +61,30 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-dark-900 text-white relative">
-      <Background />
+    <div className="relative isolate min-h-screen bg-dark-900 text-white">
+      <Background active={currentPage === "neuro"} />
       <ScrollEffects routeKey={currentPage} />
-      {currentPage === "leaders" ? (
-        <ImmersiveIntelligenceSite />
-      ) : (
-        <>
-          <Header />
-          <Hero />
-          <VisionSection />
-          <FrameworkSection />
-          <ProgramFormatSection />
-          <CurriculumSection />
-          <HighlightsSection />
-          <AchievementsSection />
-          <ProgramsSection />
-          <ImpactSection />
-          <PartnershipsSection />
-          <NextStepsSection />
-          <FinalCTA />
-        </>
-      )}
+      <div className="relative z-10">
+        {currentPage === "leaders" ? (
+          <ImmersiveIntelligenceSite />
+        ) : (
+          <>
+            <Header />
+            <Hero />
+            <VisionSection />
+            <FrameworkSection />
+            <ProgramFormatSection />
+            <CurriculumSection />
+            <HighlightsSection />
+            <AchievementsSection />
+            <ProgramsSection />
+            <ImpactSection />
+            <PartnershipsSection />
+            <NextStepsSection />
+            <FinalCTA />
+          </>
+        )}
+      </div>
     </div>
   );
 }
