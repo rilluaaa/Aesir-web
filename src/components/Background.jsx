@@ -19,9 +19,13 @@ const vertexShader = `
   attribute float aBright;
   varying vec3 vColor;
   varying float vTwinkle;
+  varying float vTailAngle;
+  varying float vScale;
 
   void main() {
     vec3 pos = position;
+    pos.x = mod(pos.x + uDrift * 0.12 + 12.0, 24.0) - 12.0;
+    pos.y = mod(pos.y - uDrift * 0.2 + 8.0, 16.0) - 8.0;
     pos.z = mod(pos.z + uDrift + (uDepth * 0.5), uDepth) - (uDepth * 0.5);
 
     float tw = sin(uTime * 1.6 + aPhase * 6.2831);
@@ -35,10 +39,15 @@ const vertexShader = `
 
     vec4 viewPosition = viewMatrix * modelPosition;
     gl_Position = projectionMatrix * viewPosition;
-    gl_PointSize = uSize * aScale * (1.0 / max(0.4, -viewPosition.z));
+    gl_PointSize = min(
+      uSize * (0.65 + aScale * 0.45) * (1.0 / max(0.6, -viewPosition.z)),
+      24.0
+    );
 
     vec3 base = aPalette < 0.5 ? uColorA : (aPalette < 1.5 ? uColorB : uColorC);
     vColor = base * aBright;
+    vTailAngle = -0.86 + (aPhase - 0.5) * 0.16;
+    vScale = aScale;
   }
 `;
 
@@ -47,14 +56,29 @@ const fragmentShader = `
   uniform float uBrightness;
   varying vec3 vColor;
   varying float vTwinkle;
+  varying float vTailAngle;
+  varying float vScale;
 
   void main() {
     vec2 uv = gl_PointCoord - 0.5;
-    float d = length(uv);
-    if (d > 0.5) discard;
-    float strength = pow(1.0 - d * 2.0, 3.2);
-    vec3 color = mix(vec3(0.0), vColor, strength);
-    gl_FragColor = vec4(color * uBrightness, strength * uOpacity * vTwinkle);
+    vec2 direction = vec2(cos(vTailAngle), sin(vTailAngle));
+    vec2 perpendicular = vec2(-direction.y, direction.x);
+    float along = dot(uv, direction);
+    float across = dot(uv, perpendicular);
+
+    float lineWidth = mix(0.046, 0.064, clamp(vScale / 2.6, 0.0, 1.0));
+    float lengthMask = smoothstep(-0.48, -0.35, along) *
+      (1.0 - smoothstep(0.27, 0.42, along));
+    float tailFade = pow(smoothstep(-0.48, 0.31, along), 1.55);
+    float fineCore = smoothstep(lineWidth, 0.0, abs(across)) * lengthMask * tailFade;
+    float softEdge = smoothstep(lineWidth * 2.8, 0.0, abs(across)) *
+      lengthMask * tailFade * 0.2;
+    float head = smoothstep(0.09, 0.0, length(vec2(along - 0.3, across)));
+    float strength = max(head, fineCore + softEdge);
+
+    if (strength < 0.01) discard;
+    vec3 color = vColor * uBrightness * (0.7 + strength * 0.5);
+    gl_FragColor = vec4(color, strength * uOpacity * vTwinkle);
   }
 `;
 
@@ -117,7 +141,7 @@ export default function Background({ active = true }) {
 
       const uniforms = {
         uTime: { value: 0 },
-        uSize: { value: isMobile ? 27 : 38 },
+        uSize: { value: isMobile ? 46 : 58 },
         uOpacity: { value: 0 },
         uDrift: { value: 0 },
         uDepth: { value: depth },
