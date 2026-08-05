@@ -91,7 +91,7 @@ export const ProjectCard = ({ project }) => (
         <img
           src={publicAsset(project.media)}
           alt={`${project.title} project media`}
-          className="h-full w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0"
+          className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
           loading="lazy"
         />
       </div>
@@ -126,7 +126,7 @@ export const ImpactCard = ({ title, description }) => (
 );
 
 export const PartnershipCard = ({ title }) => (
-  <div data-reveal className={`${cardBase} p-6 text-center hover:-translate-y-1 hover:border-cyan-300/50`}>
+  <div data-reveal className={`${cardBase} p-6 text-center hover:border-cyan-300/50 hover:bg-[#0d0d0d]`}>
     <p className="text-sm font-black uppercase tracking-[0.16em] text-gray-100">{title}</p>
   </div>
 );

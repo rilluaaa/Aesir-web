@@ -63,7 +63,7 @@ function App() {
   return (
     <div className="bg-dark-900 text-white relative">
       <Background />
-      <ScrollEffects />
+      <ScrollEffects key={currentPage} />
       {currentPage === "leaders" ? (
         <ImmersiveIntelligenceSite />
       ) : (
