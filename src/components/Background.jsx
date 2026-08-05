@@ -6,6 +6,7 @@ const vertexShader = `
   uniform float uDrift;
   uniform float uDepth;
   uniform float uTwinkle;
+  uniform float uAspect;
   uniform vec3 uCursor;
   uniform float uRepelRadius;
   uniform float uRepelStrength;
@@ -37,8 +38,19 @@ const vertexShader = `
     float falloff = smoothstep(uRepelRadius, 0.0, dist);
     modelPosition.xyz += normalize(toParticle + vec3(0.0001)) * falloff * uRepelStrength * uActivity;
 
+    vec3 previousPos = pos - vec3(0.12, -0.2, 1.0) * 0.18;
+    vec4 previousModelPosition = modelMatrix * vec4(previousPos, 1.0);
+    vec3 previousToParticle = previousModelPosition.xyz - uCursor;
+    float previousDist = length(previousToParticle);
+    float previousFalloff = smoothstep(uRepelRadius, 0.0, previousDist);
+    previousModelPosition.xyz += normalize(previousToParticle + vec3(0.0001)) *
+      previousFalloff * uRepelStrength * uActivity;
+
     vec4 viewPosition = viewMatrix * modelPosition;
-    gl_Position = projectionMatrix * viewPosition;
+    vec4 previousViewPosition = viewMatrix * previousModelPosition;
+    vec4 clipPosition = projectionMatrix * viewPosition;
+    vec4 previousClipPosition = projectionMatrix * previousViewPosition;
+    gl_Position = clipPosition;
     gl_PointSize = min(
       uSize * (0.65 + aScale * 0.45) * (1.0 / max(0.6, -viewPosition.z)),
       24.0
@@ -46,7 +58,18 @@ const vertexShader = `
 
     vec3 base = aPalette < 0.5 ? uColorA : (aPalette < 1.5 ? uColorB : uColorC);
     vColor = base * aBright;
-    vTailAngle = -0.86 + (aPhase - 0.5) * 0.16;
+    float currentW = abs(clipPosition.w) < 0.0001 ? 0.0001 : clipPosition.w;
+    float previousW = abs(previousClipPosition.w) < 0.0001 ? 0.0001 : previousClipPosition.w;
+    vec2 currentNdc = clipPosition.xy / currentW;
+    vec2 previousNdc = previousClipPosition.xy / previousW;
+    vec2 screenDirection = vec2(
+      (currentNdc.x - previousNdc.x) * uAspect,
+      currentNdc.y - previousNdc.y
+    );
+    if (length(screenDirection) < 0.00001) {
+      screenDirection = vec2(0.65, -1.0);
+    }
+    vTailAngle = atan(screenDirection.y, screenDirection.x);
     vScale = aScale;
   }
 `;
@@ -146,6 +169,7 @@ export default function Background({ active = true }) {
         uDrift: { value: 0 },
         uDepth: { value: depth },
         uTwinkle: { value: reduceMotion ? 0.25 : 0.9 },
+        uAspect: { value: 1 },
         uCursor: { value: new THREE.Vector3() },
         uRepelRadius: { value: 4.2 },
         uRepelStrength: { value: 0.28 },
@@ -192,6 +216,7 @@ export default function Background({ active = true }) {
         const pixelRatio = Math.min(window.devicePixelRatio || 1, width < 768 ? 1 : 1.5);
         renderer.setPixelRatio(pixelRatio);
         renderer.setSize(width, height, false);
+        uniforms.uAspect.value = width / Math.max(1, height);
         camera.aspect = width / Math.max(1, height);
         camera.updateProjectionMatrix();
       };
