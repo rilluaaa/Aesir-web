@@ -74,7 +74,7 @@ export default function Background({ active = true }) {
       const canvas = canvasRef.current;
       const isMobile = window.matchMedia('(max-width: 767px)').matches;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const count = isMobile ? 800 : 2000;
+      const count = isMobile ? 1800 : 4200;
       const depth = 30;
 
       const renderer = new THREE.WebGLRenderer({

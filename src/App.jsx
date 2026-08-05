@@ -70,18 +70,20 @@ function App() {
         ) : (
           <>
             <Header />
-            <Hero />
-            <VisionSection />
-            <FrameworkSection />
-            <ProgramFormatSection />
-            <CurriculumSection />
-            <HighlightsSection />
-            <AchievementsSection />
-            <ProgramsSection />
-            <ImpactSection />
-            <PartnershipsSection />
-            <NextStepsSection />
-            <FinalCTA />
+            <main className="neuro-flow">
+              <Hero />
+              <VisionSection />
+              <FrameworkSection />
+              <ProgramFormatSection />
+              <CurriculumSection />
+              <HighlightsSection />
+              <AchievementsSection />
+              <ProgramsSection />
+              <ImpactSection />
+              <PartnershipsSection />
+              <NextStepsSection />
+              <FinalCTA />
+            </main>
           </>
         )}
       </div>
