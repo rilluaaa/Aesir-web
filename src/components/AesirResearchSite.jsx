@@ -178,6 +178,14 @@ function useEntryMotion() {
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
+
+  useEffect(() => {
+    const updateHeader = () => setCompact(window.scrollY > 180);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    return () => window.removeEventListener("scroll", updateHeader);
+  }, []);
 
   const navigate = (id) => {
     scrollToSection(id);
@@ -185,7 +193,7 @@ function Header() {
   };
 
   return (
-    <header className="aesir-header">
+    <header className={`aesir-header${compact ? " is-compact" : ""}${open ? " is-menu-open" : ""}`}>
       <div className="aesir-header__inner">
         <button className="brand-button" onClick={() => navigate("top")} aria-label="Back to top">
           <img src={asset("assets/aesir/aesir-wordmark.webp")} alt="AESIR" />
@@ -232,7 +240,7 @@ function Hero() {
   return (
     <section id="top" className="hero-section">
       <div className="hero-copy" data-enter>
-        <h1>Evidence-based immersive intelligence for a more inclusive future.</h1>
+        <h1>Evidence for an inclusive future.</h1>
         <p>
           AESIR bridges human neurodiversity and frontier technology, translating industrial-grade XR,
           AI, and HCI research into measurable public value across APAC and global smart cities.
@@ -400,13 +408,24 @@ function Evidence() {
         </p>
       </div>
 
-      <div className="output-list" data-enter>
-        {outputs.map((output) => (
-          <article key={output.title}>
-            <h3>{output.title}</h3>
-            <p>{output.description}</p>
-          </article>
-        ))}
+      <div className="evidence-story" data-enter>
+        <div className="output-list">
+          {outputs.map((output) => (
+            <article key={output.title}>
+              <h3>{output.title}</h3>
+              <p>{output.description}</p>
+            </article>
+          ))}
+        </div>
+        <figure className="evidence-image">
+          <img
+            src={asset("assets/aesir/ai-for-all.webp")}
+            alt="AESIR and programme partners at an inclusive AI deployment"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>Research moves through institutions, partners, and communities.</figcaption>
+        </figure>
       </div>
 
       <div className="evidence-statement" data-enter>
