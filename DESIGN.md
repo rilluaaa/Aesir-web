@@ -1,214 +1,236 @@
 ---
-name: AESIR Research
-description: A clinical innovation atlas for evidence-led immersive intelligence.
+name: "AESIR Research Launch"
+description: "A paper-white editorial launch system for evidence-led immersive intelligence."
 colors:
-  primary: "#2f637d"
-  primary-deep: "#224a60"
-  ink: "#182832"
-  ink-soft: "#4c606d"
-  steel: "#566d7c"
-  mist: "#edf3f5"
-  wash: "#f6f8f9"
-  line: "#d6e0e4"
+  ink: "#151713"
+  muted: "#6f746c"
+  moss: "#50651b"
+  moss-dark: "#394b11"
+  sage: "#9faa8d"
+  sage-soft: "#e8eed4"
+  cream: "#f4f0e6"
+  line: "#e4e5df"
   white: "#ffffff"
+  viewer-background: "#f7f7f3"
 typography:
   display:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "clamp(3.35rem, 6.7vw, 6rem)"
-    fontWeight: 700
-    lineHeight: 0.94
-    letterSpacing: "-0.04em"
+    fontFamily: "Crimson Text, Georgia, serif"
+    fontSize: "clamp(6.25rem, 10.7vw, 10rem)"
+    fontWeight: 400
+    lineHeight: 0.88
+    letterSpacing: "-0.045em"
   headline:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "clamp(2.65rem, 5vw, 4.9rem)"
-    fontWeight: 700
-    lineHeight: 0.98
-    letterSpacing: "-0.04em"
+    fontFamily: "Crimson Text, Georgia, serif"
+    fontSize: "clamp(4rem, 7vw, 7rem)"
+    fontWeight: 400
+    lineHeight: 0.94
+    letterSpacing: "-0.045em"
   title:
-    fontFamily: "Archivo, sans-serif"
-    fontSize: "1.46rem"
-    fontWeight: 650
-    lineHeight: 1.12
-    letterSpacing: "-0.03em"
+    fontFamily: "Crimson Text, Georgia, serif"
+    fontSize: "1.8rem"
+    fontWeight: 400
+    letterSpacing: "-0.035em"
   body:
-    fontFamily: "Source Sans 3, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "DM Sans, ui-sans-serif, system-ui, sans-serif"
     fontSize: "1rem"
     fontWeight: 400
-    lineHeight: 1.65
+    lineHeight: 1.7
   label:
-    fontFamily: "Source Sans 3, ui-sans-serif, system-ui, sans-serif"
+    fontFamily: "DM Sans, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.75rem"
-    fontWeight: 700
-    lineHeight: 1.4
+    fontWeight: 600
+    lineHeight: 1.45
+    letterSpacing: "0.08em"
 rounded:
-  none: "0"
+  panel: "30px"
+  media: "28px"
   pill: "999px"
-spacing:
-  xs: "8px"
-  sm: "12px"
-  md: "18px"
-  lg: "24px"
-  xl: "32px"
-  section: "132px"
 components:
   button-primary:
-    backgroundColor: "{colors.ink}"
+    backgroundColor: "{colors.moss}"
     textColor: "{colors.white}"
-    typography: "{typography.label}"
-    rounded: "{rounded.none}"
-    padding: "12px 18px"
-    height: "44px"
+    typography: "{typography.body}"
+    rounded: "{rounded.pill}"
+    padding: "0 25px"
+    height: "50px"
   button-primary-hover:
-    backgroundColor: "{colors.primary}"
+    backgroundColor: "{colors.moss-dark}"
     textColor: "{colors.white}"
-  research-panel:
-    backgroundColor: "{colors.mist}"
+  research-tab-active:
+    backgroundColor: "{colors.sage-soft}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.none}"
-    padding: "clamp(32px, 5vw, 76px)"
+    typography: "{typography.title}"
+    padding: "27px 28px"
+  research-panel:
+    backgroundColor: "#f0f3e7"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.panel}"
+    padding: "clamp(34px, 5vw, 68px)"
   research-tag:
-    backgroundColor: "rgba(255, 255, 255, 0.56)"
-    textColor: "{colors.primary-deep}"
+    backgroundColor: "transparent"
+    textColor: "{colors.moss-dark}"
     typography: "{typography.label}"
     rounded: "{rounded.pill}"
-    padding: "8px 11px"
+    padding: "9px 13px"
+  search-field:
+    backgroundColor: "#fafaf7"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.pill}"
+    padding: "13px 18px"
 ---
 
-# Design System: AESIR Research
+# Design System: AESIR Research Launch
 
 ## Overview
 
-**Creative North Star: "The Clinical Innovation Atlas"**
+**Creative North Star: "The Research Launch"**
 
-AESIR should feel like a precise, public-facing research atlas: rigorous enough for investors and institutions, but understandable to readers outside a laboratory. White space, documentary photography, structured rules, and restrained steel-blue surfaces make the work feel evidenced rather than advertised.
+AESIR presents applied R&D with the clarity and anticipation of a modern product launch, but the evidence remains the product. Monumental serif claims, generous paper-white space, restrained moss actions, and documentary media make complex research feel consequential, human, and ready for public scrutiny.
 
-The visual system is editorial, image-forward, and deliberately calm. Large Archivo headlines establish conviction; Source Sans 3 carries dense research content with clarity. Light panels preserve continuity across long-form reading, while the single deep-blue method section marks the shift from research premise to execution process.
+The system is editorial before it is technological. Pale sage panels organise dense material without interrupting the reading field; thin ruled grids make methods and records inspectable; softly rounded media keeps real people and field work at the centre. Motion and elevation are brief signals of navigation or action, never ambient spectacle.
 
 **Key Characteristics:**
 
-- White-led and evidence-first.
-- Large editorial typography with compact institutional labels.
-- Real people, programs, and project media as proof.
-- Square, ruled surfaces with rare pill-shaped research tags.
-- Interaction feedback only on controls and media that can actually be opened.
+- Monumental Crimson Text statements on a paper-white field.
+- DM Sans interface copy with compact, disciplined metadata.
+- Moss actions and pale sage evidence surfaces.
+- Rounded documentary media within thin ruled editorial grids.
+- Restrained elevation reserved for navigation, media, and real actions.
+- Responsive compositions that preserve the launch-like pacing on small screens.
 
 ## Colors
 
-The palette combines clinical white, cool research-paper neutrals, and a restrained steel-blue accent.
+The palette pairs near-black editorial ink with one botanical action family and low-chroma paper tones.
 
 ### Primary
 
-- **Applied Intelligence Blue:** Used for interactive emphasis, active research states, and secondary action feedback.
-- **Deep Research Blue:** Used for authoritative headings, the method section, and high-contrast institutional moments.
+- **Launch Moss** (`moss`): Primary actions, project categories, and purposeful emphasis.
+- **Deep Moss** (`moss-dark`): Button hover, research metadata, and the strongest botanical text accent.
+
+### Secondary
+
+- **Documentary Sage** (`sage`): Hero and film media enclosures.
+- **Pale Sage** (`sage-soft`): Selected research states, evidence statements, and filter feedback.
+- **Archive Cream** (`cream`): Warm neutral backing for documentary imagery.
 
 ### Neutral
 
-- **Evidence Ink:** Primary text and dark actions.
-- **Soft Record Ink:** Long-form supporting copy.
-- **Institutional Steel:** Logo-adjacent and secondary identity tone.
-- **Research Mist:** Active tabs, expanded research panels, and evidence statements.
-- **Archive Wash:** Quiet section differentiation and card hover surfaces.
-- **Measured Rule:** Dividers, grid boundaries, and form strokes.
-- **Paper White:** The dominant page and card surface.
+- **Editorial Ink** (`ink`): Headlines, body emphasis, and principal interface text.
+- **Quiet Record** (`muted`): Supporting prose and archive metadata.
+- **Measured Rule** (`line`): Dividers, section boundaries, and control strokes.
+- **Paper White** (`white`): Dominant page and card field.
+- **Viewer Paper** (`viewer-background`): Standalone project-viewer canvas.
 
-**The White-Led Rule.** Paper White remains the dominant field; blue surfaces are reserved for evidence hierarchy and action, never ambient decoration.
+**The Paper Leads Rule.** Paper White is the dominant atmosphere; sage and cream organise evidence while moss remains a scarce action signal.
 
-**The Light Panel Rule.** Expanded research content uses Research Mist or a neighboring light neutral, never a dark interruption.
+**The Botanical Restraint Rule.** Stay inside the moss-and-sage family; do not add competing saturated technology colors.
 
 ## Typography
 
-**Display Font:** Archivo (with sans-serif fallback)
-**Body Font:** Source Sans 3 (with system sans-serif fallbacks)
+**Display Font:** Crimson Text (with Georgia and serif fallbacks)
 
-**Character:** Archivo supplies compact, technical confidence without becoming futuristic. Source Sans 3 keeps research explanations, labels, and archive metadata readable at high density.
+**Body Font:** DM Sans (with system sans-serif fallbacks)
+
+**Character:** Crimson Text gives the research thesis cultural weight and launch-scale drama without a futuristic cliché. DM Sans keeps navigation, controls, definitions, and long explanations clean and contemporary.
 
 ### Hierarchy
 
-- **Display** (700, fluid 3.35rem to 6rem, 0.94): Hero statement only; tightly tracked and balanced.
-- **Headline** (700, fluid 2.65rem to 4.9rem, 0.98): Major section theses and contact statement.
-- **Title** (650, 1.46rem, 1.12): Research, project, and leadership titles.
-- **Body** (400, 1rem, 1.65): Explanations and evidence copy, generally constrained to readable measures.
-- **Label** (700, 0.75rem, 1.4): Navigation, categories, proof statements, and metadata.
+- **Display** (weight 400, fluid 6.25rem–10rem, line-height 0.88): Centred hero and final launch statements; narrow screens use the implemented 4rem–5.25rem range.
+- **Headline** (weight 400, fluid 4rem–7rem, line-height 0.94): Section theses and major editorial transitions.
+- **Title** (weight 400, 1.8rem, tight tracking): Research tabs and component-level serif titles.
+- **Body** (weight 400, about 1rem, line-height 1.7): Explanations, evidence, and field records.
+- **Label** (weight 600, about 0.75rem, tracked): Categories, proof points, figure captions, and definition terms; uppercase is reserved for metadata.
 
-**The Two-Voice Rule.** Archivo speaks for claims and structure; Source Sans 3 explains, labels, and records evidence.
+**The Two-Voice Rule.** Crimson Text announces claims and sequence; DM Sans navigates, explains, and records evidence.
+
+**The Monument Rule.** Display type earns its scale through short, balanced statements; never stretch dense copy into the display role.
 
 ## Layout
 
-Primary content sits inside a fluid shell capped at 1320px, while the header and hero can reach 1420px. Desktop compositions use asymmetric two-column grids; evidence libraries use three columns, collapsing to two below 1100px and one below 560px. Section rhythm is generous at 132px on desktop and 92px on small screens.
+Primary content uses a 1200px shell with 40px desktop gutters; the hero expands to 1440px with 24px gutters. Launch statements are centred and deliberately oversized, then give way to asymmetric two-column evidence layouts and three-column project grids. Major sections use 138px vertical spacing, allowing each thesis, method, or archive set to arrive as a distinct editorial chapter.
 
-The 820px breakpoint converts the hero and editorial splits to a single reading column, stacks research tabs, and keeps the light panel full-width. The 560px breakpoint uses a 24px page gutter, full-width primary actions, one-column projects, and horizontally scrollable archive media. Sticky navigation remains compact and never covers the hero headline.
+At 1100px the content shell tightens and project cards move to two columns. At 900px the header becomes a 76px mobile bar, desktop navigation moves into a full-width menu, major editorial splits stack, and the method grid becomes two columns. At 640px section spacing drops to 88px, projects become one column, the method becomes a horizontal snap sequence, research tabs stack, and the hero retains its centred launch rhythm.
 
-**The Atlas Grid Rule.** Grids use shared borders and aligned rules so separate items read as one research record, not a collection of floating tiles.
+**The Ruled Sequence Rule.** Use shared one-pixel rules to express sequence and comparison; rounded containers hold evidence, not every individual row.
 
 ## Elevation & Depth
 
-The system is flat by default. Depth comes from tonal layering, ruled boundaries, image cropping, and one soft institutional shadow on the hero image or temporary mobile navigation. Clickable project cards may lift four pixels with a soft shadow; static containers do not.
+The system is restrained rather than flat. Tonal layers and image crops establish most depth. The shared launch shadow (`0 18px 54px rgba(36, 42, 29, 0.1)`) supports raised editorial objects; stronger media depth appears inside the hero enclosure, while compact navigation and the open mobile menu use lighter temporary shadows. Project cards stay on the page plane and signal action through image scale and arrow movement.
 
 ### Shadow Vocabulary
 
-- **Institutional image depth** (`0 24px 70px rgba(39, 62, 74, 0.13)`): Hero imagery and temporary navigation overlays.
-- **Interactive card lift** (`0 18px 38px rgba(42, 65, 78, 0.12)`): Project-card hover only.
+- **Launch Object** (`0 18px 54px rgba(36, 42, 29, 0.1)`): Shared soft elevation token.
+- **Hero Media** (`0 22px 65px rgba(25, 31, 17, 0.24)`): The framed documentary image inside its sage enclosure.
+- **Compact Navigation** (`0 10px 34px rgba(21, 23, 19, 0.08)`): Floating desktop navigation after scrolling.
+- **Temporary Menu** (`0 20px 40px rgba(21, 23, 19, 0.08)`): Open mobile navigation only.
 
-**The Flat-Until-Action Rule.** Static evidence stays flat. Elevation signals an available action or a temporary overlay.
+**The Elevation as Event Rule.** Shadows mark a framed media object, navigation state, or temporary overlay; ordinary evidence remains on the paper plane.
 
 ## Shapes
 
-Major surfaces, buttons, media frames, tabs, and cards use square corners. This keeps the visual language documentary and architectural. Pill geometry is limited to small research-topic tags; it must not spread to primary actions or large containers.
+Soft geometry is hierarchical. Large research panels use a 30px radius, principal media uses 28px, project cards use 22px around the image only, and compact controls use the full pill radius. Thin rules keep the rounded system precise rather than soft or playful.
+
+**The Radius Hierarchy Rule.** Larger evidence containers receive larger radii; pills belong to actions, search, filters, and compact navigation, not long-form content.
 
 ## Components
 
 ### Buttons
 
-- **Shape:** Square, compact, and institutional.
-- **Primary:** Evidence Ink with Paper White text, 44px minimum height, and 12px by 18px padding.
-- **Hover / Focus:** Shift to Applied Intelligence Blue and lift two pixels; keyboard focus uses a clear blue outline.
-- **Text action:** Underlined by a one-pixel rule and paired with a small directional arrow.
+- **Shape:** Full pill with a 50px minimum height; the final contact action grows to 66px on desktop.
+- **Primary:** Launch Moss with white DM Sans text and 25px horizontal padding.
+- **Hover / Focus:** Shift to Deep Moss and rise 2px over 180ms; keyboard focus uses a 3px translucent moss outline offset by 4px.
+- **Text action:** Ink text without a container; the directional arrow moves 3px diagonally on hover.
 
 ### Chips
 
-- **Style:** Light translucent paper, a cool one-pixel stroke, and pill shape.
-- **State:** Descriptive research tags only; category filters remain rectangular action controls.
+- **Style:** Transparent or Pale Sage pill with a fine moss border, compact tracked DM Sans, and 9px × 13px padding.
+- **State:** Research tags are descriptive; filter chips add Pale Sage fill only when hovered or selected.
 
 ### Cards / Containers
 
-- **Corner Style:** Square.
-- **Background:** Paper White at rest; Archive Wash on clickable project hover.
-- **Shadow Strategy:** Flat at rest, interactive lift only.
-- **Border:** Shared one-pixel Measured Rule grid.
-- **Internal Padding:** 24px for project cards; 32px to 76px for research panels.
+- **Corner Style:** 30px research panels, 28px primary media, and 22px project media.
+- **Background:** Paper White, Pale Sage, or the implemented pale research panel (`#f0f3e7`).
+- **Shadow Strategy:** Project cards have no resting shadow; media zoom and arrow motion communicate destination.
+- **Border:** One-pixel Measured Rule separates tabs, methods, names, and archive controls.
+- **Internal Padding:** 27–28px for tabs and method cells; fluid 34–68px for research panels.
 
 ### Inputs / Fields
 
-- **Style:** Borderless field on white with a single cool bottom rule.
-- **Focus:** The global three-pixel blue focus outline remains visible.
-- **Placeholder:** Muted but readable Soft Record Ink.
+- **Style:** Search sits inside a lightly filled pill with a one-pixel Measured Rule border and an 11px icon gap.
+- **Focus:** Preserve the shared 3px moss outline; the input itself remains borderless.
+- **Placeholder:** Quiet Record at readable opacity.
 
 ### Navigation
 
-Desktop navigation is centered, compact, and label-led. Hover uses Research Mist without lift. Below 1100px it becomes a bordered white menu opened by a square icon control; each destination remains at least 48px high.
+The initial desktop header is 96px tall with centred links and a moss contact pill. After scrolling, it condenses into a 530px by 60px floating navigation pill with a blurred paper background and subtle shadow. At 900px, a circular 44px menu control opens a ruled white list with 56px rows and a full-width moss contact action.
 
-### Research Panel
+### Research Selector
 
-Three square tabs control one spacious light panel. The selected tab shifts to Research Mist and Deep Research Blue; the panel uses a two-column lead/detail layout on desktop and a single reading column on mobile. Keyboard arrow navigation and reduced-motion behavior are required.
+Three ruled tabs lead into one rounded Pale Sage-adjacent panel. The active tab uses Pale Sage and Editorial Ink; the panel pairs a large serif lead with a structured definition list. Arrow-key navigation, visible focus, and the 320ms reduced-motion-aware panel transition are part of the component.
 
 ### Project Card
 
-Project cards are links with a 16:10 media frame, category label, editorial title, and ruled footer. Only these actionable archive items lift and scale their image slightly on hover.
+Project records use a rounded 4:3 documentary image, moss category label, serif title, and quiet destination row. Cards remain shadowless; hover scales only the image to 1.035 and moves the arrow 3px diagonally.
+
+### Project Viewer
+
+The standalone viewer uses a 28px white media panel on Viewer Paper, a moss category pill, a Crimson Text title, and primary/secondary action pills. Its stronger ambient shadow is acceptable because the panel is the single focused object on that page.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** lead with white space, large research claims, and verifiable documentary media.
-- **Do** use light tonal changes and one-pixel rules to organise dense evidence.
-- **Do** preserve keyboard focus, reduced-motion handling, and 44px or larger action targets.
-- **Do** reserve lift, glow, and state changes for controls or media that open something.
+- **Do** let monumental serif statements and paper-white space establish confidence.
+- **Do** use moss for purposeful action and Pale Sage for selected or explanatory states.
+- **Do** frame real people, program footage, and project media with the documented radius hierarchy.
+- **Do** preserve thin ruled grids, visible focus, 44px or larger targets, and reduced-motion behavior.
 - **Do** keep the supplied AESIR wordmark on its original white rectangular background.
 
 ### Don't:
 
-- **Don't** reintroduce meteor, particle, starfield, canvas, or decorative WebGL backgrounds.
-- **Don't** make expanded research panels dark.
-- **Don't** turn the site into a generic gradient-heavy technology landing page.
-- **Don't** apply hover elevation to non-interactive boxes, labels, or evidence rows.
-- **Don't** fabricate publications, awards, people, or outcome metrics to fill a visual gap.
+- **Don't** reintroduce meteor, particle, starfield, canvas, or decorative WebGL effects.
+- **Don't** make expanded research content dark or detach it from the selector.
+- **Don't** substitute gradients, glass cards, or generic technology-dashboard styling for the paper-led editorial world.
+- **Don't** shadow every rounded container or lift static evidence.
+- **Don't** fabricate awards, publications, people, or outcomes to strengthen a layout.
