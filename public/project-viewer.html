@@ -3,16 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Media | NEURO Business Futures</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet" />
+    <title>Project Media | AESIR</title>
     <style>
       :root {
-        color-scheme: dark;
-        --bg: #06111f;
-        --panel: rgba(255, 255, 255, 0.06);
-        --line: rgba(255, 255, 255, 0.12);
-        --text: #f8fafc;
-        --muted: #b6c2d1;
-        --accent: #67e8f9;
+        color-scheme: light;
+        --bg: #f4f7f8;
+        --panel: #ffffff;
+        --line: #d6e0e4;
+        --text: #182832;
+        --muted: #5f727d;
+        --accent: #2f637d;
       }
 
       * {
@@ -22,12 +25,9 @@
       body {
         margin: 0;
         min-height: 100vh;
-        background:
-          radial-gradient(circle at 18% 12%, rgba(14, 165, 233, 0.26), transparent 32rem),
-          radial-gradient(circle at 88% 18%, rgba(103, 232, 249, 0.14), transparent 28rem),
-          var(--bg);
+        background: var(--bg);
         color: var(--text);
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
       main {
@@ -49,7 +49,7 @@
       }
 
       .brand {
-        color: var(--accent);
+        color: var(--text);
         font-size: 12px;
         font-weight: 800;
         letter-spacing: 0.24em;
@@ -58,7 +58,7 @@
 
       .back {
         border: 1px solid var(--line);
-        border-radius: 8px;
+        border-radius: 0;
         padding: 10px 14px;
         text-decoration: none;
         color: var(--muted);
@@ -67,13 +67,13 @@
       .panel {
         overflow: hidden;
         border: 1px solid var(--line);
-        border-radius: 12px;
+        border-radius: 0;
         background: var(--panel);
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 24px 70px rgba(39, 62, 74, 0.13);
       }
 
       .media {
-        background: rgba(0, 0, 0, 0.28);
+        background: #e4eaed;
       }
 
       img {
@@ -90,11 +90,11 @@
       .category {
         display: inline-flex;
         margin-bottom: 16px;
-        border: 1px solid rgba(103, 232, 249, 0.28);
+        border: 1px solid var(--line);
         border-radius: 999px;
-        background: rgba(103, 232, 249, 0.1);
+        background: #edf3f5;
         padding: 7px 11px;
-        color: #a5f3fc;
+        color: var(--accent);
         font-size: 12px;
         font-weight: 800;
       }
@@ -118,7 +118,7 @@
         align-items: center;
         justify-content: center;
         min-height: 44px;
-        border-radius: 8px;
+        border-radius: 0;
         padding: 11px 16px;
         text-decoration: none;
         font-weight: 800;
@@ -126,7 +126,7 @@
 
       .primary {
         background: var(--accent);
-        color: #06111f;
+        color: #ffffff;
       }
 
       .secondary {
@@ -138,13 +138,13 @@
   <body>
     <main>
       <div class="topbar">
-        <div class="brand">NEURO Business Futures</div>
-        <a class="back" href="/">Back to website</a>
+        <div class="brand">AESIR</div>
+        <a class="back" href="./">Back to website</a>
       </div>
 
       <article class="panel">
         <div class="media">
-          <img id="media" alt="" />
+          <img id="media" src="./assets/aesir/ernest-reading.webp" alt="AESIR project media" />
         </div>
         <div class="content">
           <span class="category" id="category"></span>
@@ -164,7 +164,7 @@
       const media = params.get("media") || "";
       const link = params.get("link") || "";
 
-      document.title = `${title} | NEURO Business Futures`;
+      document.title = `${title} | AESIR`;
       document.getElementById("title").textContent = title;
       document.getElementById("category").textContent = category;
 

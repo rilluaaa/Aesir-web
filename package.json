@@ -1,5 +1,5 @@
 {
-  "name": "neuro-business-futures",
+  "name": "aesir-research",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -11,8 +11,7 @@
     "hls.js": "^1.6.16",
     "lucide-react": "^1.27.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "three": "^0.143.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
@@ -22,14 +21,14 @@
     "vite": "^5.0.8"
   },
   "keywords": [
-    "neuro",
-    "business",
-    "school",
+    "aesir",
+    "immersive-intelligence",
+    "research",
     "ai",
     "human-centered",
-    "education"
+    "xr"
   ],
   "author": "",
   "license": "ISC",
-  "description": "NEURO Business Futures - Gateway to the Human-Centered Future Economy"
+  "description": "AESIR evidence-based immersive intelligence research website"
 }
