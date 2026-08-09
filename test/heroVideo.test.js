@@ -3,8 +3,11 @@ import test from "node:test";
 
 import {
   HERO_GAZE_ANCHORS,
+  HERO_HEAD_SAFE_GAP,
+  HERO_HUMAN_FOCAL_POINT,
   HERO_SOURCE_QUALITY,
   HERO_VIDEO_SOURCES,
+  calculateHeroObjectPositionY,
   getHeroPlaybackState,
   isConstrainedNetwork,
   isHeroScrubCapable,
@@ -161,4 +164,44 @@ test("gaze mapping clamps progress and scales normalized anchors after re-encodi
   assert.equal(mapPointerToGazeTime(2, duration), HERO_GAZE_ANCHORS.right * duration);
   assert.equal(mapPointerToGazeTime(0.5, duration), HERO_GAZE_ANCHORS.neutral * duration);
   assert.equal(mapPointerToGazeTime(0.5, Number.NaN), 0);
+});
+
+test("hero focal framing protects the head across short desktop viewports", () => {
+  const shortDesktop = calculateHeroObjectPositionY({
+    containerWidth: 1356,
+    containerHeight: 680,
+    videoWidth: 1920,
+    videoHeight: 1080,
+  });
+  const wideDesktop = calculateHeroObjectPositionY({
+    containerWidth: 1910,
+    containerHeight: 992,
+    videoWidth: 1920,
+    videoHeight: 1080,
+  });
+  const naturallyFitted = calculateHeroObjectPositionY({
+    containerWidth: 1430,
+    containerHeight: 812,
+    videoWidth: 1920,
+    videoHeight: 1080,
+  });
+
+  assert.ok(shortDesktop > 0.45 && shortDesktop < 0.5);
+  assert.ok(wideDesktop > 0.75 && wideDesktop < 0.82);
+  assert.equal(naturallyFitted, 0.5);
+
+  const renderedHeight = 1080 * Math.max(1356 / 1920, 680 / 1080);
+  const headTop = HERO_HUMAN_FOCAL_POINT.y * renderedHeight;
+  const verticalCrop = (renderedHeight - 680) * shortDesktop;
+  assert.ok(Math.abs((headTop - verticalCrop) - HERO_HEAD_SAFE_GAP) < 0.01);
+});
+
+test("hero focal framing safely handles missing dimensions", () => {
+  assert.equal(calculateHeroObjectPositionY({}), 0.5);
+  assert.equal(calculateHeroObjectPositionY({
+    containerWidth: 390,
+    containerHeight: 390,
+    videoWidth: 0,
+    videoHeight: 0,
+  }), 0.5);
 });

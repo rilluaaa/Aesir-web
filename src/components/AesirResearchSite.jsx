@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import {
   HERO_SOURCE_QUALITY,
+  calculateHeroObjectPositionY,
   getHeroPlaybackState,
   isConstrainedNetwork,
   isHeroScrubCapable,
@@ -354,6 +355,7 @@ function BackgroundVideo() {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const [heroMode, setHeroMode] = useState(getInitialHeroMode);
+  const [focalPositionY, setFocalPositionY] = useState(50);
   const [readySource, setReadySource] = useState(null);
   const { scrubCapable, reducedMotion, videoSource } = heroMode;
 
@@ -455,6 +457,39 @@ function BackgroundVideo() {
       window.clearTimeout(updateTimer);
     };
   }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const video = videoRef.current;
+    if (!container || !video) return undefined;
+
+    const updateFocalPosition = () => {
+      const rect = container.getBoundingClientRect();
+      const nextPosition = calculateHeroObjectPositionY({
+        containerWidth: rect.width,
+        containerHeight: rect.height,
+        videoWidth: video.videoWidth || 16,
+        videoHeight: video.videoHeight || 9,
+      }) * 100;
+      setFocalPositionY((currentPosition) => (
+        Math.abs(currentPosition - nextPosition) < 0.01 ? currentPosition : nextPosition
+      ));
+    };
+
+    const resizeObserver = typeof ResizeObserver === "function"
+      ? new ResizeObserver(updateFocalPosition)
+      : null;
+    resizeObserver?.observe(container);
+    window.addEventListener("resize", updateFocalPosition, { passive: true });
+    video.addEventListener("loadedmetadata", updateFocalPosition);
+    updateFocalPosition();
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", updateFocalPosition);
+      video.removeEventListener("loadedmetadata", updateFocalPosition);
+    };
+  }, [videoSource]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -576,7 +611,10 @@ function BackgroundVideo() {
       className="hero-video"
       aria-hidden="true"
       ref={containerRef}
-      style={{ "--hero-poster": `url("${posterUrl}")` }}
+      style={{
+        "--hero-focal-y": `${focalPositionY.toFixed(3)}%`,
+        "--hero-poster": `url("${posterUrl}")`,
+      }}
     >
       <video
         ref={videoRef}

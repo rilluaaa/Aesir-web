@@ -216,7 +216,11 @@
   z-index: 0;
   inset: 0;
   overflow: hidden;
-  background: #f7f8fb var(--hero-poster) right bottom / cover no-repeat;
+  background-color: #f7f8fb;
+  background-image: var(--hero-poster);
+  background-position: right var(--hero-focal-y, 50%);
+  background-repeat: no-repeat;
+  background-size: cover;
   contain: layout paint style;
   pointer-events: none;
 }
@@ -233,7 +237,7 @@
   height: 100%;
   opacity: 0;
   object-fit: cover;
-  object-position: right bottom;
+  object-position: right var(--hero-focal-y, 50%);
   transition: opacity 140ms ease;
 }
 

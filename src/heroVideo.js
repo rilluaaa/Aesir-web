@@ -17,6 +17,14 @@ export const HERO_GAZE_ANCHORS = Object.freeze({
   right: 3.832 / VERIFIED_HERO_DURATION,
 });
 
+export const HERO_HUMAN_FOCAL_POINT = Object.freeze({
+  x: 1,
+  // Normalized top-of-head anchor measured from the neutral source frame.
+  y: 0.083,
+});
+
+export const HERO_HEAD_SAFE_GAP = 24;
+
 const HIGH_RESOLUTION_DECODING_CONFIG = Object.freeze({
   type: "file",
   video: {
@@ -29,6 +37,27 @@ const HIGH_RESOLUTION_DECODING_CONFIG = Object.freeze({
 });
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
+
+export const calculateHeroObjectPositionY = ({
+  containerWidth,
+  containerHeight,
+  videoWidth,
+  videoHeight,
+  focalPointY = HERO_HUMAN_FOCAL_POINT.y,
+  safeGap = HERO_HEAD_SAFE_GAP,
+}) => {
+  const dimensions = [containerWidth, containerHeight, videoWidth, videoHeight];
+  if (!dimensions.every((value) => Number.isFinite(value) && value > 0)) return 0.5;
+
+  const coverScale = Math.max(containerWidth / videoWidth, containerHeight / videoHeight);
+  const renderedHeight = videoHeight * coverScale;
+  const verticalOverflow = Math.max(0, renderedHeight - containerHeight);
+  if (verticalOverflow <= 0.5) return 0.5;
+
+  const renderedFocalY = clamp(focalPointY, 0, 1) * renderedHeight;
+  const protectedCrop = Math.max(0, renderedFocalY - Math.max(0, safeGap));
+  return clamp(Math.min(verticalOverflow, protectedCrop) / verticalOverflow, 0, 1);
+};
 
 export const isHeroScrubCapable = ({
   viewportWidth,
