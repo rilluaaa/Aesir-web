@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <title>Project Media | AESIR</title>
+    <title>Project | AESIR</title>
     <style>
       :root {
         color-scheme: light;
@@ -31,7 +31,7 @@
       }
 
       main {
-        width: min(1120px, calc(100% - 32px));
+        width: min(940px, calc(100% - 32px));
         margin: 0 auto;
         padding: 48px 0;
       }
@@ -73,13 +73,19 @@
       }
 
       .media {
+        display: grid;
+        place-items: center;
+        min-height: 280px;
+        padding: clamp(16px, 3vw, 32px);
         background: #9faa8d;
       }
 
       img {
         display: block;
-        width: 100%;
-        max-height: 72vh;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 62vh;
         object-fit: contain;
       }
 
@@ -107,6 +113,15 @@
         font-weight: 400;
         letter-spacing: -0.04em;
         line-height: 1;
+      }
+
+      .description {
+        max-width: 72ch;
+        margin: 24px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.75;
+        white-space: pre-line;
       }
 
       .actions {
@@ -142,9 +157,14 @@
         transition: transform 160ms ease, background 160ms ease;
       }
 
-      .secondary {
-        border: 1px solid var(--line);
-        color: var(--text);
+      .availability-note {
+        margin: 24px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      [hidden] {
+        display: none !important;
       }
     </style>
   </head>
@@ -162,10 +182,11 @@
         <div class="content">
           <span class="category" id="category"></span>
           <h1 id="title"></h1>
-          <div class="actions">
-            <a class="button primary" id="source" target="_blank" rel="noopener noreferrer">Open Project Link</a>
-            <a class="button secondary" id="media-link" target="_blank" rel="noopener noreferrer">Open Media</a>
+          <p class="description" id="description"></p>
+          <div class="actions" id="actions">
+            <a class="button primary" id="source" target="_blank" rel="noopener noreferrer">Open Project</a>
           </div>
+          <p class="availability-note" id="availability" hidden>This archive record does not currently have a verified public project link.</p>
         </div>
       </article>
     </main>
@@ -174,22 +195,29 @@
       const params = new URLSearchParams(window.location.search);
       const title = params.get("title") || "Project Media";
       const category = params.get("category") || "Project";
+      const description = params.get("description") || "Project details are being prepared for this archive record.";
       const media = params.get("media") || "";
       const link = params.get("link") || "";
 
       document.title = `${title} | AESIR`;
       document.getElementById("title").textContent = title;
       document.getElementById("category").textContent = category;
+      document.getElementById("description").textContent = description;
 
       const mediaElement = document.getElementById("media");
       mediaElement.src = media;
       mediaElement.alt = `${title} media`;
 
-      const mediaLink = document.getElementById("media-link");
-      mediaLink.href = media;
-
       const sourceLink = document.getElementById("source");
-      sourceLink.href = link || media;
+      const actions = document.getElementById("actions");
+      const availability = document.getElementById("availability");
+
+      if (link) {
+        sourceLink.href = link;
+      } else {
+        actions.hidden = true;
+        availability.hidden = false;
+      }
     </script>
   </body>
 </html>
