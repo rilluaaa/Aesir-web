@@ -308,14 +308,11 @@ function useTypewriter(text, speed = 38, startDelay = 600) {
 
 function BackgroundVideo() {
   const videoRef = useRef(null);
-  const scrubReadyRef = useRef(false);
-  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return undefined;
 
-    let hasPreparedDesktopFrame = false;
     let targetTime = 0;
     let renderedTime = 0;
     let animationFrame = 0;
@@ -323,50 +320,23 @@ function BackgroundVideo() {
     const frameInterval = 1000 / 120;
 
     const onMouseMove = (event) => {
-      if (
-        window.innerWidth < 1024
-        || !scrubReadyRef.current
-        || !Number.isFinite(video.duration)
-      ) return;
+      if (window.innerWidth < 1024 || !Number.isFinite(video.duration)) return;
       const pointerProgress = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
       const finalFrame = Math.max(0, video.duration - 1 / 120);
       targetTime = pointerProgress * finalFrame;
-    };
-
-    const prepareDesktopFrame = () => {
-      if (
-        window.innerWidth < 1024
-        || hasPreparedDesktopFrame
-        || !Number.isFinite(video.duration)
-        || video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA
-      ) return;
-
-      hasPreparedDesktopFrame = true;
-      const neutralTime = Math.max(0, (video.duration - 1 / 120) / 2);
-      targetTime = neutralTime;
-      renderedTime = neutralTime;
-
-      const enableScrubbing = () => {
-        scrubReadyRef.current = true;
-        setIsReady(true);
-      };
-
-      video.addEventListener("seeked", enableScrubbing, { once: true });
-      video.currentTime = neutralTime;
     };
 
     const onLoadedMetadata = () => {
       const neutralTime = Math.max(0, (video.duration - 1 / 120) / 2);
       targetTime = neutralTime;
       renderedTime = neutralTime;
-      prepareDesktopFrame();
+      video.currentTime = neutralTime;
     };
 
     const renderScrub = (timestamp) => {
       animationFrame = 0;
       if (
-        scrubReadyRef.current
-        && Number.isFinite(video.duration)
+        Number.isFinite(video.duration)
         && timestamp - lastUpdate >= frameInterval
       ) {
         const elapsed = lastUpdate ? timestamp - lastUpdate : frameInterval;
@@ -386,7 +356,6 @@ function BackgroundVideo() {
     const updateScrubLoop = () => {
       if (window.innerWidth >= 1024 && !animationFrame) {
         animationFrame = window.requestAnimationFrame(renderScrub);
-        prepareDesktopFrame();
       } else if (window.innerWidth < 1024 && animationFrame) {
         window.cancelAnimationFrame(animationFrame);
         animationFrame = 0;
@@ -396,15 +365,12 @@ function BackgroundVideo() {
     window.addEventListener("mousemove", onMouseMove, { passive: true });
     window.addEventListener("resize", updateScrubLoop, { passive: true });
     video.addEventListener("loadedmetadata", onLoadedMetadata);
-    video.addEventListener("canplaythrough", prepareDesktopFrame);
     updateScrubLoop();
 
     return () => {
-      scrubReadyRef.current = false;
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("resize", updateScrubLoop);
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
-      video.removeEventListener("canplaythrough", prepareDesktopFrame);
       window.cancelAnimationFrame(animationFrame);
     };
   }, []);
@@ -418,14 +384,8 @@ function BackgroundVideo() {
       const shouldPlay = window.innerWidth < 1024 && !reducedMotion.matches;
       video.autoplay = shouldPlay;
       video.loop = shouldPlay;
-      if (shouldPlay) {
-        video.play()
-          .then(() => setIsReady(true))
-          .catch(() => undefined);
-      } else {
-        video.pause();
-        if (window.innerWidth < 1024) setIsReady(false);
-      }
+      if (shouldPlay) video.play().catch(() => undefined);
+      else video.pause();
     };
 
     updatePlayback();
@@ -438,12 +398,7 @@ function BackgroundVideo() {
   }, []);
 
   return (
-    <div className={`hero-video${isReady ? " is-ready" : ""}`} aria-hidden="true">
-      <img
-        className="hero-video__poster"
-        src={asset("assets/aesir/cognitive-hero-poster.webp")}
-        alt=""
-      />
+    <div className="hero-video" aria-hidden="true">
       <video
         ref={videoRef}
         muted
