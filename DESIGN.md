@@ -1,19 +1,19 @@
 ---
 name: "AESIR Research Launch"
-description: "A paper-white editorial launch system grounded in natural clay, sand, and evidence-led immersive intelligence."
+description: "A paper-white editorial launch system grounded in institutional blue, cool mist, and evidence-led immersive intelligence."
 colors:
-  ink: "#1b1816"
-  muted: "#716963"
-  clay: "#8d4d3b"
-  clay-dark: "#6f3729"
-  sand: "#c7b5a2"
-  sand-soft: "#f1e5dc"
-  cream: "#f5efe8"
-  warm-panel: "#eadfd4"
-  archive-paper: "#f7f7f3"
-  paper-tint: "#fafaf7"
-  viewer-paper: "#f7f3ef"
-  line: "#e7dfd7"
+  ink: "#15263a"
+  muted: "#607286"
+  clay: "#3f73a8"
+  clay-dark: "#274f78"
+  sand: "#aec8df"
+  sand-soft: "#e6f0f8"
+  cream: "#f1f6fb"
+  warm-panel: "#dceaf5"
+  archive-paper: "#f5f8fb"
+  paper-tint: "#f7fafe"
+  viewer-paper: "#f3f7fb"
+  line: "#d9e4ee"
   white: "#ffffff"
 typography:
   display:
@@ -167,36 +167,36 @@ components:
 
 **Creative North Star: "The Research Launch"**
 
-AESIR presents applied R&D with the clarity and anticipation of a modern product launch, but the evidence remains the product. Monumental serif claims, generous paper-white space, restrained clay actions, and documentary media make complex research feel consequential, human, and ready for public scrutiny.
+AESIR presents applied R&D with the clarity and anticipation of a modern product launch, but the evidence remains the product. Monumental serif claims, generous paper-white space, restrained institutional-blue actions, and documentary media make complex research feel consequential, human, and ready for public scrutiny.
 
-The system is editorial before it is technological. Clay, sand, cream, and soft paper group complex evidence into independent tonal cards; shared spacing keeps the system coherent without turning it into a dashboard. The hero is a direct, cinematic editorial image without an enclosing matte, while evidence and archive media use intentional contained presentations when the complete artifact matters. Motion and elevation are brief signals of action, never ambient spectacle.
+The system is editorial before it is technological. Cobalt, mist blue, cool paper, and white group complex evidence into independent tonal cards; shared spacing keeps the system coherent without turning it into a dashboard. The hero is a centred, cinematic editorial image without an enclosing matte, while evidence and archive media use intentional contained presentations when the complete artifact matters. Motion and elevation are brief signals of action, never ambient spectacle.
 
 **Key Characteristics:**
 
 - Monumental Crimson Text statements on a paper-white field.
 - DM Sans interface copy with compact, disciplined metadata.
-- Clay actions with sand, cream, warm-clay, and soft-paper evidence groups.
+- Institutional-blue actions with mist, haze, and soft-paper evidence groups.
 - A full-width, opaque sticky header whose shape does not morph on scroll.
-- An unframed, full-frame hero image with direct shadow and no subject crop.
+- A compact, centred 16:8.9 hero image with direct shadow and a deliberate editorial crop.
 - Independent 16px cards paced by consistent 12px gaps.
 - Local static WebP archive previews that avoid third-party thumbnail requests.
 - Responsive compositions that preserve the launch-like pacing on small screens.
 
 ## Colors
 
-The palette pairs warm editorial ink with one natural clay action family and low-chroma sand and paper tones.
+The palette pairs deep navy editorial ink with one institutional-blue action family and low-chroma mist and paper tones.
 
 ### Primary
 
-- **Launch Clay** (`clay`): Primary actions, project categories, case-study emphasis, and purposeful wayfinding.
-- **Deep Clay** (`clay-dark`): Button hover, research metadata, and the strongest earthen text accent.
+- **Launch Blue** (`clay`): Primary actions, project categories, case-study emphasis, and purposeful wayfinding. The legacy token name remains for code compatibility.
+- **Deep Blue** (`clay-dark`): Button hover, research metadata, and the strongest text accent.
 
 ### Secondary
 
-- **Natural Sand** (`sand`): Evidence and project-detail media fields, plus the middle case-study card.
-- **Soft Sand** (`sand-soft`): Society 5.0 panels and alternating method, output, or project-hover fields.
-- **Archive Cream** (`cream`): Warm neutral backing for contained documentary imagery.
-- **Warm Research Clay** (`warm-panel`): NEURO research-panel differentiation.
+- **Clear Mist** (`sand`): Evidence and project-detail media fields, plus the middle case-study card.
+- **Soft Blue** (`sand-soft`): Society 5.0 panels and alternating method, output, or project-hover fields.
+- **Archive Haze** (`cream`): Cool neutral backing for contained documentary imagery.
+- **Research Sky** (`warm-panel`): NEURO research-panel differentiation.
 
 ### Neutral
 
@@ -208,9 +208,9 @@ The palette pairs warm editorial ink with one natural clay action family and low
 - **Measured Rule** (`line`): Dividers, section boundaries, and control strokes.
 - **Paper White** (`white`): Dominant page, header, and card field.
 
-**The Paper Leads Rule.** Paper White is the dominant atmosphere; sand and cream organise evidence while clay remains a scarce action signal.
+**The Paper Leads Rule.** Paper White is the dominant atmosphere; mist and haze organise evidence while blue remains a scarce action signal.
 
-**The Earthbound Restraint Rule.** Stay inside the clay, sand, cream, and paper family; do not add competing saturated technology colors.
+**The Blue Restraint Rule.** Stay inside the navy, institutional-blue, mist, and paper family; do not add competing saturated technology colours.
 
 ## Typography
 
@@ -237,7 +237,7 @@ The palette pairs warm editorial ink with one natural clay action family and low
 
 ## Layout
 
-Primary content uses a 1200px shell with 40px desktop gutters; the hero expands to a 1320px image within 24px page gutters. Launch statements are centred and deliberately oversized, then give way to asymmetric two-column evidence layouts and three-column project grids. Within research, method, and output groups, independent cards use 12px gaps so comparison remains clear without joined table borders. Major sections use 138px vertical spacing, allowing each thesis, method, or archive set to arrive as a distinct editorial chapter.
+Primary content uses a 1200px shell with 40px desktop gutters; the hero image is capped at 1000px and centred beneath the launch statement. Launch statements are centred and deliberately oversized, then give way to asymmetric two-column evidence layouts and three-column project grids. Within research, method, and output groups, independent cards use 12px gaps so comparison remains clear without joined table borders. Major sections use 138px vertical spacing, allowing each thesis, method, or archive set to arrive as a distinct editorial chapter.
 
 The header stays sticky at the top of the viewport and remains a full-width opaque surface: 96px on desktop and 76px at the mobile navigation breakpoint. It does not condense, float, blur, or change into a pill while scrolling. At 1100px the content shell tightens and project cards move to two columns. At 900px desktop navigation moves into a full-width mobile menu, major editorial splits stack, and the method grid becomes two columns. At 640px section spacing drops to 88px, projects become one column, the method becomes a horizontal snap sequence, research tabs stack, and the hero retains its centred launch rhythm.
 
@@ -245,14 +245,14 @@ The header stays sticky at the top of the viewport and remains a full-width opaq
 
 ## Elevation & Depth
 
-The system is restrained rather than flat. Tonal layers establish most depth. The shared launch shadow (`0 18px 54px rgba(64, 43, 34, 0.1)`) supports raised editorial objects. The hero image receives a direct warm shadow (`0 20px 52px rgba(58, 38, 30, 0.13)`) without an outer frame. The fixed-state desktop header remains on the paper plane; only the open mobile menu uses a temporary shadow. Project cards signal action through a cream-to-Soft-Sand matte change and arrow movement rather than lift.
+The system is restrained rather than flat. Tonal layers establish most depth. The shared launch shadow (`0 18px 54px rgba(31, 69, 105, 0.12)`) supports raised editorial objects. The hero image receives a direct cool shadow (`0 20px 52px rgba(31, 69, 105, 0.14)`) without an outer frame. The fixed-state desktop header remains on the paper plane; only the open mobile menu uses a temporary shadow. Project cards signal action through a haze-to-Soft-Blue matte change and arrow movement rather than lift.
 
 ### Shadow Vocabulary
 
-- **Launch Object** (`0 18px 54px rgba(64, 43, 34, 0.1)`): Shared warm elevation token.
-- **Hero Image** (`0 20px 52px rgba(58, 38, 30, 0.13)`): Direct depth beneath the unframed hero image.
-- **Temporary Menu** (`0 20px 40px rgba(27, 24, 22, 0.08)`): Open mobile navigation only.
-- **Viewer Panel** (`0 24px 70px rgba(64, 43, 34, 0.1)`): Single focused object in the standalone project viewer.
+- **Launch Object** (`0 18px 54px rgba(31, 69, 105, 0.12)`): Shared cool elevation token.
+- **Hero Image** (`0 20px 52px rgba(31, 69, 105, 0.14)`): Direct depth beneath the unframed hero image.
+- **Temporary Menu** (`0 20px 40px rgba(21, 38, 58, 0.08)`): Open mobile navigation only.
+- **Viewer Panel** (`0 24px 70px rgba(31, 69, 105, 0.12)`): Single focused object in the standalone project viewer.
 
 **The Elevation as Event Rule.** Shadows mark the hero, a focused detail object, or a temporary overlay; ordinary evidence and the sticky header remain on the paper plane.
 
@@ -267,67 +267,67 @@ Soft geometry is hierarchical. Large research panels use a 30px radius, secondar
 ### Buttons
 
 - **Shape:** Full pill with a 50px minimum height; the final contact action grows to 66px on desktop.
-- **Primary:** Launch Clay with white DM Sans text and 25px horizontal padding.
-- **Hover / Focus:** Shift to Deep Clay and rise 2px over 180ms; keyboard focus uses a white inner outline plus a Deep Clay outer ring so it remains visible on light and colored surfaces.
+- **Primary:** Launch Blue with white DM Sans text and 25px horizontal padding.
+- **Hover / Focus:** Shift to Deep Blue and rise 2px over 180ms; keyboard focus uses a white inner outline plus a Deep Blue outer ring so it remains visible on light and coloured surfaces.
 - **Text action:** Ink text without a container; the directional arrow moves 3px diagonally on hover.
 
 ### Chips
 
-- **Style:** Transparent or Soft Sand pill with a fine clay border, compact tracked DM Sans, and 9px × 13px padding.
-- **State:** Research tags are descriptive; filter chips use Launch Clay with white text when hovered or selected.
+- **Style:** Transparent or Soft Blue pill with a fine blue border, compact tracked DM Sans, and 9px × 13px padding.
+- **State:** Research tags are descriptive; filter chips use Launch Blue with white text when hovered or selected.
 
 ### Cards / Containers
 
 - **Corner Style:** 30px research panels, 28px secondary media, 24px hero image, 22px project media, and 16px grouped cards.
-- **Background:** Society 5.0 uses Soft Sand, AX uses Archive Cream, and NEURO uses Warm Research Clay. Detail cards use translucent white; method and output cards alternate Paper White, Archive Paper, and Soft Sand.
-- **Shadow Strategy:** Project cards have no resting shadow; the media matte changes from Archive Cream to Soft Sand while the arrow moves, with no image crop or zoom.
+- **Background:** Society 5.0 uses Soft Blue, AX uses Archive Haze, and NEURO uses Research Sky. Detail cards use translucent white; method and output cards alternate Paper White, Archive Paper, and Soft Blue.
+- **Shadow Strategy:** Project cards have no resting shadow; the media matte changes from Archive Haze to Soft Blue while the arrow moves, with no image crop or zoom.
 - **Border:** One-pixel Measured Rule remains for section boundaries, names, and compact controls; tonal cards separate through fill and 12px gaps.
 - **Internal Padding:** 20px for research details, 24px for outputs, 26px for research cases, 27–28px for tabs and method cards, and fluid 34–68px for research panels.
 
 ### Inputs / Fields
 
 - **Style:** Search sits inside a lightly filled pill with a one-pixel Measured Rule border and an 11px icon gap.
-- **Focus:** Preserve the shared white inner outline and Deep Clay outer ring; the input itself remains borderless.
+- **Focus:** Preserve the shared white inner outline and Deep Blue outer ring; the input itself remains borderless.
 - **Placeholder:** Quiet Record at readable opacity.
 
 ### Navigation
 
-The desktop header is a full-width, 96px opaque white sticky surface with centred links and a clay contact pill. Its dimensions, shape, and surface do not change with scroll; there is no blur or floating compact state. At 900px it becomes a 76px bar, and a circular 44px menu control opens a ruled white list with 56px rows and a full-width clay contact action.
+The desktop header is a full-width, 96px opaque white sticky surface with centred links and a blue contact pill. Its dimensions, shape, and surface do not change with scroll; there is no blur or floating compact state. At 900px it becomes a 76px bar, and a circular 44px menu control opens a ruled white list with 56px rows and a full-width blue contact action.
 
 ### Hero Media
 
-The hero figure is unframed: transparent, unpadded, and without its own radius. Its image keeps its natural aspect ratio, uses a direct 24px radius, and remains fully visible with `object-fit: contain`, then receives the dedicated warm hero shadow. The caption sits 18px below on the page field rather than inside a colored enclosure.
+The hero figure is unframed: transparent, unpadded, capped at 1000px, and centred. Its image uses a 16:8.9 editorial crop, a direct 24px radius, and `object-fit: cover`, then receives the dedicated cool hero shadow. The caption sits 18px below on the page field rather than inside a coloured enclosure.
 
 ### Research Selector
 
-Three independent Archive Paper tabs sit on a 12px grid; the active tab switches to Launch Clay with white text. The connected 30px panel varies by research area—Soft Sand for Society 5.0, Archive Cream for AX, and Warm Research Clay for NEURO. Each area opens at **Description**, then progresses through **Research Focus** and **Applied Direction** using a three-step ruled navigator and labelled previous/next arrow controls. Only one detailed narrative is shown at a time, with two readable paragraphs and a stable sequence indicator; changing the research area resets the journey to Description. The applied case-study cards remain visible after the narrative. Area tabs and stage tabs both support arrow-key navigation, visible focus, and reduced-motion behaviour.
+Three independent Archive Paper tabs sit on a 12px grid; the active tab switches to Launch Blue with white text. The connected 30px panel varies by research area—Soft Blue for Society 5.0, Archive Haze for AX, and Research Sky for NEURO. Each area opens at **Description**, then progresses through **Research Focus** and **Applied Direction** using a three-step ruled navigator and labelled previous/next arrow controls. Only one detailed narrative is shown at a time, with two readable paragraphs and a stable sequence indicator; changing the research area resets the journey to Description. The applied case-study cards remain visible after the narrative. Area tabs and stage tabs both support arrow-key navigation, visible focus, and reduced-motion behaviour.
 
 ### Method Cards
 
-The four-step method uses independent 16px cards with 12px gaps, large clay serif numerals, and alternating Paper White and Soft Sand fills. At narrow widths the cards become a horizontal snap sequence rather than collapsing into a dense vertical list.
+The four-step method uses independent 16px cards with 12px gaps, large blue serif numerals, and alternating Paper White and Soft Blue fills. At narrow widths the cards become a horizontal snap sequence rather than collapsing into a dense vertical list.
 
 ### Output Cards
 
-Applied outputs form a vertical 12px-spaced stack of 16px cards. Archive Paper and Soft Sand alternate to create scan rhythm without implying interactivity; each card holds a serif title above concise DM Sans evidence copy.
+Applied outputs form a vertical 12px-spaced stack of 16px cards. Archive Paper and Soft Blue alternate to create scan rhythm without implying interactivity; each card holds a serif title above concise DM Sans evidence copy.
 
 ### Documentary Media
 
-The hero keeps its full documentary frame without an outer matte. Evidence, leadership, archive, project-card, and project-detail imagery also uses `object-fit: contain` inside a deliberate sand, cream, white, or dark field whenever the complete artifact must remain visible. Project cards use a 16:10 frame with 14px padding; the project viewer centres original project media within a padded Natural Sand field and caps it at 62vh.
+The hero uses a compact centred 16:8.9 crop without an outer matte. Evidence, leadership, archive, project-card, and project-detail imagery uses `object-fit: contain` inside a deliberate mist, haze, white, or dark field whenever the complete artifact must remain visible. Project cards use a 16:10 frame with 14px padding; the project viewer centres original project media within a padded Clear Mist field and caps it at 62vh.
 
 ### Project Card
 
-All 106 source records remain in the archive in source order; the interface does not deduplicate repeated titles or categories. Each whole-card link opens the internal project detail page in a new tab and uses a rounded 16:10 cream media field containing a locally stored static WebP preview, a clay category label, serif title, a three-line description clamp, and a quiet destination row. Local previews prevent the archive grid from depending on third-party thumbnail requests. `content-visibility` and containment keep the long grid efficient. Hover leaves the image unchanged, switches only the field to Soft Sand, and moves the arrow 3px diagonally.
+All 106 source records remain in the archive in source order; the interface does not deduplicate repeated titles or categories. Each whole-card link opens the internal project detail page in a new tab and uses a rounded 16:10 haze media field containing a locally stored static WebP preview, a blue category label, serif title, a three-line description clamp, and a quiet destination row. Local previews prevent the archive grid from depending on third-party thumbnail requests. `content-visibility` and containment keep the long grid efficient. Hover leaves the image unchanged, switches only the field to Soft Blue, and moves the arrow 3px diagonally.
 
 ### Project Viewer
 
-The standalone viewer uses a 28px white panel on Viewer Paper, a padded Natural Sand field with the record's original `project.media` shown full-frame, a Soft Sand category pill with clay text, a Crimson Text title, and a readable description capped near 72 characters per line. Archive-only static WebP `previewMedia` never replaces detail media. Show one **Open Project** action only when the archive supplies a verified direct destination. When no verified link exists, hide the action group and show the neutral availability note; never substitute the media URL or generic AESIR homepage as a project action.
+The standalone viewer uses a 28px white panel on Viewer Paper, a padded Clear Mist field with the record's original `project.media` shown full-frame, a Soft Blue category pill with blue text, a Crimson Text title, and a readable description capped near 72 characters per line. Archive-only static WebP `previewMedia` never replaces detail media. Show one **Open Project** action only when the archive supplies a verified direct destination. When no verified link exists, hide the action group and show the neutral availability note; never substitute the media URL or generic AESIR homepage as a project action.
 
 ## Do's and Don'ts
 
 ### Do:
 
 - **Do** let monumental serif statements and paper-white space establish confidence.
-- **Do** use clay for purposeful action and the sand–cream–warm-clay range for tonal evidence groups.
+- **Do** use blue for purposeful action and the mist–haze–sky range for tonal evidence groups.
 - **Do** keep the header opaque, full-width, and geometrically stable while it sticks.
 - **Do** let the hero image stand on its own without an enclosing colored frame.
 - **Do** serve local static WebP previews in archive cards and preserve original media in project detail.

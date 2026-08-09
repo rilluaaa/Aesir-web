@@ -218,12 +218,12 @@ const newPhotos = [
   {
     src: "assets/aesir/ai-for-all.webp",
     alt: "AESIR and programme partners at the AI for All Inclusive Programme",
-    label: "Inclusive AI deployment",
+    label: '"AI for All" Inclusive Programme',
   },
   {
     src: "assets/aesir/hkict-2021.webp",
     alt: "Ernest HS CHAN and participants at the 2021 Hong Kong ICT Awards ceremony",
-    label: "Technology ecosystem",
+    label: "Hong Kong ICT Awards",
   },
   {
     src: "assets/aesir/business-practicum.webp",
@@ -234,8 +234,6 @@ const newPhotos = [
 
 const archivePhotos = [
   ["assets/founders/community-program.jpg", "Community counselling and virtual reality programme partners"],
-  ["assets/founders/hkict-awards.jpeg", "AESIR archive photograph at a technology event"],
-  ["assets/founders/business-practicum.jpeg", "Business practicum participants"],
   ["assets/founders/aesir-presentation.jpeg", "AESIR presentation moment"],
   ["assets/founders/founder-speaking.jpeg", "Founder speaking at an applied training session"],
   ["assets/founders/aesir-detail.jpg", "AESIR founders archive photograph"],
@@ -386,7 +384,7 @@ function Hero() {
       <div className="proof-ribbon" aria-label="AESIR credentials">
         <span>Global award-winning social technology</span>
         <span>Top 500 global tech startup</span>
-        <span>XR · AI · HCI · Public policy</span>
+        <span>AR · VR · AI · Public policy</span>
         <span>APAC field deployment</span>
       </div>
     </section>
@@ -397,7 +395,7 @@ function Thesis() {
   return (
     <section className="thesis-section section-shell" data-enter>
       <div className="thesis-heading">
-        <h2>Immersive Pragmatism</h2>
+        <h2>Immersive pragmatism in practice.</h2>
         <p>Research earns its value when it survives contact with the real world.</p>
       </div>
       <blockquote>
@@ -447,7 +445,7 @@ function ResearchAreas() {
   return (
     <section id="research" className="research-section section-shell">
       <div className="section-intro" data-enter>
-        <h2>Three areas shaping human-centred technology.</h2>
+        <h2>Three research areas shaping human-centred technology.</h2>
         <p>
           Each area connects a structural challenge with a research agenda and a pathway to field deployment.
         </p>
@@ -569,7 +567,7 @@ function Method() {
     <section id="method" className="method-section">
       <div className="section-shell" data-enter>
         <div className="method-heading">
-          <h2>From evidence to public value.</h2>
+          <h2>From evidence to measurable public value.</h2>
           <p>
             AESIR treats research, engineering, validation, and adoption as one continuous practice.
           </p>
@@ -592,7 +590,7 @@ function Evidence() {
   return (
     <section id="evidence" className="evidence-section section-shell">
       <div className="section-intro" data-enter>
-        <h2>Programs, networks, and applied outputs.</h2>
+        <h2>Applied programmes, partnerships, and public outcomes.</h2>
         <p>
           A growing body of participatory research, cross-sector collaboration, and deployment-led learning.
         </p>
@@ -658,7 +656,7 @@ function ProjectLibrary() {
     <section id="projects" className="projects-section section-shell">
       <div className="projects-heading" data-enter>
         <div>
-          <h2>Field deployments.</h2>
+          <h2>Field deployments across technology and society.</h2>
           <p>
             An applied archive spanning immersive learning, simulation, digital health,
             motion technology, public education, and digital infrastructure. Open any record
@@ -756,7 +754,7 @@ function Leadership() {
       <div className="section-shell">
         <div className="leadership-intro" data-enter>
           <div>
-            <h2>Built by practitioners.</h2>
+            <h2>Built by practitioners across sectors and communities.</h2>
             <p>
               AESIR was built by social entrepreneurs working across AI, AR, VR, gaming,
               inclusive education, public innovation, and human-centred technology. The practice
@@ -809,7 +807,7 @@ function Contact() {
   return (
     <section className="contact-section">
       <div className="section-shell contact-layout" data-enter>
-        <h2>Build the next evidence-led deployment with AESIR.</h2>
+        <h2>Build with AESIR.</h2>
         <div>
           <p>
             Connect with AESIR about research collaboration, applied innovation, institutional
