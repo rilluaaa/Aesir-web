@@ -270,6 +270,27 @@ const scrollToSection = (id) => {
   document.getElementById(id)?.scrollIntoView({ behavior, block: "start" });
 };
 
+const selectHeroVideoSource = () => {
+  if (typeof window === "undefined" || window.innerWidth < 1024) {
+    return "assets/aesir/cognitive-hero-mobile-60fps.mp4";
+  }
+
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const constrainedNetwork = connection?.saveData
+    || ["slow-2g", "2g", "3g"].includes(connection?.effectiveType);
+  const processingCores = navigator.hardwareConcurrency || 8;
+  const deviceMemory = navigator.deviceMemory || 8;
+  const needsHighDensitySource = window.devicePixelRatio >= 1.25 || window.innerWidth >= 1440;
+  const supportsHighResolution = !constrainedNetwork
+    && processingCores >= 8
+    && deviceMemory >= 8
+    && needsHighDensitySource;
+
+  return supportsHighResolution
+    ? "assets/aesir/cognitive-hero-1440p-60fps-all-i.mp4"
+    : "assets/aesir/cognitive-hero-1080p-60fps-all-i.mp4";
+};
+
 function useTypewriter(text, speed = 38, startDelay = 600) {
   const [displayed, setDisplayed] = useState("");
   const [done, setDone] = useState(false);
@@ -308,6 +329,26 @@ function useTypewriter(text, speed = 38, startDelay = 600) {
 
 function BackgroundVideo() {
   const videoRef = useRef(null);
+  const [videoSource, setVideoSource] = useState(selectHeroVideoSource);
+
+  useEffect(() => {
+    let resizeTimer = 0;
+    const updateVideoSource = () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        setVideoSource((currentSource) => {
+          const nextSource = selectHeroVideoSource();
+          return currentSource === nextSource ? currentSource : nextSource;
+        });
+      }, 180);
+    };
+
+    window.addEventListener("resize", updateVideoSource, { passive: true });
+    return () => {
+      window.removeEventListener("resize", updateVideoSource);
+      window.clearTimeout(resizeTimer);
+    };
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -324,8 +365,10 @@ function BackgroundVideo() {
     const onMouseMove = (event) => {
       if (window.innerWidth < 1024 || !Number.isFinite(video.duration)) return;
       const pointerProgress = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
+      const pointerDirection = (pointerProgress - 0.5) * 2;
       const finalFrame = Math.max(0, video.duration - frameDuration);
-      targetTime = pointerProgress * finalFrame;
+      const neutralTime = finalFrame / 2;
+      targetTime = neutralTime + pointerDirection * neutralTime;
     };
 
     const onLoadedMetadata = () => {
@@ -343,8 +386,8 @@ function BackgroundVideo() {
       ) {
         const elapsed = lastUpdate ? timestamp - lastUpdate : frameInterval;
         const distance = targetTime - renderedTime;
-        if (Math.abs(distance) > frameDuration / 2 && !video.seeking) {
-          const smoothing = 1 - Math.exp(-elapsed / 34);
+        if (Math.abs(distance) > frameDuration / 2) {
+          const smoothing = 1 - Math.exp(-elapsed / 42);
           renderedTime += distance * smoothing;
           video.currentTime = renderedTime;
         }
@@ -403,26 +446,12 @@ function BackgroundVideo() {
     <div className="hero-video" aria-hidden="true">
       <video
         ref={videoRef}
+        src={asset(videoSource)}
         muted
         playsInline
         preload="auto"
         poster={asset("assets/aesir/cognitive-hero-poster.webp")}
-      >
-        <source
-          media="(min-width: 1440px), (min-width: 1024px) and (min-resolution: 1.5dppx)"
-          src={asset("assets/aesir/cognitive-hero-1440p-60fps-all-i.mp4")}
-          type="video/mp4"
-        />
-        <source
-          media="(min-width: 1024px)"
-          src={asset("assets/aesir/cognitive-hero-1080p-60fps-all-i.mp4")}
-          type="video/mp4"
-        />
-        <source
-          src={asset("assets/aesir/cognitive-hero-mobile-60fps.mp4")}
-          type="video/mp4"
-        />
-      </video>
+      />
     </div>
   );
 }
@@ -514,11 +543,6 @@ function Hero() {
             AR, VR, AI, and public-policy research into measurable public value.
           </p>
 
-          <div className="hero-proofline hero-reveal hero-reveal--later" aria-label="AESIR credentials">
-            <span>Global social technology</span>
-            <span>AR · VR · AI · Public policy</span>
-            <span>APAC field deployment</span>
-          </div>
         </div>
       </div>
     </section>
@@ -537,9 +561,10 @@ function HeroEvidence() {
           loading="lazy"
           decoding="async"
         />
-        <figcaption>
-          <span>Applied knowledge in public</span>
-          <span>Research · Industry · Policy</span>
+        <figcaption aria-label="AESIR credentials">
+          <span>Global social technology</span>
+          <span>AR · VR · AI · Public policy</span>
+          <span>APAC field deployment</span>
         </figcaption>
       </figure>
     </section>
