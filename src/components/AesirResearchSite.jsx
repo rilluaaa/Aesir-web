@@ -317,17 +317,19 @@ function BackgroundVideo() {
     let renderedTime = 0;
     let animationFrame = 0;
     let lastUpdate = 0;
-    const frameInterval = 1000 / 120;
+    const frameRate = 60;
+    const frameDuration = 1 / frameRate;
+    const frameInterval = 1000 / frameRate;
 
     const onMouseMove = (event) => {
       if (window.innerWidth < 1024 || !Number.isFinite(video.duration)) return;
       const pointerProgress = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
-      const finalFrame = Math.max(0, video.duration - 1 / 120);
+      const finalFrame = Math.max(0, video.duration - frameDuration);
       targetTime = pointerProgress * finalFrame;
     };
 
     const onLoadedMetadata = () => {
-      const neutralTime = Math.max(0, (video.duration - 1 / 120) / 2);
+      const neutralTime = Math.max(0, (video.duration - frameDuration) / 2);
       targetTime = neutralTime;
       renderedTime = neutralTime;
       video.currentTime = neutralTime;
@@ -341,7 +343,7 @@ function BackgroundVideo() {
       ) {
         const elapsed = lastUpdate ? timestamp - lastUpdate : frameInterval;
         const distance = targetTime - renderedTime;
-        if (Math.abs(distance) > 1 / 240 && !video.seeking) {
+        if (Math.abs(distance) > frameDuration / 2 && !video.seeking) {
           const smoothing = 1 - Math.exp(-elapsed / 34);
           renderedTime += distance * smoothing;
           video.currentTime = renderedTime;
@@ -408,12 +410,12 @@ function BackgroundVideo() {
       >
         <source
           media="(min-width: 1440px), (min-width: 1024px) and (min-resolution: 1.5dppx)"
-          src={asset("assets/aesir/cognitive-hero-1440p-120fps.mp4")}
+          src={asset("assets/aesir/cognitive-hero-1440p-60fps-all-i.mp4")}
           type="video/mp4"
         />
         <source
           media="(min-width: 1024px)"
-          src={asset("assets/aesir/cognitive-hero-120fps.mp4")}
+          src={asset("assets/aesir/cognitive-hero-1080p-60fps-all-i.mp4")}
           type="video/mp4"
         />
         <source
@@ -766,7 +768,6 @@ function Evidence() {
             loading="lazy"
             decoding="async"
           />
-          <figcaption>Research moves through institutions, partners, and communities.</figcaption>
         </figure>
       </div>
 
@@ -812,9 +813,9 @@ function ProjectLibrary() {
         <div>
           <h2>Field deployments across technology and society.</h2>
           <p>
-            An applied archive spanning immersive learning, simulation, digital health,
-            motion technology, public education, and digital infrastructure. Open any record
-            for its purpose, context, and verified public destination when one is available.
+            AESIR has delivered a wide range of work across immersive learning, simulation,
+            digital health, motion technology, public education, and digital infrastructure,
+            applying research and technology to different sectors, communities, and real-world needs.
           </p>
         </div>
         <div className="project-search">
