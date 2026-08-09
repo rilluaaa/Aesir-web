@@ -1191,6 +1191,11 @@
   letter-spacing: -0.025em;
 }
 
+.contact-word-with {
+  font-kerning: none;
+  letter-spacing: 0.01em;
+}
+
 .contact-layout > div {
   display: flex;
   flex-direction: column;
