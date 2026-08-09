@@ -1121,7 +1121,7 @@ function Contact() {
   return (
     <section className="contact-section">
       <div className="section-shell contact-layout" data-enter>
-        <h2>Build with AESIR.</h2>
+        <h2>Build with AESIR</h2>
         <div>
           <p>
             Connect with AESIR about research collaboration, applied innovation, institutional
