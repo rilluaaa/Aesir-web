@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -7,6 +7,7 @@ import {
   Search,
 } from "lucide-react";
 import { aesirProjects } from "../projectPortfolio";
+import { CinematicIntro } from "./cinematic/CinematicIntro";
 import "./AesirResearchSite.css";
 
 const contactUrl = "https://aesir.hk/#contactus";
@@ -425,7 +426,7 @@ function BackgroundVideo() {
   );
 }
 
-function Header() {
+function Header({ revealed = true }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -446,7 +447,7 @@ function Header() {
   };
 
   return (
-    <header className={`aesir-header${open ? " is-menu-open" : ""}`}>
+    <header className={`aesir-header${open ? " is-menu-open" : ""}${revealed ? " is-revealed" : " is-cinematic-hidden"}`}>
       <div className="aesir-header__inner">
         <button className="brand-button" onClick={() => navigate("top")} aria-label="Back to top">
           <img src={asset("assets/aesir/aesir-wordmark.webp")} alt="AESIR" />
@@ -973,6 +974,17 @@ function Contact() {
 }
 
 export function AesirResearchSite() {
+  const [heroReady, setHeroReady] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(false);
+
+  const prepareHero = useCallback(() => {
+    setHeroReady(true);
+  }, []);
+
+  const updateHeaderVisibility = useCallback((visible) => {
+    setHeaderVisible(visible);
+  }, []);
+
   useEffect(() => {
     window.history.scrollRestoration = "manual";
 
@@ -995,9 +1007,14 @@ export function AesirResearchSite() {
 
   return (
     <div className="aesir-site">
-      <Header />
+      <Header revealed={headerVisible} />
       <main>
-        <Hero />
+        <CinematicIntro
+          logoSrc={asset("assets/aesir/aesir-wordmark.webp")}
+          onPrepareHome={prepareHero}
+          onHeaderVisibility={updateHeaderVisibility}
+        />
+        {heroReady ? <Hero /> : <div className="hero-placeholder" aria-hidden="true" />}
         <HeroEvidence />
         <Thesis />
         <ResearchAreas />
