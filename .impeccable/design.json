@@ -1,106 +1,169 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-06T16:14:28Z",
-  "title": "Design System: AESIR Research",
+  "generatedAt": "2026-08-09T10:26:13.680Z",
+  "title": "Design System: AESIR Research Launch",
   "extensions": {
     "colorMeta": {
-      "primary": { "role": "primary", "displayName": "Applied Intelligence Blue", "canonical": "#2f637d", "tonalRamp": ["#10232c", "#193846", "#224d60", "#2f637d", "#5f8699", "#91aab6", "#c1d0d7", "#edf3f5"] },
-      "primary-deep": { "role": "primary", "displayName": "Deep Research Blue", "canonical": "#224a60", "tonalRamp": ["#0d1d26", "#142d3a", "#1b3d4f", "#224a60", "#567687", "#8ba1ad", "#becbd1", "#edf2f4"] },
-      "ink": { "role": "neutral", "displayName": "Evidence Ink", "canonical": "#182832", "tonalRamp": ["#0c1419", "#182832", "#34434c", "#59666e", "#818b91", "#aab0b4", "#d3d6d8", "#f3f4f5"] },
-      "ink-soft": { "role": "neutral", "displayName": "Soft Record Ink", "canonical": "#4c606d", "tonalRamp": ["#182026", "#2b3841", "#4c606d", "#6c7c86", "#8e9aa2", "#b0b8bd", "#d3d7da", "#f4f5f6"] },
-      "steel": { "role": "neutral", "displayName": "Institutional Steel", "canonical": "#566d7c", "tonalRamp": ["#1a2329", "#30404b", "#566d7c", "#738793", "#93a2ab", "#b4bec4", "#d5dbde", "#f5f7f8"] },
-      "mist": { "role": "neutral", "displayName": "Research Mist", "canonical": "#edf3f5", "tonalRamp": ["#1e292e", "#3a4a51", "#596b73", "#7c8e96", "#a0b0b7", "#c4d1d6", "#dde7ea", "#edf3f5"] },
-      "wash": { "role": "neutral", "displayName": "Archive Wash", "canonical": "#f6f8f9", "tonalRamp": ["#21292d", "#414c51", "#657176", "#8a959a", "#b0b9bd", "#d5dbde", "#e9edef", "#f6f8f9"] },
-      "line": { "role": "neutral", "displayName": "Measured Rule", "canonical": "#d6e0e4", "tonalRamp": ["#202a2e", "#3b4a50", "#586b73", "#788b93", "#9aabb2", "#bccbd1", "#d6e0e4", "#f1f5f6"] },
-      "white": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff", "tonalRamp": ["#262626", "#484848", "#6b6b6b", "#909090", "#b5b5b5", "#d8d8d8", "#eeeeee", "#ffffff"] }
+      "ink": { "role": "neutral", "displayName": "Editorial Ink", "canonical": "#151713", "tonalRamp": ["oklch(15% 0.008 128.9)", "oklch(26% 0.008 128.9)", "oklch(38% 0.008 128.9)", "oklch(50% 0.008 128.9)", "oklch(62% 0.008 128.9)", "oklch(74% 0.008 128.9)", "oklch(86% 0.008 128.9)", "oklch(95% 0.008 128.9)"] },
+      "muted": { "role": "neutral", "displayName": "Quiet Record", "canonical": "#6f746c", "tonalRamp": ["oklch(15% 0.014 133.5)", "oklch(26% 0.014 133.5)", "oklch(38% 0.014 133.5)", "oklch(50% 0.014 133.5)", "oklch(62% 0.014 133.5)", "oklch(74% 0.014 133.5)", "oklch(86% 0.014 133.5)", "oklch(95% 0.014 133.5)"] },
+      "moss": { "role": "primary", "displayName": "Launch Moss", "canonical": "#50651b", "tonalRamp": ["oklch(15% 0.102 124)", "oklch(26% 0.102 124)", "oklch(38% 0.102 124)", "oklch(50% 0.102 124)", "oklch(62% 0.102 124)", "oklch(74% 0.102 124)", "oklch(86% 0.102 124)", "oklch(95% 0.102 124)"] },
+      "moss-dark": { "role": "primary", "displayName": "Deep Moss", "canonical": "#394b11", "tonalRamp": ["oklch(15% 0.084 125.3)", "oklch(26% 0.084 125.3)", "oklch(38% 0.084 125.3)", "oklch(50% 0.084 125.3)", "oklch(62% 0.084 125.3)", "oklch(74% 0.084 125.3)", "oklch(86% 0.084 125.3)", "oklch(95% 0.084 125.3)"] },
+      "sage": { "role": "secondary", "displayName": "Documentary Sage", "canonical": "#9faa8d", "tonalRamp": ["oklch(15% 0.043 124.4)", "oklch(26% 0.043 124.4)", "oklch(38% 0.043 124.4)", "oklch(50% 0.043 124.4)", "oklch(62% 0.043 124.4)", "oklch(74% 0.043 124.4)", "oklch(86% 0.043 124.4)", "oklch(95% 0.043 124.4)"] },
+      "sage-soft": { "role": "secondary", "displayName": "Pale Sage", "canonical": "#e8eed4", "tonalRamp": ["oklch(15% 0.035 117.6)", "oklch(26% 0.035 117.6)", "oklch(38% 0.035 117.6)", "oklch(50% 0.035 117.6)", "oklch(62% 0.035 117.6)", "oklch(74% 0.035 117.6)", "oklch(86% 0.035 117.6)", "oklch(95% 0.035 117.6)"] },
+      "cream": { "role": "secondary", "displayName": "Archive Cream", "canonical": "#f4f0e6", "tonalRamp": ["oklch(15% 0.014 88.7)", "oklch(26% 0.014 88.7)", "oklch(38% 0.014 88.7)", "oklch(50% 0.014 88.7)", "oklch(62% 0.014 88.7)", "oklch(74% 0.014 88.7)", "oklch(86% 0.014 88.7)", "oklch(95% 0.014 88.7)"] },
+      "warm-panel": { "role": "secondary", "displayName": "Warm Research Clay", "canonical": "#eadfd4", "tonalRamp": ["oklch(15% 0.019 67.6)", "oklch(26% 0.019 67.6)", "oklch(38% 0.019 67.6)", "oklch(50% 0.019 67.6)", "oklch(62% 0.019 67.6)", "oklch(74% 0.019 67.6)", "oklch(86% 0.019 67.6)", "oklch(95% 0.019 67.6)"] },
+      "paper-soft": { "role": "neutral", "displayName": "Soft Paper", "canonical": "#f7f7f3", "tonalRamp": ["oklch(15% 0.005 106.5)", "oklch(26% 0.005 106.5)", "oklch(38% 0.005 106.5)", "oklch(50% 0.005 106.5)", "oklch(62% 0.005 106.5)", "oklch(74% 0.005 106.5)", "oklch(86% 0.005 106.5)", "oklch(95% 0.005 106.5)"] },
+      "paper-tint": { "role": "neutral", "displayName": "Paper Tint", "canonical": "#fafaf7", "tonalRamp": ["oklch(15% 0.004 106.5)", "oklch(26% 0.004 106.5)", "oklch(38% 0.004 106.5)", "oklch(50% 0.004 106.5)", "oklch(62% 0.004 106.5)", "oklch(74% 0.004 106.5)", "oklch(86% 0.004 106.5)", "oklch(95% 0.004 106.5)"] },
+      "line": { "role": "neutral", "displayName": "Measured Rule", "canonical": "#e4e5df", "tonalRamp": ["oklch(15% 0.008 114.2)", "oklch(26% 0.008 114.2)", "oklch(38% 0.008 114.2)", "oklch(50% 0.008 114.2)", "oklch(62% 0.008 114.2)", "oklch(74% 0.008 114.2)", "oklch(86% 0.008 114.2)", "oklch(95% 0.008 114.2)"] },
+      "white": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff", "tonalRamp": ["oklch(15% 0 0)", "oklch(26% 0 0)", "oklch(38% 0 0)", "oklch(50% 0 0)", "oklch(62% 0 0)", "oklch(74% 0 0)", "oklch(86% 0 0)", "oklch(95% 0 0)"] }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Hero statement only." },
-      "headline": { "displayName": "Headline", "purpose": "Major section theses and contact statements." },
-      "title": { "displayName": "Title", "purpose": "Research, project, and leadership titles." },
-      "body": { "displayName": "Body", "purpose": "Research explanations and evidence copy." },
-      "label": { "displayName": "Label", "purpose": "Navigation, categories, proof points, and metadata." }
+      "display": { "displayName": "Launch Display", "purpose": "Centred hero and final launch statements." },
+      "headline": { "displayName": "Editorial Headline", "purpose": "Section theses and major transitions." },
+      "title": { "displayName": "Research Title", "purpose": "Research tabs and component-level serif titles." },
+      "body": { "displayName": "Evidence Body", "purpose": "Explanations, evidence, controls, and field records." },
+      "label": { "displayName": "Record Label", "purpose": "Categories, proof points, captions, and definition terms." },
+      "case-heading": { "displayName": "Case Group Heading", "purpose": "Introduces the applied-case group at clamp(2.5rem, 4vw, 4rem)." },
+      "case-title": { "displayName": "Case Title", "purpose": "Research-case card titles at 1.7rem and line-height 1.06." },
+      "case-body": { "displayName": "Case Body", "purpose": "Research-case evidence copy at 0.86rem and line-height 1.68." }
     },
     "shadows": [
-      { "name": "institutional-image", "value": "0 24px 70px rgba(39, 62, 74, 0.13)", "purpose": "Hero imagery and temporary mobile navigation." },
-      { "name": "interactive-card", "value": "0 18px 38px rgba(42, 65, 78, 0.12)", "purpose": "Clickable project-card hover only." }
+      { "name": "launch-object", "value": "0 18px 54px rgba(36, 42, 29, 0.1)", "purpose": "Shared soft elevation token for raised editorial objects." },
+      { "name": "hero-media", "value": "0 22px 65px rgba(25, 31, 17, 0.24)", "purpose": "Framed documentary image inside the sage hero enclosure." },
+      { "name": "compact-navigation", "value": "0 10px 34px rgba(21, 23, 19, 0.08)", "purpose": "Floating desktop navigation after scrolling." },
+      { "name": "temporary-menu", "value": "0 20px 40px rgba(21, 23, 19, 0.08)", "purpose": "Open mobile navigation only." },
+      { "name": "viewer-panel", "value": "0 24px 70px rgba(36, 42, 29, 0.1)", "purpose": "Single focused media object in the standalone project viewer." }
     ],
     "motion": [
-      { "name": "state", "value": "180ms ease", "purpose": "Color, transform, and control state feedback." },
-      { "name": "panel", "value": "440ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Selected research panel entrance." },
-      { "name": "hero-entry", "value": "650ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "One-time hero reveal when motion is permitted." }
+      { "name": "micro", "value": "160ms ease", "purpose": "Arrow movement and link underlines." },
+      { "name": "control", "value": "180ms ease", "purpose": "Moss action color and two-pixel lift." },
+      { "name": "research-panel", "value": "320ms ease", "purpose": "Selected research panel fade-and-rise." },
+      { "name": "hero-entry", "value": "540ms cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "One-time hero reveal when motion is permitted." },
+      { "name": "reduced-motion", "value": "0.01ms", "purpose": "Effective removal of transitions and animation under prefers-reduced-motion." }
     ],
     "breakpoints": [
-      { "name": "wide-to-compact", "value": "1100px" },
-      { "name": "tablet", "value": "820px" },
-      { "name": "mobile", "value": "560px" }
+      { "name": "content-compact", "value": "1100px" },
+      { "name": "navigation-mobile", "value": "900px" },
+      { "name": "single-column", "value": "640px" }
     ]
   },
   "components": [
     {
-      "name": "Primary Button",
+      "name": "Primary Action",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Primary contact and archive action.",
-      "html": "<button class=\"ds-btn-primary\">EXPLORE THE RESEARCH <span aria-hidden=\"true\">↓</span></button>",
-      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;border:0;border-radius:0;background:#182832;color:#fff;padding:12px 18px;font:700 .78rem 'Source Sans 3',sans-serif;cursor:pointer;transition:background-color 180ms ease,transform 180ms ease}.ds-btn-primary:hover{background:#2f637d;transform:translateY(-2px)}.ds-btn-primary:focus-visible{outline:3px solid rgba(47,99,125,.34);outline-offset:3px}"
+      "description": "Moss launch action for research exploration and contact.",
+      "html": "<button class=\"ds-primary-action\">Explore the research <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 5v14M19 12l-7 7-7-7\"/></svg></button>",
+      "css": ".ds-primary-action{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:206px;height:50px;border:0;border-radius:999px;background:var(--launch-moss,#50651b);padding:0 25px;color:#fff;font:600 .85rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;cursor:pointer;transition:background 180ms ease,transform 180ms ease}.ds-primary-action svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ds-primary-action:hover{background:var(--launch-moss-dark,#394b11);transform:translateY(-2px)}.ds-primary-action:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}.ds-primary-action:active{transform:translateY(0)}"
     },
     {
-      "name": "Text Action",
-      "kind": "button",
-      "description": "Quiet secondary link for contact and evidence paths.",
-      "html": "<a class=\"ds-text-action\" href=\"#\">CONTACT AESIR <span aria-hidden=\"true\">↗</span></a>",
-      "css": ".ds-text-action{display:inline-flex;align-items:center;gap:8px;border-bottom:1px solid currentColor;padding:11px 0 7px;color:#224a60;text-decoration:none;font:700 .83rem 'Source Sans 3',sans-serif;transition:color 180ms ease}.ds-text-action:hover{color:#2f637d}.ds-text-action:focus-visible{outline:3px solid rgba(47,99,125,.34);outline-offset:3px}"
+      "name": "Compact Navigation",
+      "kind": "nav",
+      "description": "Floating desktop navigation state revealed after the hero begins to scroll.",
+      "html": "<nav class=\"ds-launch-nav\" aria-label=\"Primary navigation\"><button>Research</button><button>Method</button><button>Evidence</button><button>Projects</button><button>Leadership</button></nav>",
+      "css": ".ds-launch-nav{display:flex;width:530px;height:60px;align-items:center;justify-content:center;gap:28px;border:1px solid rgba(21,23,19,.06);border-radius:999px;background:rgba(244,244,240,.92);box-shadow:0 10px 34px rgba(21,23,19,.08);backdrop-filter:blur(16px)}.ds-launch-nav button{position:relative;border:0;background:transparent;padding:12px 0;color:var(--launch-ink,#151713);font:600 .82rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;cursor:pointer}.ds-launch-nav button::after{position:absolute;right:0;bottom:7px;left:0;height:1px;background:currentColor;content:'';opacity:0;transform:scaleX(.3);transition:opacity 160ms ease,transform 160ms ease}.ds-launch-nav button:hover::after,.ds-launch-nav button:focus-visible::after{opacity:1;transform:scaleX(1)}.ds-launch-nav button:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}.ds-launch-nav button:active{color:var(--launch-moss-dark,#394b11)}"
     },
     {
-      "name": "Research Tab",
+      "name": "Method Card",
+      "kind": "card",
+      "refersTo": "method-card",
+      "description": "Independent process card with a monumental moss sequence number.",
+      "html": "<article class=\"ds-method-card\"><span>01</span><h3>Research</h3><p>Frame a human problem with scientific, market, and policy context.</p></article>",
+      "css": ".ds-method-card{min-height:360px;border-radius:16px;background:#fff;padding:28px 28px 38px;color:var(--launch-ink,#151713)}.ds-method-card>span{display:block;color:var(--launch-moss,#50651b);font:400 clamp(5rem,8vw,7.8rem)/.9 'Crimson Text',Georgia,serif;letter-spacing:-.06em}.ds-method-card h3{margin:74px 0 0;font:400 2rem/1.05 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-method-card p{margin:16px 0 0;color:var(--launch-muted,#6f746c);font:400 .87rem/1.65 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-method-card:nth-child(even){background:var(--launch-sage-soft,#e8eed4)}"
+    },
+    {
+      "name": "Output Card",
+      "kind": "card",
+      "refersTo": "output-card",
+      "description": "Compact independent evidence card in the applied-output stack.",
+      "html": "<article class=\"ds-output-card\"><h3>Health and rehabilitation</h3><p>Mixed-reality rehearsal, care support, preventive games, and assistive learning tools.</p></article>",
+      "css": ".ds-output-card{border-radius:16px;background:#f7f7f3;padding:24px;color:var(--launch-ink,#151713)}.ds-output-card h3{margin:0;font:400 1.6rem/1.1 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-output-card p{margin:12px 0 0;color:var(--launch-muted,#6f746c);font:400 .85rem/1.65 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-output-card:nth-child(even){background:var(--launch-sage-soft,#e8eed4)}"
+    },
+    {
+      "name": "Selected Research Tab",
       "kind": "custom",
-      "description": "Square selector for the three research areas.",
-      "html": "<button class=\"ds-research-tab is-active\"><strong>Society 5.0</strong><span>Human-Centric Cyber-Physical Frameworks</span></button>",
-      "css": ".ds-research-tab{display:block;width:100%;min-height:168px;border:0;border-right:1px solid #d6e0e4;border-radius:0;background:#fff;padding:28px;color:#182832;text-align:left;cursor:pointer;transition:background-color 180ms ease,color 180ms ease}.ds-research-tab strong{display:block;font:670 2rem/1 Archivo,sans-serif;letter-spacing:-.03em}.ds-research-tab span{display:block;max-width:310px;margin-top:18px;color:#4c606d;font:650 .78rem/1.45 'Source Sans 3',sans-serif}.ds-research-tab:hover{background:#f6f8f9}.ds-research-tab.is-active{background:#edf3f5;color:#224a60}.ds-research-tab:focus-visible{outline:3px solid rgba(47,99,125,.34);outline-offset:-3px}"
+      "refersTo": "research-tab-active",
+      "description": "Active independent card in the three-part tonal research selector.",
+      "html": "<button class=\"ds-research-tab\" role=\"tab\" aria-selected=\"true\"><strong>Society 5.0</strong><span>Human-Centric Cyber-Physical Frameworks</span></button>",
+      "css": ".ds-research-tab{display:block;width:100%;min-height:154px;border:0;border-radius:16px;background:var(--launch-moss,#50651b);padding:27px 28px;color:#fff;text-align:left;cursor:pointer;transition:color 180ms ease,background 180ms ease}.ds-research-tab strong{display:block;font:400 1.8rem/1.05 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-research-tab span{display:block;margin-top:18px;font:400 .78rem/1.45 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-research-tab:hover{background:var(--launch-moss-dark,#394b11)}.ds-research-tab:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}.ds-research-tab:active{background:#2f3f0d}"
     },
     {
       "name": "Research Tag",
       "kind": "chip",
       "refersTo": "research-tag",
-      "description": "Descriptive, non-actionable topic label.",
-      "html": "<span class=\"ds-research-tag\">ACTIVE AGEING</span>",
-      "css": ".ds-research-tag{display:inline-block;border:1px solid #bdccd3;border-radius:999px;background:rgba(255,255,255,.56);padding:8px 11px;color:#375464;font:700 .7rem/1.2 'Source Sans 3',sans-serif}"
-    },
-    {
-      "name": "Project Card",
-      "kind": "card",
-      "description": "Actionable field-deployment record with documentary media.",
-      "html": "<a class=\"ds-project-card\" href=\"#\"><div class=\"ds-project-media\"></div><div class=\"ds-project-copy\"><span>AR &amp; MOTION / IMMERSIVE LEARNING</span><h3>Happy Kingdom AR Playbook</h3><div>VIEW PROJECT <b aria-hidden=\"true\">↗</b></div></div></a>",
-      "css": ".ds-project-card{display:flex;max-width:360px;flex-direction:column;border:1px solid #d6e0e4;border-radius:0;background:#fff;color:#182832;text-decoration:none;transition:background-color 180ms ease,transform 180ms ease,box-shadow 180ms ease}.ds-project-media{aspect-ratio:16/10;background:linear-gradient(135deg,#dfe7ea,#edf3f5)}.ds-project-copy{display:flex;min-height:210px;flex-direction:column;padding:24px}.ds-project-copy>span{color:#657985;font:750 .7rem/1.4 'Source Sans 3',sans-serif}.ds-project-copy h3{margin:22px 0 32px;font:650 1.46rem/1.12 Archivo,sans-serif;letter-spacing:-.03em}.ds-project-copy div{display:flex;justify-content:space-between;margin-top:auto;border-top:1px solid #d6e0e4;padding-top:16px;color:#224a60;font:750 .76rem 'Source Sans 3',sans-serif}.ds-project-card:hover{transform:translateY(-4px);background:#f6f8f9;box-shadow:0 18px 38px rgba(42,65,78,.12)}.ds-project-card:focus-visible{outline:3px solid rgba(47,99,125,.34);outline-offset:3px}"
+      "description": "Compact non-actionable taxonomy label inside a research panel.",
+      "html": "<span class=\"ds-research-tag\">Smart Cities</span>",
+      "css": ".ds-research-tag{display:inline-flex;border:1px solid rgba(80,101,27,.22);border-radius:999px;background:transparent;padding:9px 13px;color:var(--launch-moss-dark,#394b11);font:600 .72rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}"
     },
     {
       "name": "Project Search",
       "kind": "input",
-      "description": "Quiet underline field for filtering the archive.",
-      "html": "<label class=\"ds-search\"><span>SEARCH PROJECTS</span><input type=\"search\" placeholder=\"Search projects\"></label>",
-      "css": ".ds-search{display:flex;flex-direction:column;gap:8px;border-bottom:1px solid #9badb6;padding:0 0 12px;color:#61737d;font:700 .72rem 'Source Sans 3',sans-serif}.ds-search input{width:100%;border:0;outline:0;background:transparent;padding:0;color:#182832;font:400 1rem 'Source Sans 3',sans-serif}.ds-search input::placeholder{color:#596d78;opacity:1}.ds-search:focus-within{border-color:#2f637d;box-shadow:0 2px 0 #2f637d}"
+      "refersTo": "search-field",
+      "description": "Pill search field for filtering the complete archive.",
+      "html": "<label class=\"ds-project-search\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><span class=\"ds-search-label\">Search projects</span><input type=\"search\" placeholder=\"Search the archive\"></label>",
+      "css": ".ds-project-search{display:flex;align-items:center;gap:11px;border:1px solid var(--launch-line,#e4e5df);border-radius:999px;background:#fafaf7;padding:13px 18px;color:var(--launch-muted,#6f746c)}.ds-project-search svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.ds-search-label{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.ds-project-search input{width:100%;border:0;outline:0;background:transparent;color:var(--launch-ink,#151713);font:400 .86rem/1.5 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-project-search input::placeholder{color:var(--launch-muted,#6f746c);opacity:1}.ds-project-search:focus-within{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}"
     },
     {
-      "name": "Mobile Menu Button",
-      "kind": "nav",
-      "description": "Square 44px control for the compact navigation.",
-      "html": "<button class=\"ds-menu\" aria-label=\"Open navigation\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" aria-hidden=\"true\"><path d=\"M4 7h16M4 12h16M4 17h16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"square\"/></svg></button>",
-      "css": ".ds-menu{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid #d6e0e4;border-radius:0;background:#fff;color:#182832;cursor:pointer}.ds-menu:hover{background:#edf3f5;color:#224a60}.ds-menu:focus-visible{outline:3px solid rgba(47,99,125,.34);outline-offset:3px}"
+      "name": "Project Card",
+      "kind": "card",
+      "description": "One of all 106 source records, using previewMedia only in the archive grid and preserving original media for detail.",
+      "html": "<a class=\"ds-project-card\" href=\"#\" target=\"_blank\" rel=\"noreferrer\"><div class=\"ds-project-media\"><span>FULL-FRAME PREVIEW MEDIA</span></div><div class=\"ds-project-copy\"><span>IMMERSIVE LEARNING</span><h3>Happy Kingdom AR Playbook</h3><p>An augmented-reality playbook supporting emotional literacy through guided stories and practice.</p><div>View project <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7 17 17 7M7 7h10v10\"/></svg></div></div></a>",
+      "css": ".ds-project-card{display:block;width:min(100%,360px);color:var(--launch-ink,#151713);text-decoration:none}.ds-project-media{display:grid;aspect-ratio:16/10;place-items:center;overflow:hidden;border-radius:22px;background:var(--launch-cream,#f4f0e6);padding:14px;color:var(--launch-muted,#6f746c);font:600 .7rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-project-copy{padding:18px 2px 0}.ds-project-copy>span{color:var(--launch-moss,#50651b);font:700 .7rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-project-card h3{margin:8px 0 0;font:400 1.45rem/1.12 'Crimson Text',Georgia,serif;letter-spacing:-.045em}.ds-project-copy>p{display:-webkit-box;margin:12px 0 0;overflow:hidden;color:var(--launch-muted,#6f746c);font:400 .82rem/1.6 'DM Sans',ui-sans-serif,system-ui,sans-serif;-webkit-box-orient:vertical;-webkit-line-clamp:3}.ds-project-copy>div{display:flex;align-items:center;gap:6px;margin-top:15px;color:var(--launch-muted,#6f746c);font:600 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-project-copy svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform 160ms ease}.ds-project-card:hover .ds-project-media{background:var(--launch-sage-soft,#e8eed4)}.ds-project-card:hover svg{transform:translate(3px,-3px)}.ds-project-card:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}"
+    },
+    {
+      "name": "Research Panel",
+      "kind": "custom",
+      "refersTo": "research-panel",
+      "description": "Tonal research sheet with independent detail and case-study cards.",
+      "html": "<article class=\"ds-research-panel\"><div class=\"ds-research-lead\"><h3>Society 5.0</h3><p>Designing public infrastructure that expands human agency, access, and quality of life.</p></div><dl class=\"ds-research-details\"><div><dt>Context</dt><dd>Human wellbeing leads the system.</dd></div><div><dt>Research focus</dt><dd>Spatial computing and inclusive infrastructure.</dd></div></dl><div class=\"ds-research-cases\"><article><h4>Smart Sports</h4><p>Preventive exercise designed around participation.</p></article><article><h4>Emergency training</h4><p>Safe, repeatable mixed-reality rehearsal.</p></article><article><h4>Public learning</h4><p>Place and data translated into accessible tools.</p></article></div></article>",
+      "css": ".ds-research-panel{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:74px;border-radius:30px;background:var(--launch-sage-soft,#e8eed4);padding:clamp(34px,5vw,68px);color:var(--launch-ink,#151713)}.ds-research-panel h3{margin:0;font:400 clamp(3.4rem,5vw,5.5rem)/.95 'Crimson Text',Georgia,serif;letter-spacing:-.045em}.ds-research-lead>p{margin:24px 0 0;font:400 1.06rem/1.7 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-research-details{display:grid;gap:12px;margin:0}.ds-research-details>div{display:grid;grid-template-columns:135px 1fr;gap:24px;border-radius:16px;background:rgba(255,255,255,.62);padding:20px}.ds-research-details dt{color:var(--launch-moss-dark,#394b11);font:700 .69rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}.ds-research-details dd{margin:0;color:#5b6156;font:400 .92rem/1.7 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-research-cases{display:grid;grid-column:1/-1;grid-template-columns:repeat(3,1fr);gap:12px}.ds-research-cases article{min-height:210px;border-radius:16px;background:var(--launch-moss,#50651b);padding:26px;color:#fff}.ds-research-cases article:nth-child(2){background:var(--launch-sage,#9faa8d);color:var(--launch-ink,#151713)}.ds-research-cases article:nth-child(3){background:#fff;color:var(--launch-ink,#151713)}.ds-research-cases h4{margin:0;font:400 1.7rem/1.06 'Crimson Text',Georgia,serif}.ds-research-cases p{margin:20px 0 0;font:400 .86rem/1.68 'DM Sans',ui-sans-serif,system-ui,sans-serif}@media(max-width:640px){.ds-research-panel{grid-template-columns:1fr;gap:40px;border-radius:22px;padding:28px 23px}.ds-research-details>div,.ds-research-cases{grid-template-columns:1fr}.ds-research-cases article{min-height:0}}"
+    },
+    {
+      "name": "Project Viewer Panel",
+      "kind": "card",
+      "description": "Contained original project.media with one verified action or a neutral unavailable state; previewMedia is grid-only.",
+      "html": "<article class=\"ds-viewer-panel\"><div class=\"ds-viewer-media\">FULL-FRAME PROJECT MEDIA</div><div class=\"ds-viewer-content\"><span class=\"ds-viewer-category\">IMMERSIVE LEARNING</span><h3>Happy Kingdom AR Playbook</h3><p class=\"ds-viewer-description\">An augmented-reality playbook supporting emotional literacy through guided stories and practice.</p><div class=\"ds-viewer-actions\"><a class=\"ds-viewer-primary\" href=\"#\">Open Project</a></div><p class=\"ds-viewer-unavailable\" hidden>No verified public project link is currently available.</p></div></article>",
+      "css": ".ds-viewer-panel{overflow:hidden;border-radius:28px;background:#fff;box-shadow:0 24px 70px rgba(36,42,29,.1);color:var(--launch-ink,#151713)}.ds-viewer-media{display:grid;min-height:280px;place-items:center;background:var(--launch-sage,#9faa8d);padding:clamp(16px,3vw,32px);color:#fff;font:600 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-viewer-content{padding:28px}.ds-viewer-category{display:inline-flex;border:1px solid var(--launch-line,#e4e5df);border-radius:999px;background:var(--launch-sage-soft,#e8eed4);padding:7px 11px;color:var(--launch-moss,#50651b);font:700 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-panel h3{margin:16px 0 0;font:400 clamp(2rem,5vw,3.5rem)/1 'Crimson Text',Georgia,serif;letter-spacing:-.04em}.ds-viewer-description{max-width:72ch;margin:24px 0 0;color:var(--launch-muted,#6f746c);font:400 1rem/1.75 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-actions{display:flex;margin-top:24px}.ds-viewer-primary{display:inline-flex;min-height:44px;align-items:center;justify-content:center;border-radius:999px;background:var(--launch-moss,#50651b);padding:11px 16px;color:#fff;font:700 .85rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;text-decoration:none;transition:transform 160ms ease,background 160ms ease}.ds-viewer-primary:hover{background:var(--launch-moss-dark,#394b11);transform:translateY(-2px)}.ds-viewer-primary:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}.ds-viewer-primary:active{transform:translateY(0)}.ds-viewer-unavailable{margin:24px 0 0;color:var(--launch-muted,#6f746c);font:400 .81rem/1.5 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-unavailable[hidden]{display:none}"
     }
   ],
   "narrative": {
-    "northStar": "The Clinical Innovation Atlas",
-    "overview": "AESIR should feel like a precise, public-facing research atlas: rigorous enough for investors and institutions, but understandable to readers outside a laboratory. White space, documentary photography, structured rules, and restrained steel-blue surfaces make the work feel evidenced rather than advertised. The visual system is editorial, image-forward, and deliberately calm.",
-    "keyCharacteristics": ["White-led and evidence-first.", "Large editorial typography with compact institutional labels.", "Real people, programs, and project media as proof.", "Square, ruled surfaces with rare pill-shaped research tags.", "Interaction feedback only on controls and media that can actually be opened."],
-    "rules": [
-      { "name": "The White-Led Rule", "body": "Paper White remains the dominant field; blue surfaces are reserved for evidence hierarchy and action, never ambient decoration.", "section": "colors" },
-      { "name": "The Light Panel Rule", "body": "Expanded research content uses Research Mist or a neighboring light neutral, never a dark interruption.", "section": "colors" },
-      { "name": "The Two-Voice Rule", "body": "Archivo speaks for claims and structure; Source Sans 3 explains, labels, and records evidence.", "section": "typography" },
-      { "name": "The Atlas Grid Rule", "body": "Grids use shared borders and aligned rules so separate items read as one research record, not a collection of floating tiles.", "section": "layout" },
-      { "name": "The Flat-Until-Action Rule", "body": "Static evidence stays flat. Elevation signals an available action or a temporary overlay.", "section": "elevation" }
+    "northStar": "The Research Launch",
+    "overview": "AESIR presents applied R&D with the clarity and anticipation of a modern product launch, but the evidence remains the product. Monumental serif claims, generous paper-white space, restrained moss actions, and documentary media make complex research feel consequential, human, and ready for public scrutiny.\n\nThe system is editorial before it is technological. Moss, sage, cream, warm clay, and soft paper group complex evidence into independent tonal cards; shared spacing keeps the system coherent without turning it into a dashboard. Softly rounded, full-frame media keeps real people and field work at the centre. Motion and elevation are brief signals of navigation or action, never ambient spectacle.",
+    "keyCharacteristics": [
+      "Monumental Crimson Text statements on a paper-white field.",
+      "DM Sans interface copy with compact, disciplined metadata.",
+      "Moss actions with sage, cream, warm-clay, and soft-paper evidence groups.",
+      "Independent 16px cards paced by consistent 12px gaps.",
+      "Rounded, full-frame documentary media that avoids accidental cropping.",
+      "Restrained elevation reserved for navigation, media, and real actions.",
+      "Responsive compositions that preserve the launch-like pacing on small screens."
     ],
-    "dos": ["Do lead with white space, large research claims, and verifiable documentary media.", "Do use light tonal changes and one-pixel rules to organise dense evidence.", "Do preserve keyboard focus, reduced-motion handling, and 44px or larger action targets.", "Do reserve lift, glow, and state changes for controls or media that open something.", "Do keep the supplied AESIR wordmark on its original white rectangular background."],
-    "donts": ["Don't reintroduce meteor, particle, starfield, canvas, or decorative WebGL backgrounds.", "Don't make expanded research panels dark.", "Don't turn the site into a generic gradient-heavy technology landing page.", "Don't apply hover elevation to non-interactive boxes, labels, or evidence rows.", "Don't fabricate publications, awards, people, or outcome metrics to fill a visual gap."]
+    "rules": [
+      { "name": "The Paper Leads Rule", "body": "Paper White is the dominant atmosphere; sage and cream organise evidence while moss remains a scarce action signal.", "section": "colors" },
+      { "name": "The Botanical Restraint Rule", "body": "Stay inside the moss-and-sage family; do not add competing saturated technology colors.", "section": "colors" },
+      { "name": "The Two-Voice Rule", "body": "Crimson Text announces claims and sequence; DM Sans navigates, explains, and records evidence.", "section": "typography" },
+      { "name": "The Monument Rule", "body": "Display type earns its scale through short, balanced statements; never stretch dense copy into the display role.", "section": "typography" },
+      { "name": "The Tonal Grouping Rule", "body": "Use aligned 16px cards and consistent 12px gaps for research, method, and output sets; use rules for section boundaries and compact metadata, not as the only grouping device.", "section": "layout" },
+      { "name": "The Elevation as Event Rule", "body": "Shadows mark a framed media object, navigation state, or temporary overlay; ordinary evidence remains on the paper plane.", "section": "elevation" },
+      { "name": "The Radius Hierarchy Rule", "body": "Larger evidence containers receive larger radii; pills belong to actions, search, filters, and compact navigation, not long-form content.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do let monumental serif statements and paper-white space establish confidence.",
+      "Do use moss for purposeful action and the sage–cream–warm-clay range for tonal evidence groups.",
+      "Do keep research, method, and output items as independent 16px cards with consistent 12px gaps.",
+      "Do preserve complete evidence and archive imagery with contained full-frame presentation where cropping would remove information.",
+      "Do preserve visible focus, 44px or larger targets, reduced-motion behavior, and verified-link gating.",
+      "Do keep the supplied AESIR wordmark on its original white rectangular background."
+    ],
+    "donts": [
+      "Don't reintroduce meteor, particle, starfield, canvas, or decorative WebGL effects.",
+      "Don't make expanded research content dark or detach it from the selector.",
+      "Don't substitute gradients, glass cards, or generic technology-dashboard styling for the paper-led editorial world.",
+      "Don't shadow every rounded container or lift static evidence.",
+      "Don't crop documentary or project media merely to force uniform card geometry.",
+      "Don't deduplicate the 106-record source archive or use preview thumbnails as project-detail media.",
+      "Don't expose an external project action unless its destination has been verified; never fall back to media or the AESIR homepage.",
+      "Don't fabricate awards, publications, people, or outcomes to strengthen a layout."
+    ]
   }
 }

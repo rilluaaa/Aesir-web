@@ -37,4 +37,4 @@ Pushes to `main` automatically build and deploy through `.github/workflows/deplo
 
 ## Notes
 
-The project uses local public assets for founder photography and 106 project-media records. The applied-work film loads `hls.js` only when the video is near the viewport. The previous Three.js meteor background is no longer mounted or included in the production bundle.
+The project uses local public assets for founder photography and the complete project-media archive. The consolidated AESIR research page does not mount the former applied-work film or the previous Three.js meteor background.

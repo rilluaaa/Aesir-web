@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowDown,
   ArrowRight,
@@ -12,8 +12,6 @@ import { aesirProjects } from "../projectPortfolio";
 import "./AesirResearchSite.css";
 
 const contactUrl = "https://aesir.hk/#contactus";
-const videoStream =
-  "https://stream.mux.com/tLkHO1qZoaaQOUeVWo8hEBeGQfySP02EPS02BmnNFyXys.m3u8";
 const asset = (path) =>
   /^https?:\/\//.test(path)
     ? path
@@ -31,8 +29,25 @@ const researchAreas = [
     focus:
       "Spatial computing, edge and decentralised data networks, active-ageing systems, zero-barrier public spaces, and remote mental-wellness ecosystems.",
     application:
-      "Frameworks that reduce long-term elderly and disability-care burdens while helping cities move from Industry 4.0 efficiency to human-centred inclusion.",
+      "Frameworks that reduce long-term elderly and disability-care burdens while helping cities move from Industry 4.0 efficiency to human-centred inclusion. AESIR's applied base includes preventive exercise, public-health simulation, citizen science, and sustainability learning.",
     tags: ["Smart Cities", "Active Ageing", "Public Infrastructure"],
+    cases: [
+      {
+        title: "Smart Sports for active ageing",
+        description:
+          "AESIR has applied gerontechnology and sports training to preventive exercise for older adults. The work turns movement into an approachable, repeatable experience designed around participation rather than clinical intimidation.",
+      },
+      {
+        title: "Mixed-reality emergency training",
+        description:
+          "A HoloLens AED and CPR simulation created with VTC lets learners practise when and how to use an automated external defibrillator inside a safe, repeatable scenario before facing a real emergency.",
+      },
+      {
+        title: "Public learning through place and data",
+        description:
+          "Tree Portal uses a citizen-science approach to make urban-tree knowledge accessible, while environmental web games translate university research on ocean protection, water filtration, and sustainability into public learning tools.",
+      },
+    ],
   },
   {
     id: "ax",
@@ -45,8 +60,25 @@ const researchAreas = [
     focus:
       "Cognitive ergonomics, neural-feedback models, micro-expression analytics, cognitive-load measurement, focus economies, and emotional burnout during AI interaction.",
     application:
-      "Evidence-led transformation blueprints that combine deep data analytics with behavioural modelling for scalable, responsible human-AI collaboration.",
+      "Evidence-led transformation blueprints that combine data, behavioural modelling, and interaction design for scalable human-AI collaboration. AESIR's current portfolio provides a practical test bed across camera vision, language learning, conversational interfaces, and motion analytics.",
     tags: ["Cognitive Ergonomics", "Human-AI Work", "Behavioural Analytics"],
+    cases: [
+      {
+        title: "Camera-based movement intelligence",
+        description:
+          "Web-based sports and exercise prototypes use pose, skeleton, hand, and depth tracking to interpret movement without physical controllers. These systems explore how AI feedback can stay immediate, legible, and motivating.",
+      },
+      {
+        title: "AI-assisted language learning",
+        description:
+          "VocabGO combines camera object recognition with AR labelling, while the archive also spans Cantonese speech training and language-learning assistants—an applied foundation for studying attention, feedback, and cognitive load.",
+      },
+      {
+        title: "Conversational service interfaces",
+        description:
+          "AESIR has prototyped automated social-media conversations across common messaging channels, examining how organisations can respond faster while keeping tone, escalation, and human oversight visible.",
+      },
+    ],
   },
   {
     id: "neuro",
@@ -59,27 +91,44 @@ const researchAreas = [
     focus:
       "Cognitive spatial data, kinetic tracking, eye-gaze variation, personalised gamified protocols, assistive-technology economics, and clinical learning environments.",
     application:
-      "Research grounded in AESIR's AR positive-psychology playbook, NGO and hospital networks, validated field data, and an established clinical-grade testing sandbox.",
+      "Research grounded in AESIR's AR positive-psychology playbook and years of co-design with educators, therapists, NGOs, and care practitioners. The portfolio offers real settings in which personalised, non-pharmacological learning and wellbeing experiences can be tested.",
     tags: ["Neurodiversity", "Clinical Learning", "Assistive Technology"],
+    cases: [
+      {
+        title: "Happy Kingdom AR Playbook",
+        description:
+          "Hong Kong's AR positive-psychology playbook was developed to support children's emotional literacy through guided stories, play, and at-home practice. The programme was recognised as a funded social-innovation venture.",
+      },
+      {
+        title: "My Living Diary",
+        description:
+          "Co-designed with an autism counsellor, speech therapist, and occupational therapist, this AR life-education package helps children practise everyday vocabulary, communication, and independent-living situations.",
+      },
+      {
+        title: "VR speech and social rehearsal",
+        description:
+          "A Unity-based VR speech centre simulates public-speaking and social-interaction situations for children with autism, with audio recording that gives practitioners a repeatable way to review participation and progress.",
+      },
+    ],
   },
 ];
 
 const outputs = [
   {
-    title: "HKFYG Research",
-    description: "Convenor and participatory research experience connecting young people, practitioners, and applied social inquiry.",
+    title: "Social innovation ventures",
+    description: "Happy Kingdom and Smart Sports moved inclusive learning and active-ageing concepts into funded, public-facing programmes rather than stopping at presentation-stage prototypes.",
   },
   {
-    title: "CatalystNow",
-    description: "Global impact-network participation linking local deployment knowledge with wider systems-change practice.",
+    title: "Health and rehabilitation",
+    description: "Work ranges from mixed-reality AED rehearsal and asthma-care support to elderly fall-prevention games, VR mental-wellness programmes, and assistive learning tools.",
   },
   {
-    title: "HKBU Collaboration",
-    description: "Academic and innovation collaboration supporting knowledge exchange, experimentation, and applied learning.",
+    title: "Education and public knowledge",
+    description: "Projects with universities and education partners translate research into AR comics, sustainability games, language resources, heritage experiences, and interactive classroom platforms.",
   },
   {
-    title: "Applied Program Design",
-    description: "XR, AI, HCI, and public-value programs shaped for adoption beyond the laboratory.",
+    title: "Cross-sector deployment",
+    description: "AESIR has built experiences for NGOs, schools, universities, public bodies, healthcare teams, and commercial partners—testing the same technology under very different user and governance conditions.",
   },
 ];
 
@@ -135,9 +184,11 @@ const projectViewer = (project) => {
   const params = new URLSearchParams({
     title: project.title,
     category: project.category,
+    description: project.description,
     media: asset(project.media),
-    link: project.link,
   });
+
+  if (project.link) params.set("link", project.link);
 
   return `${asset("project-viewer.html")}?${params.toString()}`;
 };
@@ -178,6 +229,14 @@ function useEntryMotion() {
 
 function Header() {
   const [open, setOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
+
+  useEffect(() => {
+    const updateHeader = () => setCompact(window.scrollY > 180);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    return () => window.removeEventListener("scroll", updateHeader);
+  }, []);
 
   const navigate = (id) => {
     scrollToSection(id);
@@ -185,7 +244,7 @@ function Header() {
   };
 
   return (
-    <header className="aesir-header">
+    <header className={`aesir-header${compact ? " is-compact" : ""}${open ? " is-menu-open" : ""}`}>
       <div className="aesir-header__inner">
         <button className="brand-button" onClick={() => navigate("top")} aria-label="Back to top">
           <img src={asset("assets/aesir/aesir-wordmark.webp")} alt="AESIR" />
@@ -232,7 +291,7 @@ function Hero() {
   return (
     <section id="top" className="hero-section">
       <div className="hero-copy" data-enter>
-        <h1>Evidence-based immersive intelligence for a more inclusive future.</h1>
+        <h1>Evidence for an inclusive future.</h1>
         <p>
           AESIR bridges human neurodiversity and frontier technology, translating industrial-grade XR,
           AI, and HCI research into measurable public value across APAC and global smart cities.
@@ -337,7 +396,7 @@ function ResearchAreas() {
         id="research-panel"
         role="tabpanel"
         aria-labelledby={`research-tab-${researchAreas.findIndex((area) => area.id === activeId)}`}
-        className="research-panel"
+        className={`research-panel research-panel--${activeArea.id}`}
         key={activeArea.id}
       >
         <div className="research-panel__lead">
@@ -361,6 +420,20 @@ function ResearchAreas() {
             <dd>{activeArea.application}</dd>
           </div>
         </dl>
+        <div className="research-cases">
+          <div className="research-cases__heading">
+            <h4>What AESIR has already built</h4>
+            <p>Selected deployments that demonstrate the practical foundation behind this research direction.</p>
+          </div>
+          <div className="research-cases__grid">
+            {activeArea.cases.map((item) => (
+              <article key={item.title}>
+                <h5>{item.title}</h5>
+                <p>{item.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
       </article>
     </section>
   );
@@ -400,13 +473,24 @@ function Evidence() {
         </p>
       </div>
 
-      <div className="output-list" data-enter>
-        {outputs.map((output) => (
-          <article key={output.title}>
-            <h3>{output.title}</h3>
-            <p>{output.description}</p>
-          </article>
-        ))}
+      <div className="evidence-story" data-enter>
+        <div className="output-list">
+          {outputs.map((output) => (
+            <article key={output.title}>
+              <h3>{output.title}</h3>
+              <p>{output.description}</p>
+            </article>
+          ))}
+        </div>
+        <figure className="evidence-image">
+          <img
+            src={asset("assets/aesir/ai-for-all.webp")}
+            alt="AESIR and programme partners at an inclusive AI deployment"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>Research moves through institutions, partners, and communities.</figcaption>
+        </figure>
       </div>
 
       <div className="evidence-statement" data-enter>
@@ -419,69 +503,6 @@ function Evidence() {
         </a>
       </div>
     </section>
-  );
-}
-
-function ResearchFilm() {
-  const containerRef = useRef(null);
-  const videoRef = useRef(null);
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    const node = containerRef.current;
-    if (!node) return undefined;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setEnabled(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "300px" },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!enabled || !videoRef.current) return undefined;
-    const video = videoRef.current;
-    let hls;
-    let cancelled = false;
-
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = videoStream;
-    } else {
-      import("hls.js").then(({ default: Hls }) => {
-        if (cancelled || !Hls.isSupported()) return;
-        hls = new Hls({ enableWorker: true, startLevel: 1 });
-        hls.loadSource(videoStream);
-        hls.attachMedia(video);
-      });
-    }
-
-    return () => {
-      cancelled = true;
-      hls?.destroy();
-    };
-  }, [enabled]);
-
-  return (
-    <figure ref={containerRef} className="research-film" data-enter>
-      <video
-        ref={videoRef}
-        controls
-        muted
-        playsInline
-        preload="none"
-        poster={asset("assets/aesir/ernest-reading.webp")}
-        aria-label="AESIR applied immersive intelligence film"
-      />
-      <figcaption>
-        <strong>Applied work in motion</strong>
-        <span>AESIR programs, public education, and immersive deployment.</span>
-      </figcaption>
-    </figure>
   );
 }
 
@@ -498,7 +519,8 @@ function ProjectLibrary() {
     const normalizedQuery = query.trim().toLowerCase();
     return aesirProjects.filter((project) => {
       const categoryMatches = category === "All" || project.category === category;
-      const queryMatches = !normalizedQuery || `${project.title} ${project.category}`.toLowerCase().includes(normalizedQuery);
+      const queryMatches = !normalizedQuery
+        || `${project.title} ${project.category} ${project.description}`.toLowerCase().includes(normalizedQuery);
       return categoryMatches && queryMatches;
     });
   }, [category, query]);
@@ -513,8 +535,9 @@ function ProjectLibrary() {
         <div>
           <h2>Field deployments.</h2>
           <p>
-            The complete AESIR archive: 106 projects across immersive learning, simulation,
-            digital health, motion technology, and public infrastructure.
+            An applied archive spanning immersive learning, simulation, digital health,
+            motion technology, public education, and digital infrastructure. Open any record
+            for its purpose, context, and verified public destination when one is available.
           </p>
         </div>
         <div className="project-search">
@@ -535,19 +558,28 @@ function ProjectLibrary() {
           <button
             key={item}
             className={category === item ? "is-active" : ""}
-            onClick={() => setCategory(item)}
+            aria-pressed={category === item}
+            onClick={() => {
+              setCategory(item);
+              setQuery("");
+              setExpanded(false);
+            }}
           >
             {item}
           </button>
         ))}
       </div>
 
-      <p className="project-count" aria-live="polite">
-        Showing {visibleProjects.length} of {filteredProjects.length} projects
+      <p className="project-context" aria-live="polite">
+        {query
+          ? `Showing matches for “${query}”${category === "All" ? "" : ` in ${category}`}`
+          : category === "All"
+            ? "Browsing the complete field archive"
+            : `Browsing ${category}`}
       </p>
 
       {visibleProjects.length > 0 ? (
-        <div className="project-grid">
+        <div id="project-grid" className="project-grid" key={`${category}-${query}`}>
           {visibleProjects.map((project) => (
             <a
               key={`${project.number}-${project.title}-${project.media}`}
@@ -558,7 +590,7 @@ function ProjectLibrary() {
             >
               <div className="project-card__media">
                 <img
-                  src={asset(project.media)}
+                  src={asset(project.previewMedia ?? project.media)}
                   alt={`${project.title} project media`}
                   loading="lazy"
                   decoding="async"
@@ -567,6 +599,7 @@ function ProjectLibrary() {
               <div className="project-card__content">
                 <span>{project.category}</span>
                 <h3>{project.title}</h3>
+                <p>{project.description}</p>
                 <div>View project <ArrowUpRight size={16} aria-hidden="true" /></div>
               </div>
             </a>
@@ -577,8 +610,14 @@ function ProjectLibrary() {
       )}
 
       {filteredProjects.length > 12 && (
-        <button className="archive-toggle" onClick={() => setExpanded((value) => !value)}>
-          {expanded ? "Show selected projects" : `Show all ${filteredProjects.length} projects`}
+        <button
+          type="button"
+          className="archive-toggle"
+          aria-expanded={expanded}
+          aria-controls="project-grid"
+          onClick={() => setExpanded((value) => !value)}
+        >
+          {expanded ? "Show fewer projects" : "Explore more projects"}
           <ChevronDown className={expanded ? "is-rotated" : ""} size={18} aria-hidden="true" />
         </button>
       )}
@@ -594,13 +633,11 @@ function Leadership() {
           <div>
             <h2>Built by practitioners.</h2>
             <p>
-              Ernest HS CHAN and Zero Yun Wa WONG are social entrepreneurs working across AI, AR,
-              VR, gaming, inclusive education, public innovation, and human-centred technology.
+              AESIR was built by social entrepreneurs working across AI, AR, VR, gaming,
+              inclusive education, public innovation, and human-centred technology. The practice
+              connects technical delivery with the realities of classrooms, clinics, community
+              organisations, public programmes, and cross-sector partnerships.
             </p>
-          </div>
-          <div className="founder-names">
-            <p><strong>Ernest HS CHAN</strong><span>Co-Founder</span></p>
-            <p><strong>Zero Yun Wa WONG</strong><span>Co-Founder</span></p>
           </div>
         </div>
 
@@ -694,7 +731,6 @@ export function AesirResearchSite() {
         <ResearchAreas />
         <Method />
         <Evidence />
-        <div className="film-shell section-shell"><ResearchFilm /></div>
         <ProjectLibrary />
         <Leadership />
         <Contact />
