@@ -9,6 +9,8 @@ import {
 import { aesirProjects } from "../projectPortfolio";
 import "./AesirResearchSite.css";
 
+const InteractiveResearchFigure = React.lazy(() => import("./InteractiveResearchFigure"));
+
 const contactUrl = "https://aesir.hk/#contactus";
 const asset = (path) =>
   /^https?:\/\//.test(path)
@@ -307,120 +309,32 @@ function useTypewriter(text, speed = 38, startDelay = 600) {
 }
 
 function BackgroundVideo() {
-  const videoRef = useRef(null);
+  const poster = asset("assets/aesir/cognitive-hero-poster.webp");
+  const frameBase = asset("assets/aesir/cognitive-frames/");
+  const [interactive, setInteractive] = useState(() => (
+    typeof window !== "undefined"
+    && window.matchMedia("(min-width: 901px) and (hover: hover) and (pointer: fine)").matches
+  ));
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return undefined;
-
-    let targetTime = 0;
-    let renderedTime = 0;
-    let animationFrame = 0;
-    let lastUpdate = 0;
-    const frameInterval = 1000 / 120;
-
-    const onMouseMove = (event) => {
-      if (window.innerWidth < 1024 || !Number.isFinite(video.duration)) return;
-      const pointerProgress = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
-      const finalFrame = Math.max(0, video.duration - 1 / 120);
-      targetTime = pointerProgress * finalFrame;
-    };
-
-    const onLoadedMetadata = () => {
-      const neutralTime = Math.max(0, (video.duration - 1 / 120) / 2);
-      targetTime = neutralTime;
-      renderedTime = neutralTime;
-      video.currentTime = neutralTime;
-    };
-
-    const renderScrub = (timestamp) => {
-      animationFrame = 0;
-      if (
-        Number.isFinite(video.duration)
-        && timestamp - lastUpdate >= frameInterval
-      ) {
-        const elapsed = lastUpdate ? timestamp - lastUpdate : frameInterval;
-        const distance = targetTime - renderedTime;
-        if (Math.abs(distance) > 1 / 240 && !video.seeking) {
-          const smoothing = 1 - Math.exp(-elapsed / 34);
-          renderedTime += distance * smoothing;
-          video.currentTime = renderedTime;
-        }
-        lastUpdate = timestamp;
-      }
-      if (window.innerWidth >= 1024) {
-        animationFrame = window.requestAnimationFrame(renderScrub);
-      }
-    };
-
-    const updateScrubLoop = () => {
-      if (window.innerWidth >= 1024 && !animationFrame) {
-        animationFrame = window.requestAnimationFrame(renderScrub);
-      } else if (window.innerWidth < 1024 && animationFrame) {
-        window.cancelAnimationFrame(animationFrame);
-        animationFrame = 0;
-      }
-    };
-
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("resize", updateScrubLoop, { passive: true });
-    video.addEventListener("loadedmetadata", onLoadedMetadata);
-    updateScrubLoop();
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("resize", updateScrubLoop);
-      video.removeEventListener("loadedmetadata", onLoadedMetadata);
-      window.cancelAnimationFrame(animationFrame);
-    };
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return undefined;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-    const updatePlayback = () => {
-      const shouldPlay = window.innerWidth < 1024 && !reducedMotion.matches;
-      video.autoplay = shouldPlay;
-      video.loop = shouldPlay;
-      if (shouldPlay) video.play().catch(() => undefined);
-      else video.pause();
-    };
-
-    updatePlayback();
-    window.addEventListener("resize", updatePlayback);
-    reducedMotion.addEventListener("change", updatePlayback);
-    return () => {
-      window.removeEventListener("resize", updatePlayback);
-      reducedMotion.removeEventListener("change", updatePlayback);
-    };
+    const media = window.matchMedia("(min-width: 901px) and (hover: hover) and (pointer: fine)");
+    const updateMode = () => setInteractive(media.matches);
+    updateMode();
+    media.addEventListener("change", updateMode);
+    return () => media.removeEventListener("change", updateMode);
   }, []);
 
   return (
     <div className="hero-video" aria-hidden="true">
-      <video
-        ref={videoRef}
-        muted
-        playsInline
-        preload="auto"
-        poster={asset("assets/aesir/cognitive-hero-poster.webp")}
-      >
-        <source
-          media="(min-width: 1440px), (min-width: 1024px) and (min-resolution: 1.5dppx)"
-          src={asset("assets/aesir/cognitive-hero-1440p-120fps.mp4")}
-          type="video/mp4"
-        />
-        <source
-          media="(min-width: 1024px)"
-          src={asset("assets/aesir/cognitive-hero-120fps.mp4")}
-          type="video/mp4"
-        />
-        <source
-          src={asset("assets/aesir/cognitive-hero-mobile-60fps.mp4")}
-          type="video/mp4"
-        />
-      </video>
+      {interactive ? (
+        <React.Suspense fallback={<img className="research-figure__poster" src={poster} alt="" />}>
+          <InteractiveResearchFigure frameBase={frameBase} poster={poster} />
+        </React.Suspense>
+      ) : (
+        <video autoPlay loop muted playsInline preload="metadata" poster={poster}>
+          <source src={asset("assets/aesir/cognitive-hero-mobile-60fps.mp4")} type="video/mp4" />
+        </video>
+      )}
     </div>
   );
 }
