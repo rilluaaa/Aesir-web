@@ -7,11 +7,12 @@ import {
   Search,
 } from "lucide-react";
 import {
-  HERO_VIDEO_SOURCES,
+  HERO_SOURCE_QUALITY,
   getHeroPlaybackState,
   isConstrainedNetwork,
   isHeroScrubCapable,
   mapPointerToGazeTime,
+  selectHeroSourceQuality,
   selectHeroVideoSource,
   supportsHighResolutionDecoding,
 } from "../heroVideo.js";
@@ -296,7 +297,7 @@ const getInitialHeroMode = () => {
     return {
       scrubCapable: false,
       reducedMotion: true,
-      videoSource: HERO_VIDEO_SOURCES.mobile,
+      videoSource: null,
     };
   }
 
@@ -309,9 +310,7 @@ const getInitialHeroMode = () => {
   return {
     scrubCapable,
     reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    videoSource: scrubCapable
-      ? HERO_VIDEO_SOURCES.desktop1080
-      : HERO_VIDEO_SOURCES.mobile,
+    videoSource: null,
   };
 };
 
@@ -352,6 +351,7 @@ function useTypewriter(text, speed = 38, startDelay = 600) {
 }
 
 function BackgroundVideo() {
+  const containerRef = useRef(null);
   const videoRef = useRef(null);
   const [heroMode, setHeroMode] = useState(getInitialHeroMode);
   const [readySource, setReadySource] = useState(null);
@@ -378,7 +378,7 @@ function BackgroundVideo() {
 
     const updateMode = async () => {
       const sequence = ++updateSequence;
-      const videoRect = videoRef.current?.getBoundingClientRect();
+      const videoRect = containerRef.current?.getBoundingClientRect();
       const nextScrubCapable = isHeroScrubCapable({
         viewportWidth: window.innerWidth,
         anyHover: hoverQuery.matches,
@@ -396,22 +396,26 @@ function BackgroundVideo() {
         hardwareConcurrency: navigator.hardwareConcurrency,
         deviceMemory: navigator.deviceMemory,
       };
-      const highResolutionCandidate = selectHeroVideoSource({
+      const highResolutionCandidate = selectHeroSourceQuality({
         ...sourceEnvironment,
-        supports1440p: true,
+        supports1440p: null,
       });
-      const supports1440p = highResolutionCandidate === HERO_VIDEO_SOURCES.desktop1440
+      const supports1440p = highResolutionCandidate === HERO_SOURCE_QUALITY.high
         ? await getHighResolutionDecodingSupport()
-        : false;
+        : null;
 
       if (disposed || sequence !== updateSequence) return;
 
+      const sourceQuality = selectHeroSourceQuality({
+        ...sourceEnvironment,
+        supports1440p,
+      });
       const nextMode = {
         scrubCapable: nextScrubCapable,
         reducedMotion: reducedMotionQuery.matches,
         videoSource: selectHeroVideoSource({
-          ...sourceEnvironment,
-          supports1440p,
+          quality: sourceQuality,
+          scrubCapable: nextScrubCapable,
         }),
       };
 
@@ -571,17 +575,20 @@ function BackgroundVideo() {
     <div
       className="hero-video"
       aria-hidden="true"
+      ref={containerRef}
       style={{ "--hero-poster": `url("${posterUrl}")` }}
     >
       <video
         ref={videoRef}
         className={readySource === videoSource ? "is-ready" : ""}
-        src={asset(videoSource)}
+        src={videoSource ? asset(videoSource) : undefined}
         muted
         playsInline
         preload="auto"
         poster={posterUrl}
-        onLoadedData={() => setReadySource(videoSource)}
+        onLoadedData={() => {
+          if (videoSource) setReadySource(videoSource);
+        }}
       />
     </div>
   );

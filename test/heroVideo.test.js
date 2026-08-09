@@ -3,17 +3,18 @@ import test from "node:test";
 
 import {
   HERO_GAZE_ANCHORS,
+  HERO_SOURCE_QUALITY,
   HERO_VIDEO_SOURCES,
   getHeroPlaybackState,
   isConstrainedNetwork,
   isHeroScrubCapable,
   mapPointerToGazeTime,
+  selectHeroSourceQuality,
   selectHeroVideoSource,
   supportsHighResolutionDecoding,
 } from "../src/heroVideo.js";
 
 const desktopEnvironment = {
-  scrubCapable: true,
   constrainedNetwork: false,
   renderedWidth: 1440,
   renderedHeight: 900,
@@ -30,10 +31,20 @@ test("scrub capability requires width, hover and a fine pointer", () => {
   assert.equal(isHeroScrubCapable({ viewportWidth: 1023, anyHover: true, anyFinePointer: true }), false);
 });
 
-test("touch-first devices always receive the autoplay-capable mobile source", () => {
+test("interaction mode and source quality are independent", () => {
+  const highQuality = selectHeroSourceQuality(desktopEnvironment);
+  assert.equal(highQuality, HERO_SOURCE_QUALITY.high);
   assert.equal(
-    selectHeroVideoSource({ ...desktopEnvironment, scrubCapable: false }),
+    selectHeroVideoSource({ quality: highQuality, scrubCapable: false }),
+    HERO_VIDEO_SOURCES.desktop1440,
+  );
+  assert.equal(
+    selectHeroVideoSource({ quality: HERO_SOURCE_QUALITY.standard, scrubCapable: false }),
     HERO_VIDEO_SOURCES.mobile,
+  );
+  assert.equal(
+    selectHeroVideoSource({ quality: HERO_SOURCE_QUALITY.standard, scrubCapable: true }),
+    HERO_VIDEO_SOURCES.desktop1080,
   );
   assert.deepEqual(
     getHeroPlaybackState({ scrubCapable: false, reducedMotion: false }),
@@ -54,37 +65,85 @@ test("saveData and constrained connections keep scrub desktops on 1080p", () => 
   assert.equal(isConstrainedNetwork({ saveData: false, effectiveType: "3g" }), true);
   assert.equal(isConstrainedNetwork({ saveData: false, effectiveType: "4g" }), false);
   assert.equal(
-    selectHeroVideoSource({ ...desktopEnvironment, constrainedNetwork: true }),
+    selectHeroSourceQuality({ ...desktopEnvironment, constrainedNetwork: true }),
+    HERO_SOURCE_QUALITY.standard,
+  );
+  assert.equal(
+    selectHeroVideoSource({ quality: HERO_SOURCE_QUALITY.standard, scrubCapable: true }),
     HERO_VIDEO_SOURCES.desktop1080,
   );
 });
 
-test("1440p requires physical pixels, known hardware and confirmed decoding support", () => {
-  assert.equal(selectHeroVideoSource(desktopEnvironment), HERO_VIDEO_SOURCES.desktop1440);
+test("Retina rendering selects 1440p without requiring privacy-limited hardware APIs", () => {
+  assert.equal(selectHeroSourceQuality(desktopEnvironment), HERO_SOURCE_QUALITY.high);
   assert.equal(
-    selectHeroVideoSource({ ...desktopEnvironment, renderedWidth: 1440, renderedHeight: 900, devicePixelRatio: 1 }),
-    HERO_VIDEO_SOURCES.desktop1080,
+    selectHeroSourceQuality({ ...desktopEnvironment, renderedWidth: 1440, renderedHeight: 900, devicePixelRatio: 1 }),
+    HERO_SOURCE_QUALITY.standard,
   );
   assert.equal(
-    selectHeroVideoSource({ ...desktopEnvironment, hardwareConcurrency: undefined }),
-    HERO_VIDEO_SOURCES.desktop1080,
+    selectHeroSourceQuality({ ...desktopEnvironment, hardwareConcurrency: undefined }),
+    HERO_SOURCE_QUALITY.high,
   );
   assert.equal(
-    selectHeroVideoSource({ ...desktopEnvironment, deviceMemory: undefined }),
-    HERO_VIDEO_SOURCES.desktop1080,
+    selectHeroSourceQuality({ ...desktopEnvironment, deviceMemory: undefined }),
+    HERO_SOURCE_QUALITY.high,
   );
   assert.equal(
-    selectHeroVideoSource({ ...desktopEnvironment, supports1440p: false }),
-    HERO_VIDEO_SOURCES.desktop1080,
+    selectHeroSourceQuality({
+      ...desktopEnvironment,
+      hardwareConcurrency: undefined,
+      deviceMemory: undefined,
+      supports1440p: null,
+    }),
+    HERO_SOURCE_QUALITY.high,
+  );
+  assert.equal(
+    selectHeroSourceQuality({ ...desktopEnvironment, supports1440p: false }),
+    HERO_SOURCE_QUALITY.standard,
+  );
+  assert.equal(
+    selectHeroSourceQuality({ ...desktopEnvironment, hardwareConcurrency: 4 }),
+    HERO_SOURCE_QUALITY.standard,
+  );
+  assert.equal(
+    selectHeroSourceQuality({ ...desktopEnvironment, deviceMemory: 2 }),
+    HERO_SOURCE_QUALITY.standard,
+  );
+});
+
+test("high-DPR touch tablets can receive 1440p while phones keep the mobile encode", () => {
+  const tabletQuality = selectHeroSourceQuality({
+    ...desktopEnvironment,
+    renderedWidth: 1024,
+    renderedHeight: 768,
+    devicePixelRatio: 2,
+  });
+  assert.equal(tabletQuality, HERO_SOURCE_QUALITY.high);
+  assert.equal(
+    selectHeroVideoSource({ quality: tabletQuality, scrubCapable: false }),
+    HERO_VIDEO_SOURCES.desktop1440,
+  );
+
+  const phoneQuality = selectHeroSourceQuality({
+    ...desktopEnvironment,
+    renderedWidth: 390,
+    renderedHeight: 690,
+    devicePixelRatio: 3,
+  });
+  assert.equal(phoneQuality, HERO_SOURCE_QUALITY.standard);
+  assert.equal(
+    selectHeroVideoSource({ quality: phoneQuality, scrubCapable: false }),
+    HERO_VIDEO_SOURCES.mobile,
   );
 });
 
 test("media capability probing is conservative", async () => {
-  assert.equal(await supportsHighResolutionDecoding(undefined), false);
-  assert.equal(await supportsHighResolutionDecoding({}), false);
+  assert.equal(await supportsHighResolutionDecoding(undefined), null);
+  assert.equal(await supportsHighResolutionDecoding({}), null);
   assert.equal(await supportsHighResolutionDecoding({ decodingInfo: async () => ({ supported: true, smooth: true }) }), true);
   assert.equal(await supportsHighResolutionDecoding({ decodingInfo: async () => ({ supported: true, smooth: false }) }), false);
-  assert.equal(await supportsHighResolutionDecoding({ decodingInfo: async () => { throw new Error("unsupported"); } }), false);
+  assert.equal(await supportsHighResolutionDecoding({ decodingInfo: async () => ({ supported: false, smooth: false }) }), false);
+  assert.equal(await supportsHighResolutionDecoding({ decodingInfo: async () => { throw new Error("unavailable"); } }), null);
 });
 
 test("gaze mapping uses distinct left, neutral and right anchors", () => {

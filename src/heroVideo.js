@@ -1,7 +1,12 @@
 export const HERO_VIDEO_SOURCES = Object.freeze({
-  mobile: "assets/aesir/cognitive-hero-mobile-60fps.mp4",
-  desktop1080: "assets/aesir/cognitive-hero-1080p-60fps-all-i.mp4",
-  desktop1440: "assets/aesir/cognitive-hero-1440p-60fps-all-i.mp4",
+  mobile: "assets/aesir/cognitive-hero-mobile-1080p-30fps.mp4",
+  desktop1080: "assets/aesir/cognitive-hero-1080p-60fps.mp4",
+  desktop1440: "assets/aesir/cognitive-hero-1440p-60fps.mp4",
+});
+
+export const HERO_SOURCE_QUALITY = Object.freeze({
+  standard: "standard",
+  high: "high",
 });
 
 const VERIFIED_HERO_DURATION = 3.966667;
@@ -18,7 +23,7 @@ const HIGH_RESOLUTION_DECODING_CONFIG = Object.freeze({
     contentType: 'video/mp4; codecs="avc1.640033"',
     width: 2560,
     height: 1440,
-    bitrate: 8180700,
+    bitrate: 7500000,
     framerate: 60,
   },
 });
@@ -42,8 +47,7 @@ export const getHeroPlaybackState = ({ scrubCapable, reducedMotion }) => {
   return { autoplay, loop: autoplay };
 };
 
-export const selectHeroVideoSource = ({
-  scrubCapable,
+export const selectHeroSourceQuality = ({
   constrainedNetwork,
   renderedWidth,
   renderedHeight,
@@ -52,23 +56,32 @@ export const selectHeroVideoSource = ({
   deviceMemory,
   supports1440p,
 }) => {
-  if (!scrubCapable) return HERO_VIDEO_SOURCES.mobile;
-  if (constrainedNetwork) return HERO_VIDEO_SOURCES.desktop1080;
+  if (constrainedNetwork) return HERO_SOURCE_QUALITY.standard;
 
   const pixelRatio = Number.isFinite(devicePixelRatio) && devicePixelRatio > 0
     ? devicePixelRatio
     : 1;
   const physicalWidth = Math.max(0, Number(renderedWidth) || 0) * pixelRatio;
   const physicalHeight = Math.max(0, Number(renderedHeight) || 0) * pixelRatio;
-  const needsMoreThan1080p = physicalWidth > 1920 || physicalHeight > 1080;
-  const knownHighCapacity = Number.isFinite(hardwareConcurrency)
-    && Number.isFinite(deviceMemory)
-    && hardwareConcurrency >= 8
-    && deviceMemory >= 8;
+  const isPhoneSized = Number(renderedWidth) > 0 && Number(renderedWidth) < 768;
+  const needsMoreThan1080p = !isPhoneSized
+    && (physicalWidth > 1920 || physicalHeight > 1080);
+  const explicitlyLowCapacity = (
+    Number.isFinite(hardwareConcurrency) && hardwareConcurrency < 6
+  ) || (
+    Number.isFinite(deviceMemory) && deviceMemory < 4
+  );
 
-  return needsMoreThan1080p && knownHighCapacity && supports1440p === true
-    ? HERO_VIDEO_SOURCES.desktop1440
-    : HERO_VIDEO_SOURCES.desktop1080;
+  if (!needsMoreThan1080p || explicitlyLowCapacity || supports1440p === false) {
+    return HERO_SOURCE_QUALITY.standard;
+  }
+
+  return HERO_SOURCE_QUALITY.high;
+};
+
+export const selectHeroVideoSource = ({ quality, scrubCapable }) => {
+  if (quality === HERO_SOURCE_QUALITY.high) return HERO_VIDEO_SOURCES.desktop1440;
+  return scrubCapable ? HERO_VIDEO_SOURCES.desktop1080 : HERO_VIDEO_SOURCES.mobile;
 };
 
 export const mapPointerToGazeTime = (
@@ -92,12 +105,14 @@ export const mapPointerToGazeTime = (
 };
 
 export const supportsHighResolutionDecoding = async (mediaCapabilities) => {
-  if (typeof mediaCapabilities?.decodingInfo !== "function") return false;
+  if (typeof mediaCapabilities?.decodingInfo !== "function") return null;
 
   try {
     const result = await mediaCapabilities.decodingInfo(HIGH_RESOLUTION_DECODING_CONFIG);
-    return result?.supported === true && result?.smooth === true;
+    if (result?.supported === false || result?.smooth === false) return false;
+    if (result?.supported === true && result?.smooth === true) return true;
+    return null;
   } catch {
-    return false;
+    return null;
   }
 };
