@@ -17,11 +17,11 @@ colors:
   white: "#ffffff"
 typography:
   display:
-    fontFamily: "Crimson Text, Georgia, serif"
-    fontSize: "clamp(6.25rem, 10.7vw, 10rem)"
+    fontFamily: "Inter, DM Sans, sans-serif"
+    fontSize: "clamp(3.7rem, 5.45vw, 5.75rem)"
     fontWeight: 400
-    lineHeight: 0.88
-    letterSpacing: "-0.045em"
+    lineHeight: 1.02
+    letterSpacing: "-0.04em"
   headline:
     fontFamily: "Crimson Text, Georgia, serif"
     fontSize: "clamp(4rem, 7vw, 7rem)"
@@ -82,14 +82,14 @@ components:
   sticky-header:
     backgroundColor: "{colors.white}"
     textColor: "{colors.ink}"
-    height: "96px"
+    height: "88px"
     mobileHeight: "76px"
   hero-media:
-    backgroundColor: "transparent"
-    rounded: "{rounded.hero}"
-    aspectRatio: "auto"
-    objectFit: "contain"
-    objectPosition: "center"
+    backgroundColor: "{colors.white}"
+    rounded: "0"
+    aspectRatio: "full viewport / 16:9 tablet / 1:1 mobile"
+    objectFit: "cover"
+    objectPosition: "right bottom"
   research-tab-active:
     backgroundColor: "{colors.clay}"
     textColor: "{colors.white}"
@@ -169,15 +169,15 @@ components:
 
 AESIR presents applied R&D with the clarity and anticipation of a modern product launch, but the evidence remains the product. Monumental serif claims, generous paper-white space, restrained institutional-blue actions, and documentary media make complex research feel consequential, human, and ready for public scrutiny.
 
-The system is editorial before it is technological. Cobalt, mist blue, cool paper, and white group complex evidence into independent tonal cards; shared spacing keeps the system coherent without turning it into a dashboard. The hero is a centred, cinematic editorial image without an enclosing matte, while evidence and archive media use intentional contained presentations when the complete artifact matters. Motion and elevation are brief signals of action, never ambient spectacle.
+The system is editorial before it is technological. Cobalt, mist blue, cool paper, and white group complex evidence into independent tonal cards; shared spacing keeps the system coherent without turning it into a dashboard. The landing viewport pairs an Inter typewriter thesis with a full-bleed cognitive video that visitors scrub horizontally on desktop and watch normally on mobile. Evidence and archive media remain contained when the complete artifact matters.
 
 **Key Characteristics:**
 
 - Monumental Crimson Text statements on a paper-white field.
 - DM Sans interface copy with compact, disciplined metadata.
 - Institutional-blue actions with mist, haze, and soft-paper evidence groups.
-- A full-width, opaque sticky header whose shape does not morph on scroll.
-- A compact, centred 16:8.9 hero image with direct shadow and a deliberate editorial crop.
+- A fixed, paper-white 88px desktop header with comma-paced navigation and an underlined contact action.
+- A full-viewport interactive video hero with research multi-select and a stateful route into the research panels.
 - Independent 16px cards paced by consistent 12px gaps.
 - Local static WebP archive previews that avoid third-party thumbnail requests.
 - Responsive compositions that preserve the launch-like pacing on small screens.
@@ -222,7 +222,7 @@ The palette pairs deep navy editorial ink with one institutional-blue action fam
 
 ### Hierarchy
 
-- **Display** (weight 400, fluid 6.25rem–10rem, line-height 0.88): Centred hero and final launch statements; narrow screens use the implemented 4rem–5.25rem range.
+- **Display** (Inter 400, fluid 3.7rem–5.75rem, line-height 1.02): The typewritten landing thesis. Mobile uses 3.25rem–4.35rem and preserves the authored line break.
 - **Headline** (weight 400, fluid 4rem–7rem, line-height 0.94): Section theses and major editorial transitions.
 - **Title** (weight 400, 1.8rem, tight tracking): Research tabs and component-level serif titles.
 - **Body** (weight 400, about 1rem, line-height 1.7): Explanations, evidence, and field records.
@@ -237,15 +237,15 @@ The palette pairs deep navy editorial ink with one institutional-blue action fam
 
 ## Layout
 
-Primary content uses a 1200px shell with 40px desktop gutters; the hero image is capped at 1000px and centred beneath the launch statement. Launch statements are centred and deliberately oversized, then give way to asymmetric two-column evidence layouts and three-column project grids. Within research, method, and output groups, independent cards use 12px gaps so comparison remains clear without joined table borders. Major sections use 138px vertical spacing, allowing each thesis, method, or archive set to arrive as a distinct editorial chapter.
+Primary content uses a 1200px shell with 40px desktop gutters. The hero is a separate full-viewport stage: its copy occupies the clear left half of a full-bleed video, while the cognitive figure remains on the right. Below 900px, the copy becomes a white first panel and the video follows at 16:9; below 640px the video becomes square. The remainder returns to asymmetric editorial splits and three-column project grids. Within research, method, and output groups, independent cards use 12px gaps.
 
-The header stays sticky at the top of the viewport and remains a full-width opaque surface: 96px on desktop and 76px at the mobile navigation breakpoint. It does not condense, float, blur, or change into a pill while scrolling. At 1100px the content shell tightens and project cards move to two columns. At 900px desktop navigation moves into a full-width mobile menu, major editorial splits stack, and the method grid becomes two columns. At 640px section spacing drops to 88px, projects become one column, the method becomes a horizontal snap sequence, research tabs stack, and the hero retains its centred launch rhythm.
+The header stays fixed as a full-width paper surface: 88px on desktop and 76px at the mobile navigation breakpoint. It does not condense, float, or change into a pill. At 900px desktop navigation becomes a full-screen mobile overlay and the video moves beneath the copy. At 640px section spacing drops to 88px, projects become one column, the method becomes a horizontal snap sequence, and research tabs stack.
 
 **The Tonal Grouping Rule.** Use aligned 16px cards and consistent 12px gaps for research, method, and output sets; use rules for section boundaries and compact metadata, not as the only grouping device.
 
 ## Elevation & Depth
 
-The system is restrained rather than flat. Tonal layers establish most depth. The shared launch shadow (`0 18px 54px rgba(31, 69, 105, 0.12)`) supports raised editorial objects. The hero image receives a direct cool shadow (`0 20px 52px rgba(31, 69, 105, 0.14)`) without an outer frame. The fixed-state desktop header remains on the paper plane; only the open mobile menu uses a temporary shadow. Project cards signal action through a haze-to-Soft-Blue matte change and arrow movement rather than lift.
+The system is restrained rather than flat. Tonal layers establish most depth. The hero creates depth through the black cognitive figure against a white field rather than a card or shadow. The fixed desktop header remains on the paper plane; the mobile navigation becomes a full-screen temporary layer. Project cards signal action through lift, matte change, and arrow movement.
 
 ### Shadow Vocabulary
 
@@ -292,11 +292,11 @@ Soft geometry is hierarchical. Large research panels use a 30px radius, secondar
 
 ### Navigation
 
-The desktop header is a full-width, 96px opaque white sticky surface with centred links and a blue contact pill. Its dimensions, shape, and surface do not change with scroll; there is no blur or floating compact state. At 900px it becomes a 76px bar, and a circular 44px menu control opens a ruled white list with 56px rows and a full-width blue contact action.
+The desktop header is a full-width, 88px paper-white fixed surface with centred comma-separated Inter links and an underlined contact action. At 900px it becomes a 76px bar; a three-line 44px menu control transforms into an X and opens a full-screen ruled navigation overlay with a blue contact action.
 
 ### Hero Media
 
-The hero figure is unframed: transparent, unpadded, capped at 1000px, and centred. Its image uses a 16:8.9 editorial crop, a direct 24px radius, and `object-fit: cover`, then receives the dedicated cool hero shadow. The caption sits 18px below on the page field rather than inside a coloured enclosure.
+The hero media is an unframed full-bleed MP4. Desktop mouse movement scrubs the timeline from the visitor's horizontal delta; mobile plays normally and loops. Reduced-motion visitors receive a paused frame. A white-to-transparent readability veil protects the left copy without obscuring the figure. The copy includes a typewritten thesis, concise positioning, three multi-select research pills, an animated selection status, and a direct route to Research.
 
 ### Research Selector
 
@@ -312,7 +312,7 @@ Applied outputs form a vertical 12px-spaced stack of 16px cards. Archive Paper a
 
 ### Documentary Media
 
-The hero uses a compact centred 16:8.9 crop without an outer matte. Evidence, leadership, archive, project-card, and project-detail imagery uses `object-fit: contain` inside a deliberate mist, haze, white, or dark field whenever the complete artifact must remain visible. Project cards use a 16:10 frame with 14px padding; the project viewer centres original project media within a padded Clear Mist field and caps it at 62vh.
+The hero video uses `object-fit: cover` and keeps the cognitive figure right-aligned. Evidence, leadership, archive, project-card, and project-detail imagery uses `object-fit: contain` inside a deliberate mist, haze, white, or dark field whenever the complete artifact must remain visible. Project cards use a 16:10 frame with 14px padding; the project viewer centres original project media within a padded Clear Mist field and caps it at 62vh.
 
 ### Project Card
 
@@ -328,8 +328,9 @@ The standalone viewer uses a 28px white panel on Viewer Paper, a padded Clear Mi
 
 - **Do** let monumental serif statements and paper-white space establish confidence.
 - **Do** use blue for purposeful action and the mist–haze–sky range for tonal evidence groups.
-- **Do** keep the header opaque, full-width, and geometrically stable while it sticks.
-- **Do** let the hero image stand on its own without an enclosing colored frame.
+- **Do** keep the header full-width, fixed, and geometrically stable.
+- **Do** keep the hero video full-bleed, right-aligned, and free of a card frame.
+- **Do** preserve desktop scrubbing, mobile autoplay, and the reduced-motion pause.
 - **Do** serve local static WebP previews in archive cards and preserve original media in project detail.
 - **Do** keep research, method, and output items as independent 16px cards with consistent 12px gaps.
 - **Do** preserve visible focus, 44px or larger targets, reduced-motion behavior, and verified-link gating.
@@ -338,8 +339,8 @@ The standalone viewer uses a 28px white panel on Viewer Paper, a padded Clear Mi
 ### Don't:
 
 - **Don't** reintroduce meteor, particle, starfield, canvas, or decorative WebGL effects.
-- **Don't** add a scroll-driven header morph, floating navigation pill, translucency, or backdrop blur.
-- **Don't** wrap the hero image in a colored matte or nested rounded frame.
+- **Don't** add a scroll-driven header morph, floating navigation pill, or decorative backdrop blur.
+- **Don't** wrap the hero video in a coloured matte or rounded card.
 - **Don't** make expanded research content dark or detach it from the selector.
 - **Don't** substitute gradients, glass cards, or generic technology-dashboard styling for the paper-led editorial world.
 - **Don't** shadow every rounded container or lift static evidence.

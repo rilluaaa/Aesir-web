@@ -1,18 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowDown,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  Check,
   ChevronDown,
-  Menu,
   Search,
-  X,
 } from "lucide-react";
 import { aesirProjects } from "../projectPortfolio";
 import "./AesirResearchSite.css";
 
 const contactUrl = "https://aesir.hk/#contactus";
+const heroVideoUrl = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260601_110537_3a579fa0-7bbc-4d94-9d25-0e816c7840f5.mp4";
 const asset = (path) =>
   /^https?:\/\//.test(path)
     ? path
@@ -295,8 +296,134 @@ function useEntryMotion() {
   }, []);
 }
 
+function useTypewriter(text, speed = 38, startDelay = 600) {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      setDisplayed(text);
+      setDone(true);
+      return undefined;
+    }
+
+    setDisplayed("");
+    setDone(false);
+    let intervalId;
+    const timeoutId = window.setTimeout(() => {
+      let index = 0;
+      intervalId = window.setInterval(() => {
+        index += 1;
+        setDisplayed(text.slice(0, index));
+        if (index >= text.length) {
+          window.clearInterval(intervalId);
+          setDone(true);
+        }
+      }, speed);
+    }, startDelay);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      window.clearInterval(intervalId);
+    };
+  }, [speed, startDelay, text]);
+
+  return { displayed, done };
+}
+
+function BackgroundVideo() {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return undefined;
+
+    let previousX = null;
+    let targetTime = 0;
+
+    const syncToTarget = () => {
+      if (Math.abs(video.currentTime - targetTime) > 0.01) video.currentTime = targetTime;
+    };
+
+    const onMouseMove = (event) => {
+      if (window.innerWidth < 1024 || !Number.isFinite(video.duration)) return;
+      if (previousX === null) {
+        previousX = event.clientX;
+        targetTime = video.currentTime;
+        return;
+      }
+
+      const delta = event.clientX - previousX;
+      previousX = event.clientX;
+      targetTime = Math.min(
+        video.duration,
+        Math.max(0, targetTime + (delta / window.innerWidth) * 0.8 * video.duration),
+      );
+
+      if (!video.seeking) video.currentTime = targetTime;
+    };
+
+    const onLoadedMetadata = () => {
+      targetTime = video.currentTime;
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    video.addEventListener("loadedmetadata", onLoadedMetadata);
+    video.addEventListener("seeked", syncToTarget);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      video.removeEventListener("loadedmetadata", onLoadedMetadata);
+      video.removeEventListener("seeked", syncToTarget);
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return undefined;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    const updatePlayback = () => {
+      const shouldPlay = window.innerWidth < 1024 && !reducedMotion.matches;
+      video.autoplay = shouldPlay;
+      video.loop = shouldPlay;
+      if (shouldPlay) video.play().catch(() => undefined);
+      else video.pause();
+    };
+
+    updatePlayback();
+    window.addEventListener("resize", updatePlayback);
+    reducedMotion.addEventListener("change", updatePlayback);
+    return () => {
+      window.removeEventListener("resize", updatePlayback);
+      reducedMotion.removeEventListener("change", updatePlayback);
+    };
+  }, []);
+
+  return (
+    <div className="hero-video" aria-hidden="true">
+      <video ref={videoRef} muted playsInline preload="auto">
+        <source src={heroVideoUrl} type="video/mp4" />
+      </video>
+    </div>
+  );
+}
+
 function Header() {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle("has-open-menu", open);
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.classList.remove("has-open-menu");
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [open]);
 
   const navigate = (id) => {
     scrollToSection(id);
@@ -311,13 +438,16 @@ function Header() {
         </button>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {navItems.map(([label, id]) => (
-            <button key={id} onClick={() => navigate(id)}>{label}</button>
+          {navItems.map(([label, id], index) => (
+            <React.Fragment key={id}>
+              <button onClick={() => navigate(id)}>{label}</button>
+              {index < navItems.length - 1 && <span aria-hidden="true">,</span>}
+            </React.Fragment>
           ))}
         </nav>
 
         <a className="header-contact" href={contactUrl} target="_blank" rel="noreferrer">
-          Contact <ArrowUpRight size={16} aria-hidden="true" />
+          Get in touch
         </a>
 
         <button
@@ -327,10 +457,12 @@ function Header() {
           aria-controls="mobile-navigation"
           aria-label={open ? "Close navigation" : "Open navigation"}
         >
-          {open ? <X size={22} /> : <Menu size={22} />}
+          <span />
+          <span />
+          <span />
         </button>
 
-        {open && (
+        <div className={`mobile-nav-overlay${open ? " is-open" : ""}`} aria-hidden={!open}>
           <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation">
             {navItems.map(([label, id]) => (
               <button key={id} onClick={() => navigate(id)}>
@@ -341,51 +473,124 @@ function Header() {
               Contact AESIR<ArrowUpRight size={17} aria-hidden="true" />
             </a>
           </nav>
-        )}
+        </div>
       </div>
     </header>
   );
 }
 
 function Hero() {
+  const [services, setServices] = useState([]);
+  const { displayed, done } = useTypewriter("Evidence for an\ninclusive future.");
+  const options = ["Society 5.0", "AX", "NEURO Business Futures"];
+
+  const toggleService = (option) => {
+    setServices((current) => (
+      current.includes(option)
+        ? current.filter((item) => item !== option)
+        : [...current, option]
+    ));
+  };
+
   return (
     <section id="top" className="hero-section">
-      <div className="hero-copy" data-enter>
-        <h1>Evidence for an inclusive future.</h1>
-        <p>
-          AESIR bridges human neurodiversity and frontier technology, translating industrial-grade XR,
-          AI, and HCI research into measurable public value across APAC and global smart cities.
-        </p>
-        <div className="hero-actions">
-          <button className="primary-action" onClick={() => scrollToSection("research")}>
-            Explore the research <ArrowDown size={18} aria-hidden="true" />
-          </button>
-          <a className="text-action" href={contactUrl} target="_blank" rel="noreferrer">
-            Contact AESIR <ArrowUpRight size={18} aria-hidden="true" />
-          </a>
+      <BackgroundVideo />
+
+      <div className="hero-content">
+        <div className="hero-copy">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <h1>
+              {displayed}
+              {!done && <span className="typewriter-cursor" aria-hidden="true" />}
+            </h1>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            AESIR bridges human neurodiversity and frontier technology, translating industrial-grade
+            AR, VR, AI, and public-policy research into measurable public value.
+          </motion.p>
+
+          <motion.div
+            className="hero-selector"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <h2>Choose a research lens</h2>
+            <p>Select all that apply</p>
+            <div className="hero-pills" aria-label="Research areas">
+              {options.map((option) => {
+                const selected = services.includes(option);
+                return (
+                  <motion.button
+                    key={option}
+                    type="button"
+                    className={selected ? "is-selected" : ""}
+                    aria-pressed={selected}
+                    onClick={() => toggleService(option)}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <AnimatePresence initial={false}>
+                      {selected && (
+                        <motion.span
+                          initial={{ opacity: 0, scale: 0.4 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.4 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                          <Check size={15} strokeWidth={2.4} aria-hidden="true" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                    {option}
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            <AnimatePresence mode="wait" initial={false}>
+              {services.length === 0 ? (
+                <motion.p
+                  key="empty"
+                  className="hero-selection-empty"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.5 }}
+                  exit={{ opacity: 0 }}
+                >
+                  Select one or more areas to shape your route.
+                </motion.p>
+              ) : (
+                <motion.div
+                  key="selected"
+                  className="hero-selection-ready"
+                  initial={{ opacity: 0, height: 0, y: 8 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: 8 }}
+                  transition={{ type: "spring", stiffness: 250, damping: 26 }}
+                >
+                  <span>Ready to explore: {services.join(", ")}</span>
+                  <button type="button" onClick={() => scrollToSection("research")}>
+                    Explore <ArrowDown size={15} aria-hidden="true" />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
+          <div className="hero-proofline" aria-label="AESIR credentials">
+            <span>Global social technology</span>
+            <span>AR · VR · AI · Public policy</span>
+            <span>APAC field deployment</span>
+          </div>
         </div>
-      </div>
-
-      <figure className="hero-image" data-enter>
-        <img
-          src={asset("assets/aesir/founder-panel.webp")}
-          alt="Ernest HS CHAN speaking during an industry panel"
-          width="1600"
-          height="1200"
-          fetchpriority="high"
-          decoding="async"
-        />
-        <figcaption>
-          <span>Applied knowledge in public</span>
-          <span>Research · Industry · Policy</span>
-        </figcaption>
-      </figure>
-
-      <div className="proof-ribbon" aria-label="AESIR credentials">
-        <span>Global award-winning social technology</span>
-        <span>Top 500 global tech startup</span>
-        <span>AR · VR · AI · Public policy</span>
-        <span>APAC field deployment</span>
       </div>
     </section>
   );
