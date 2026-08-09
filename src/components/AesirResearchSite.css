@@ -333,7 +333,8 @@
 .thesis-section {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.3fr);
-  gap: 90px;
+  column-gap: 90px;
+  row-gap: 30px;
   align-items: start;
   border-bottom: 1px solid var(--launch-line);
 }
@@ -362,9 +363,13 @@
   text-wrap: balance;
 }
 
-.thesis-body {
+.thesis-statement {
   grid-column: 2;
+}
+
+.thesis-statement .thesis-body {
   max-width: 760px;
+  margin-top: 30px;
   color: var(--launch-muted);
   font-size: 1.05rem;
   line-height: 1.78;
@@ -937,6 +942,11 @@
   content-visibility: auto;
   contain: layout paint style;
   contain-intrinsic-size: auto 470px;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
 }
 
 .project-card__media {
@@ -948,6 +958,7 @@
   border-radius: 22px;
   background: var(--launch-cream);
   contain: paint;
+  transition: background-color 200ms ease, box-shadow 240ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .project-card__media img {
@@ -965,6 +976,7 @@
 
 .project-card:hover .project-card__media {
   background: var(--launch-sand-soft);
+  box-shadow: 0 18px 42px rgba(31, 69, 105, 0.16);
 }
 
 .project-card__content {
@@ -1127,33 +1139,12 @@
   font-size: 0.72rem;
 }
 
-.archive-heading {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  align-items: end;
-  margin-top: 115px;
-  padding: 0;
-}
-
-.archive-heading h3 {
-  font-size: 2.5rem;
-}
-
-.archive-heading p {
-  justify-self: end;
-  max-width: 470px;
-  color: var(--launch-muted);
-  font-size: 0.86rem;
-  line-height: 1.65;
-}
-
 .archive-strip {
   display: grid;
   grid-auto-columns: minmax(220px, 26%);
   grid-auto-flow: column;
   gap: 16px;
-  margin-top: 34px;
+  margin-top: 82px;
   padding-bottom: 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -1199,9 +1190,11 @@
 }
 
 .contact-layout a {
-  width: min(760px, 100%);
+  width: auto;
+  min-width: 160px;
   min-height: 66px;
   margin-top: 38px;
+  padding-inline: 26px;
   font-size: 0.95rem;
 }
 
@@ -1365,7 +1358,7 @@
     grid-template-columns: 1fr;
   }
 
-  .thesis-body {
+  .thesis-statement {
     grid-column: 1;
   }
 
@@ -1648,17 +1641,6 @@
   .photo-grid img {
     height: 155px;
     border-radius: 14px;
-  }
-
-  .archive-heading {
-    grid-template-columns: 1fr;
-    gap: 18px;
-    margin-top: 80px;
-    padding: 0;
-  }
-
-  .archive-heading p {
-    justify-self: start;
   }
 
   .archive-strip {

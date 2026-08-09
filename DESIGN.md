@@ -266,7 +266,7 @@ Soft geometry is hierarchical. Large research panels use a 30px radius, secondar
 
 ### Buttons
 
-- **Shape:** Full pill with a 50px minimum height; the final contact action grows to 66px on desktop.
+- **Shape:** Full pill with a 50px minimum height; the final contact action grows to 66px on desktop but stays compact at 160px minimum width.
 - **Primary:** Launch Blue with white DM Sans text and 25px horizontal padding.
 - **Hover / Focus:** Shift to Deep Blue and rise 2px over 180ms; keyboard focus uses a white inner outline plus a Deep Blue outer ring so it remains visible on light and coloured surfaces.
 - **Text action:** Ink text without a container; the directional arrow moves 3px diagonally on hover.
@@ -280,7 +280,7 @@ Soft geometry is hierarchical. Large research panels use a 30px radius, secondar
 
 - **Corner Style:** 30px research panels, 28px secondary media, 24px hero image, 22px project media, and 16px grouped cards.
 - **Background:** Society 5.0 uses Soft Blue, AX uses Archive Haze, and NEURO uses Research Sky. Detail cards use translucent white; method and output cards alternate Paper White, Archive Paper, and Soft Blue.
-- **Shadow Strategy:** Project cards have no resting shadow; the media matte changes from Archive Haze to Soft Blue while the arrow moves, with no image crop or zoom.
+- **Shadow Strategy:** Project cards have no resting shadow; hovering raises the whole linked record by 8px, adds a soft blue media shadow, changes the matte from Archive Haze to Soft Blue, and moves the arrow without cropping or zooming the image.
 - **Border:** One-pixel Measured Rule remains for section boundaries, names, and compact controls; tonal cards separate through fill and 12px gaps.
 - **Internal Padding:** 20px for research details, 24px for outputs, 26px for research cases, 27–28px for tabs and method cards, and fluid 34–68px for research panels.
 
@@ -316,7 +316,7 @@ The hero uses a compact centred 16:8.9 crop without an outer matte. Evidence, le
 
 ### Project Card
 
-All 106 source records remain in the archive in source order; the interface does not deduplicate repeated titles or categories. Each whole-card link opens the internal project detail page in a new tab and uses a rounded 16:10 haze media field containing a locally stored static WebP preview, a blue category label, serif title, a three-line description clamp, and a quiet destination row. Local previews prevent the archive grid from depending on third-party thumbnail requests. `content-visibility` and containment keep the long grid efficient. Hover leaves the image unchanged, switches only the field to Soft Blue, and moves the arrow 3px diagonally.
+All 106 source records remain in the archive in source order; the interface does not deduplicate repeated titles or categories. Each whole-card link opens the internal project detail page in a new tab and uses a rounded 16:10 haze media field containing a locally stored static WebP preview, a blue category label, serif title, a three-line description clamp, and a quiet destination row. Local previews prevent the archive grid from depending on third-party thumbnail requests. `content-visibility` and containment keep the long grid efficient. Hover raises the linked record by 8px, leaves the image itself unchanged, switches the field to Soft Blue, adds a soft shadow, and moves the arrow 3px diagonally.
 
 ### Project Viewer
 

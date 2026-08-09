@@ -47,7 +47,7 @@ const researchAreas = [
       {
         id: "application",
         label: "Applied Direction",
-        title: "From civic frameworks to testable public experiences.",
+        title: "Turning civic frameworks into public experiences.",
         body: [
           "AESIR translates this agenda into programmes that can be tested with real communities and institutions. Smart Sports applies gerontechnology and movement-based interaction to preventive exercise for older adults, while mixed-reality AED and CPR training gives learners a safe, repeatable environment for practising emergency decisions before a real incident occurs.",
           "Tree Portal and environmental learning games extend the same principle into citizen science and public education. Together, these deployments create an applied foundation for evaluating participation, comprehension, accessibility, and adoption—evidence that can inform more inclusive healthcare, community services, and smart-city infrastructure.",
@@ -398,16 +398,17 @@ function Thesis() {
         <h2>Immersive pragmatism in practice.</h2>
         <p>Research earns its value when it survives contact with the real world.</p>
       </div>
-      <blockquote>
-        We fuse pioneering, peer-reviewed scientific discovery with market-validated, high-impact
-        societal deployment.
-      </blockquote>
-      <p className="thesis-body">
-        Built by practical innovators behind a globally recognised social-technology startup, AESIR's
-        footprint connects rigorous data science, human-computer interaction, public policy, and
-        industrial execution. Our fellows do not merely theorise technology; they build, test, and
-        translate it into inclusive digital infrastructure and measurable socioeconomic wellbeing.
-      </p>
+      <div className="thesis-statement">
+        <blockquote>
+          Scientific discovery, proven through deployment.
+        </blockquote>
+        <p className="thesis-body">
+          Built by practical innovators behind a globally recognised social-technology startup, AESIR's
+          footprint connects rigorous data science, human-computer interaction, public policy, and
+          industrial execution. Our fellows do not merely theorise technology; they build, test, and
+          translate it into inclusive digital infrastructure and measurable socioeconomic wellbeing.
+        </p>
+      </div>
     </section>
   );
 }
@@ -789,10 +790,6 @@ function Leadership() {
           ))}
         </div>
 
-        <div className="archive-heading" data-enter>
-          <h3>AESIR field archive</h3>
-          <p>A visual record of public education, business programs, training, and founder milestones.</p>
-        </div>
         <div className="archive-strip" data-enter>
           {archivePhotos.map(([src, alt]) => (
             <img key={src} src={asset(src)} alt={alt} loading="lazy" decoding="async" />
