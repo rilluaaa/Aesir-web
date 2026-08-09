@@ -6,6 +6,15 @@ import {
   ChevronDown,
   Search,
 } from "lucide-react";
+import {
+  HERO_VIDEO_SOURCES,
+  getHeroPlaybackState,
+  isConstrainedNetwork,
+  isHeroScrubCapable,
+  mapPointerToGazeTime,
+  selectHeroVideoSource,
+  supportsHighResolutionDecoding,
+} from "../heroVideo.js";
 import { aesirProjects } from "../projectPortfolio";
 import "./AesirResearchSite.css";
 
@@ -270,25 +279,40 @@ const scrollToSection = (id) => {
   document.getElementById(id)?.scrollIntoView({ behavior, block: "start" });
 };
 
-const selectHeroVideoSource = () => {
-  if (typeof window === "undefined" || window.innerWidth < 1024) {
-    return "assets/aesir/cognitive-hero-mobile-60fps.mp4";
+const getConnection = () => navigator.connection
+  || navigator.mozConnection
+  || navigator.webkitConnection;
+
+let highResolutionDecodingPromise;
+const getHighResolutionDecodingSupport = () => {
+  if (!highResolutionDecodingPromise) {
+    highResolutionDecodingPromise = supportsHighResolutionDecoding(navigator.mediaCapabilities);
+  }
+  return highResolutionDecodingPromise;
+};
+
+const getInitialHeroMode = () => {
+  if (typeof window === "undefined") {
+    return {
+      scrubCapable: false,
+      reducedMotion: true,
+      videoSource: HERO_VIDEO_SOURCES.mobile,
+    };
   }
 
-  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  const constrainedNetwork = connection?.saveData
-    || ["slow-2g", "2g", "3g"].includes(connection?.effectiveType);
-  const processingCores = navigator.hardwareConcurrency || 8;
-  const deviceMemory = navigator.deviceMemory || 8;
-  const needsHighDensitySource = window.devicePixelRatio >= 1.25 || window.innerWidth >= 1440;
-  const supportsHighResolution = !constrainedNetwork
-    && processingCores >= 8
-    && deviceMemory >= 8
-    && needsHighDensitySource;
+  const scrubCapable = isHeroScrubCapable({
+    viewportWidth: window.innerWidth,
+    anyHover: window.matchMedia("(any-hover: hover)").matches,
+    anyFinePointer: window.matchMedia("(any-pointer: fine)").matches,
+  });
 
-  return supportsHighResolution
-    ? "assets/aesir/cognitive-hero-1440p-60fps-all-i.mp4"
-    : "assets/aesir/cognitive-hero-1080p-60fps-all-i.mp4";
+  return {
+    scrubCapable,
+    reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    videoSource: scrubCapable
+      ? HERO_VIDEO_SOURCES.desktop1080
+      : HERO_VIDEO_SOURCES.mobile,
+  };
 };
 
 function useTypewriter(text, speed = 38, startDelay = 600) {
@@ -329,53 +353,156 @@ function useTypewriter(text, speed = 38, startDelay = 600) {
 
 function BackgroundVideo() {
   const videoRef = useRef(null);
-  const [videoSource, setVideoSource] = useState(selectHeroVideoSource);
+  const [heroMode, setHeroMode] = useState(getInitialHeroMode);
+  const [readySource, setReadySource] = useState(null);
+  const { scrubCapable, reducedMotion, videoSource } = heroMode;
 
   useEffect(() => {
-    let resizeTimer = 0;
-    const updateVideoSource = () => {
-      window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(() => {
-        setVideoSource((currentSource) => {
-          const nextSource = selectHeroVideoSource();
-          return currentSource === nextSource ? currentSource : nextSource;
-        });
-      }, 180);
+    const hoverQuery = window.matchMedia("(any-hover: hover)");
+    const pointerQuery = window.matchMedia("(any-pointer: fine)");
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const connection = getConnection();
+    let updateTimer = 0;
+    let updateSequence = 0;
+    let disposed = false;
+
+    const addMediaListener = (query, listener) => {
+      if (typeof query.addEventListener === "function") query.addEventListener("change", listener);
+      else query.addListener(listener);
     };
 
-    window.addEventListener("resize", updateVideoSource, { passive: true });
+    const removeMediaListener = (query, listener) => {
+      if (typeof query.removeEventListener === "function") query.removeEventListener("change", listener);
+      else query.removeListener(listener);
+    };
+
+    const updateMode = async () => {
+      const sequence = ++updateSequence;
+      const videoRect = videoRef.current?.getBoundingClientRect();
+      const nextScrubCapable = isHeroScrubCapable({
+        viewportWidth: window.innerWidth,
+        anyHover: hoverQuery.matches,
+        anyFinePointer: pointerQuery.matches,
+      });
+      const sourceEnvironment = {
+        scrubCapable: nextScrubCapable,
+        constrainedNetwork: isConstrainedNetwork({
+          saveData: connection?.saveData,
+          effectiveType: connection?.effectiveType,
+        }),
+        renderedWidth: videoRect?.width || window.innerWidth,
+        renderedHeight: videoRect?.height || window.innerHeight,
+        devicePixelRatio: window.devicePixelRatio,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        deviceMemory: navigator.deviceMemory,
+      };
+      const highResolutionCandidate = selectHeroVideoSource({
+        ...sourceEnvironment,
+        supports1440p: true,
+      });
+      const supports1440p = highResolutionCandidate === HERO_VIDEO_SOURCES.desktop1440
+        ? await getHighResolutionDecodingSupport()
+        : false;
+
+      if (disposed || sequence !== updateSequence) return;
+
+      const nextMode = {
+        scrubCapable: nextScrubCapable,
+        reducedMotion: reducedMotionQuery.matches,
+        videoSource: selectHeroVideoSource({
+          ...sourceEnvironment,
+          supports1440p,
+        }),
+      };
+
+      setHeroMode((currentMode) => (
+        currentMode.scrubCapable === nextMode.scrubCapable
+        && currentMode.reducedMotion === nextMode.reducedMotion
+        && currentMode.videoSource === nextMode.videoSource
+          ? currentMode
+          : nextMode
+      ));
+    };
+
+    const scheduleUpdate = () => {
+      window.clearTimeout(updateTimer);
+      updateTimer = window.setTimeout(() => {
+        void updateMode();
+      }, 120);
+    };
+
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
+    window.addEventListener("orientationchange", scheduleUpdate, { passive: true });
+    addMediaListener(hoverQuery, scheduleUpdate);
+    addMediaListener(pointerQuery, scheduleUpdate);
+    addMediaListener(reducedMotionQuery, scheduleUpdate);
+    connection?.addEventListener?.("change", scheduleUpdate);
+    void updateMode();
+
     return () => {
-      window.removeEventListener("resize", updateVideoSource);
-      window.clearTimeout(resizeTimer);
+      disposed = true;
+      updateSequence += 1;
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("orientationchange", scheduleUpdate);
+      removeMediaListener(hoverQuery, scheduleUpdate);
+      removeMediaListener(pointerQuery, scheduleUpdate);
+      removeMediaListener(reducedMotionQuery, scheduleUpdate);
+      connection?.removeEventListener?.("change", scheduleUpdate);
+      window.clearTimeout(updateTimer);
     };
   }, []);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return undefined;
+    if (!video || !scrubCapable) return undefined;
 
     let targetTime = 0;
     let renderedTime = 0;
     let animationFrame = 0;
     let lastUpdate = 0;
+    let seekInFlight = false;
+    let queuedSeekTime = null;
     const frameRate = 60;
     const frameDuration = 1 / frameRate;
     const frameInterval = 1000 / frameRate;
 
+    const commitSeek = (nextTime) => {
+      const safeDuration = Number.isFinite(video.duration) ? video.duration : 0;
+      const clampedTime = Math.min(safeDuration, Math.max(0, nextTime));
+      if (seekInFlight || video.seeking) {
+        queuedSeekTime = clampedTime;
+        return;
+      }
+      if (Math.abs(video.currentTime - clampedTime) <= frameDuration / 2) return;
+
+      seekInFlight = true;
+      try {
+        video.currentTime = clampedTime;
+      } catch {
+        seekInFlight = false;
+      }
+    };
+
+    const onSeeked = () => {
+      seekInFlight = false;
+      if (queuedSeekTime === null) return;
+      const latestSeekTime = queuedSeekTime;
+      queuedSeekTime = null;
+      commitSeek(latestSeekTime);
+    };
+
     const onMouseMove = (event) => {
-      if (window.innerWidth < 1024 || !Number.isFinite(video.duration)) return;
+      if (!Number.isFinite(video.duration)) return;
       const pointerProgress = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
-      const pointerDirection = (pointerProgress - 0.5) * 2;
-      const finalFrame = Math.max(0, video.duration - frameDuration);
-      const neutralTime = finalFrame / 2;
-      targetTime = neutralTime + pointerDirection * neutralTime;
+      targetTime = mapPointerToGazeTime(pointerProgress, video.duration);
     };
 
     const onLoadedMetadata = () => {
-      const neutralTime = Math.max(0, (video.duration - frameDuration) / 2);
+      const neutralTime = mapPointerToGazeTime(0.5, video.duration);
       targetTime = neutralTime;
       renderedTime = neutralTime;
-      video.currentTime = neutralTime;
+      queuedSeekTime = null;
+      commitSeek(neutralTime);
     };
 
     const renderScrub = (timestamp) => {
@@ -389,68 +516,72 @@ function BackgroundVideo() {
         if (Math.abs(distance) > frameDuration / 2) {
           const smoothing = 1 - Math.exp(-elapsed / 42);
           renderedTime += distance * smoothing;
-          video.currentTime = renderedTime;
+          commitSeek(renderedTime);
         }
         lastUpdate = timestamp;
       }
-      if (window.innerWidth >= 1024) {
-        animationFrame = window.requestAnimationFrame(renderScrub);
-      }
-    };
-
-    const updateScrubLoop = () => {
-      if (window.innerWidth >= 1024 && !animationFrame) {
-        animationFrame = window.requestAnimationFrame(renderScrub);
-      } else if (window.innerWidth < 1024 && animationFrame) {
-        window.cancelAnimationFrame(animationFrame);
-        animationFrame = 0;
-      }
+      animationFrame = window.requestAnimationFrame(renderScrub);
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("resize", updateScrubLoop, { passive: true });
     video.addEventListener("loadedmetadata", onLoadedMetadata);
-    updateScrubLoop();
+    video.addEventListener("seeked", onSeeked);
+    if (video.readyState >= 1) onLoadedMetadata();
+    animationFrame = window.requestAnimationFrame(renderScrub);
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("resize", updateScrubLoop);
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
+      video.removeEventListener("seeked", onSeeked);
       window.cancelAnimationFrame(animationFrame);
     };
-  }, []);
+  }, [scrubCapable, videoSource]);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return undefined;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const playbackState = getHeroPlaybackState({ scrubCapable, reducedMotion });
 
-    const updatePlayback = () => {
-      const shouldPlay = window.innerWidth < 1024 && !reducedMotion.matches;
-      video.autoplay = shouldPlay;
-      video.loop = shouldPlay;
-      if (shouldPlay) video.play().catch(() => undefined);
-      else video.pause();
-    };
+    video.autoplay = playbackState.autoplay;
+    video.loop = playbackState.loop;
+    if (playbackState.autoplay) {
+      video.play().catch(() => undefined);
+      return undefined;
+    }
 
-    updatePlayback();
-    window.addEventListener("resize", updatePlayback);
-    reducedMotion.addEventListener("change", updatePlayback);
-    return () => {
-      window.removeEventListener("resize", updatePlayback);
-      reducedMotion.removeEventListener("change", updatePlayback);
-    };
-  }, []);
+    video.pause();
+    if (!scrubCapable && reducedMotion) {
+      const showNeutralFrame = () => {
+        video.currentTime = mapPointerToGazeTime(0.5, video.duration);
+      };
+      if (video.readyState >= 1) showNeutralFrame();
+      else video.addEventListener("loadedmetadata", showNeutralFrame, { once: true });
+
+      return () => {
+        video.removeEventListener("loadedmetadata", showNeutralFrame);
+      };
+    }
+
+    return undefined;
+  }, [reducedMotion, scrubCapable, videoSource]);
+
+  const posterUrl = asset("assets/aesir/cognitive-hero-poster.webp");
 
   return (
-    <div className="hero-video" aria-hidden="true">
+    <div
+      className="hero-video"
+      aria-hidden="true"
+      style={{ "--hero-poster": `url("${posterUrl}")` }}
+    >
       <video
         ref={videoRef}
+        className={readySource === videoSource ? "is-ready" : ""}
         src={asset(videoSource)}
         muted
         playsInline
         preload="auto"
-        poster={asset("assets/aesir/cognitive-hero-poster.webp")}
+        poster={posterUrl}
+        onLoadedData={() => setReadySource(videoSource)}
       />
     </div>
   );
