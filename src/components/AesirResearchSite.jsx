@@ -17,6 +17,18 @@ import {
   selectHeroVideoSource,
   supportsHighResolutionDecoding,
 } from "../heroVideo.js";
+import {
+  attachAndWarmHeroVideo,
+  createHeroBootReadiness,
+  createHeroVideoResourceLoader,
+  decodeImageUrl,
+  getHeroBootRevealMode,
+  isAbortError,
+  prepareHeroCriticalAssets,
+  resolveHeroDownloadSource,
+  revealAesirApp,
+  waitForStableLayout,
+} from "../heroBoot.js";
 import { aesirProjects } from "../projectPortfolio";
 import "./AesirResearchSite.css";
 
@@ -354,10 +366,78 @@ function useTypewriter(text, speed = 38, startDelay = 600) {
 function BackgroundVideo() {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
+  const resourceLoaderRef = useRef(null);
+  const criticalAssetsPromiseRef = useRef(null);
+  const bootRevealStartedRef = useRef(false);
+  const revealBootRef = useRef(null);
   const [heroMode, setHeroMode] = useState(getInitialHeroMode);
   const [focalPositionY, setFocalPositionY] = useState(50);
   const [readySource, setReadySource] = useState(null);
+  const [appReady, setAppReady] = useState(() => (
+    typeof document !== "undefined"
+    && document.documentElement.classList.contains("aesir-app-ready")
+  ));
   const { scrubCapable, reducedMotion, videoSource } = heroMode;
+  const posterUrl = asset("assets/aesir/cognitive-hero-poster.webp");
+  const wordmarkUrl = asset("assets/aesir/aesir-wordmark.webp");
+
+  revealBootRef.current = async ({ fallback = false, layoutStable = false } = {}) => {
+    if (bootRevealStartedRef.current) return;
+    bootRevealStartedRef.current = true;
+    setAppReady(true);
+
+    if (!layoutStable) {
+      await waitForStableLayout().catch(() => undefined);
+    }
+
+    if (fallback) document.documentElement.classList.add("aesir-app-fallback");
+    revealAesirApp({ mode: fallback ? "poster" : "video" });
+    window.clearTimeout(window.__AESIR_BOOT_WATCHDOG__);
+    window.clearTimeout(window.__AESIR_BOOT_HARD_FALLBACK__);
+  };
+
+  useEffect(() => {
+    const loader = createHeroVideoResourceLoader();
+    const criticalController = new AbortController();
+    resourceLoaderRef.current = loader;
+    criticalAssetsPromiseRef.current = prepareHeroCriticalAssets({
+      fontReady: document.fonts?.ready ?? Promise.resolve(),
+      posterUrl,
+      criticalImageUrls: [wordmarkUrl],
+      signal: criticalController.signal,
+    }).catch((error) => ({ error }));
+
+    const revealPosterFallback = async () => {
+      let posterReady = false;
+      try {
+        await decodeImageUrl({ url: posterUrl });
+        posterReady = true;
+      } catch {
+        // The hard fallback in index.html still prevents a permanent white page.
+      }
+      const revealMode = getHeroBootRevealMode({
+        readiness: createHeroBootReadiness(),
+        timedOut: true,
+        posterReady,
+      });
+      if (revealMode === "poster") {
+        await revealBootRef.current?.({ fallback: true });
+      }
+    };
+    const onBootTimeout = () => {
+      void revealPosterFallback();
+    };
+
+    window.addEventListener("aesir:boot-timeout", onBootTimeout);
+    if (window.__AESIR_BOOT_TIMED_OUT__) void revealPosterFallback();
+
+    return () => {
+      window.removeEventListener("aesir:boot-timeout", onBootTimeout);
+      criticalController.abort();
+      loader.dispose();
+      resourceLoaderRef.current = null;
+    };
+  }, [posterUrl, wordmarkUrl]);
 
   useEffect(() => {
     const hoverQuery = window.matchMedia("(any-hover: hover)");
@@ -459,6 +539,80 @@ function BackgroundVideo() {
   }, []);
 
   useEffect(() => {
+    const video = videoRef.current;
+    const loader = resourceLoaderRef.current;
+    const finalVideoSource = resolveHeroDownloadSource({
+      sourceResolved: Boolean(videoSource),
+      videoSource,
+    });
+    if (!video || !loader || !finalVideoSource) return undefined;
+
+    const preparationController = new AbortController();
+    let resource = null;
+
+    const prepareSelectedSource = async () => {
+      try {
+        resource = await loader.load(asset(finalVideoSource));
+        if (preparationController.signal.aborted) throw new DOMException("Cancelled", "AbortError");
+
+        setReadySource(null);
+        const warmup = await attachAndWarmHeroVideo({
+          video,
+          objectUrl: resource.objectUrl,
+          scrubCapable,
+          reducedMotion,
+          signal: preparationController.signal,
+        });
+        resource.activate();
+        video.dataset.warmupCompleteAt = performance.now().toFixed(1);
+        setReadySource(finalVideoSource);
+
+        if (bootRevealStartedRef.current) return;
+
+        const criticalAssets = await criticalAssetsPromiseRef.current;
+        if (criticalAssets?.error) throw criticalAssets.error;
+
+        setAppReady(true);
+        await waitForStableLayout({ signal: preparationController.signal });
+        const readiness = createHeroBootReadiness({
+          mounted: true,
+          sourceResolved: true,
+          fileFetched: true,
+          blobAttached: true,
+          metadataReady: warmup.metadataReady,
+          framesWarmed: warmup.framesWarmed,
+          neutralReady: warmup.neutralReady,
+          fontsReady: criticalAssets.fontsReady,
+          criticalImagesReady: criticalAssets.criticalImagesReady,
+          posterReady: criticalAssets.posterReady,
+          layoutStable: true,
+        });
+
+        if (getHeroBootRevealMode({
+          readiness,
+          timedOut: false,
+          posterReady: criticalAssets.posterReady,
+        }) === "video") {
+          await revealBootRef.current?.({ layoutStable: true });
+        }
+      } catch (error) {
+        resource?.release();
+        if (!isAbortError(error)) {
+          // Keep the decoded poster behind the white boot cover until the watchdog reveals it.
+        }
+      }
+    };
+
+    void prepareSelectedSource();
+
+    return () => {
+      preparationController.abort();
+      loader.cancelPending();
+      resource?.release();
+    };
+  }, [reducedMotion, scrubCapable, videoSource]);
+
+  useEffect(() => {
     const container = containerRef.current;
     const video = videoRef.current;
     if (!container || !video) return undefined;
@@ -493,7 +647,12 @@ function BackgroundVideo() {
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !scrubCapable) return undefined;
+    if (
+      !video
+      || !scrubCapable
+      || reducedMotion
+      || readySource !== videoSource
+    ) return undefined;
 
     let targetTime = 0;
     let renderedTime = 0;
@@ -584,11 +743,11 @@ function BackgroundVideo() {
       window.cancelAnimationFrame(animationFrame);
       window.cancelAnimationFrame(seekFlushFrame);
     };
-  }, [scrubCapable, videoSource]);
+  }, [readySource, reducedMotion, scrubCapable, videoSource]);
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return undefined;
+    if (!video || !appReady || readySource !== videoSource) return undefined;
     const playbackState = getHeroPlaybackState({ scrubCapable, reducedMotion });
 
     video.autoplay = playbackState.autoplay;
@@ -599,22 +758,8 @@ function BackgroundVideo() {
     }
 
     video.pause();
-    if (!scrubCapable && reducedMotion) {
-      const showNeutralFrame = () => {
-        video.currentTime = mapPointerToGazeTime(0.5, video.duration);
-      };
-      if (video.readyState >= 1) showNeutralFrame();
-      else video.addEventListener("loadedmetadata", showNeutralFrame, { once: true });
-
-      return () => {
-        video.removeEventListener("loadedmetadata", showNeutralFrame);
-      };
-    }
-
     return undefined;
-  }, [reducedMotion, scrubCapable, videoSource]);
-
-  const posterUrl = asset("assets/aesir/cognitive-hero-poster.webp");
+  }, [appReady, readySource, reducedMotion, scrubCapable, videoSource]);
 
   return (
     <div
@@ -628,15 +773,12 @@ function BackgroundVideo() {
     >
       <video
         ref={videoRef}
-        className={readySource === videoSource ? "is-ready" : ""}
-        src={videoSource ? asset(videoSource) : undefined}
+        className={appReady && readySource === videoSource ? "is-ready" : ""}
+        data-source={videoSource || undefined}
         muted
         playsInline
         preload="auto"
         poster={posterUrl}
-        onLoadedData={() => {
-          if (videoSource) setReadySource(videoSource);
-        }}
       />
     </div>
   );

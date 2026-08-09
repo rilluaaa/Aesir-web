@@ -1,7 +1,7 @@
 export const HERO_VIDEO_SOURCES = Object.freeze({
   mobile: "assets/aesir/cognitive-hero-mobile-1080p-60fps.mp4",
-  desktop1080: "assets/aesir/cognitive-hero-1080p-60fps-gop3.mp4",
-  desktop1440: "assets/aesir/cognitive-hero-1440p-60fps-gop3.mp4",
+  desktop1080: "assets/aesir/cognitive-hero-1080p-60fps-gop3-hq.mp4",
+  desktop1440: "assets/aesir/cognitive-hero-1440p-60fps-gop3-hq.mp4",
 });
 
 export const HERO_SOURCE_QUALITY = Object.freeze({
@@ -31,7 +31,7 @@ const HIGH_RESOLUTION_DECODING_CONFIG = Object.freeze({
     contentType: 'video/mp4; codecs="avc1.640033"',
     width: 2560,
     height: 1440,
-    bitrate: 8600000,
+    bitrate: 10800000,
     framerate: 60,
   },
 });
