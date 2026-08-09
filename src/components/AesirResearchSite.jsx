@@ -1,11 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import {
-  ArrowDown,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  Check,
   ChevronDown,
   Search,
 } from "lucide-react";
@@ -13,7 +10,6 @@ import { aesirProjects } from "../projectPortfolio";
 import "./AesirResearchSite.css";
 
 const contactUrl = "https://aesir.hk/#contactus";
-const heroVideoUrl = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260601_110537_3a579fa0-7bbc-4d94-9d25-0e816c7840f5.mp4";
 const asset = (path) =>
   /^https?:\/\//.test(path)
     ? path
@@ -244,7 +240,7 @@ const archivePhotos = [
 const navItems = [
   ["Research", "research"],
   ["Method", "method"],
-  ["Evidence", "evidence"],
+  ["Deployment", "evidence"],
   ["Projects", "projects"],
   ["Leadership", "leadership"],
 ];
@@ -273,28 +269,6 @@ const scrollToSection = (id) => {
   }
   document.getElementById(id)?.scrollIntoView({ behavior, block: "start" });
 };
-
-function useEntryMotion() {
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined;
-
-    const elements = Array.from(document.querySelectorAll(".hero-section [data-enter]"));
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-entered");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { rootMargin: "0px 0px -10%", threshold: 0.08 },
-    );
-
-    elements.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
-  }, []);
-}
 
 function useTypewriter(text, speed = 38, startDelay = 600) {
   const [displayed, setDisplayed] = useState("");
@@ -341,16 +315,17 @@ function BackgroundVideo() {
 
     let previousX = null;
     let targetTime = 0;
-
-    const syncToTarget = () => {
-      if (Math.abs(video.currentTime - targetTime) > 0.01) video.currentTime = targetTime;
-    };
+    let renderedTime = 0;
+    let animationFrame = 0;
+    let lastUpdate = 0;
+    const frameInterval = 1000 / 120;
 
     const onMouseMove = (event) => {
       if (window.innerWidth < 1024 || !Number.isFinite(video.duration)) return;
       if (previousX === null) {
         previousX = event.clientX;
         targetTime = video.currentTime;
+        renderedTime = video.currentTime;
         return;
       }
 
@@ -360,22 +335,53 @@ function BackgroundVideo() {
         video.duration,
         Math.max(0, targetTime + (delta / window.innerWidth) * 0.8 * video.duration),
       );
-
-      if (!video.seeking) video.currentTime = targetTime;
     };
 
     const onLoadedMetadata = () => {
       targetTime = video.currentTime;
+      renderedTime = video.currentTime;
+    };
+
+    const renderScrub = (timestamp) => {
+      animationFrame = 0;
+      if (
+        Number.isFinite(video.duration)
+        && timestamp - lastUpdate >= frameInterval
+      ) {
+        const elapsed = lastUpdate ? timestamp - lastUpdate : frameInterval;
+        const distance = targetTime - renderedTime;
+        if (Math.abs(distance) > 1 / 240 && !video.seeking) {
+          const smoothing = 1 - Math.exp(-elapsed / 34);
+          renderedTime += distance * smoothing;
+          video.currentTime = renderedTime;
+        }
+        lastUpdate = timestamp;
+      }
+      if (window.innerWidth >= 1024) {
+        animationFrame = window.requestAnimationFrame(renderScrub);
+      }
+    };
+
+    const updateScrubLoop = () => {
+      previousX = null;
+      if (window.innerWidth >= 1024 && !animationFrame) {
+        animationFrame = window.requestAnimationFrame(renderScrub);
+      } else if (window.innerWidth < 1024 && animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("resize", updateScrubLoop, { passive: true });
     video.addEventListener("loadedmetadata", onLoadedMetadata);
-    video.addEventListener("seeked", syncToTarget);
+    updateScrubLoop();
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("resize", updateScrubLoop);
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
-      video.removeEventListener("seeked", syncToTarget);
+      window.cancelAnimationFrame(animationFrame);
     };
   }, []);
 
@@ -403,8 +409,22 @@ function BackgroundVideo() {
 
   return (
     <div className="hero-video" aria-hidden="true">
-      <video ref={videoRef} muted playsInline preload="auto">
-        <source src={heroVideoUrl} type="video/mp4" />
+      <video
+        ref={videoRef}
+        muted
+        playsInline
+        preload="auto"
+        poster={asset("assets/aesir/cognitive-hero-poster.webp")}
+      >
+        <source
+          media="(min-width: 1024px)"
+          src={asset("assets/aesir/cognitive-hero-120fps.mp4")}
+          type="video/mp4"
+        />
+        <source
+          src={asset("assets/aesir/cognitive-hero-mobile-60fps.mp4")}
+          type="video/mp4"
+        />
       </video>
     </div>
   );
@@ -438,16 +458,13 @@ function Header() {
         </button>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {navItems.map(([label, id], index) => (
-            <React.Fragment key={id}>
-              <button onClick={() => navigate(id)}>{label}</button>
-              {index < navItems.length - 1 && <span aria-hidden="true">,</span>}
-            </React.Fragment>
+          {navItems.map(([label, id]) => (
+            <button key={id} onClick={() => navigate(id)}>{label}</button>
           ))}
         </nav>
 
         <a className="header-contact" href={contactUrl} target="_blank" rel="noreferrer">
-          Get in touch
+          Contact
         </a>
 
         <button
@@ -480,17 +497,7 @@ function Header() {
 }
 
 function Hero() {
-  const [services, setServices] = useState([]);
   const { displayed, done } = useTypewriter("Evidence for an\ninclusive future.");
-  const options = ["Society 5.0", "AX", "NEURO Business Futures"];
-
-  const toggleService = (option) => {
-    setServices((current) => (
-      current.includes(option)
-        ? current.filter((item) => item !== option)
-        : [...current, option]
-    ));
-  };
 
   return (
     <section id="top" className="hero-section">
@@ -498,100 +505,46 @@ function Hero() {
 
       <div className="hero-content">
         <div className="hero-copy">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <div className="hero-reveal">
             <h1>
               {displayed}
               {!done && <span className="typewriter-cursor" aria-hidden="true" />}
             </h1>
-          </motion.div>
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <p className="hero-reveal hero-reveal--delayed">
             AESIR bridges human neurodiversity and frontier technology, translating industrial-grade
             AR, VR, AI, and public-policy research into measurable public value.
-          </motion.p>
+          </p>
 
-          <motion.div
-            className="hero-selector"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <h2>Choose a research lens</h2>
-            <p>Select all that apply</p>
-            <div className="hero-pills" aria-label="Research areas">
-              {options.map((option) => {
-                const selected = services.includes(option);
-                return (
-                  <motion.button
-                    key={option}
-                    type="button"
-                    className={selected ? "is-selected" : ""}
-                    aria-pressed={selected}
-                    onClick={() => toggleService(option)}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    <AnimatePresence initial={false}>
-                      {selected && (
-                        <motion.span
-                          initial={{ opacity: 0, scale: 0.4 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.4 }}
-                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        >
-                          <Check size={15} strokeWidth={2.4} aria-hidden="true" />
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                    {option}
-                  </motion.button>
-                );
-              })}
-            </div>
-
-            <AnimatePresence mode="wait" initial={false}>
-              {services.length === 0 ? (
-                <motion.p
-                  key="empty"
-                  className="hero-selection-empty"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.5 }}
-                  exit={{ opacity: 0 }}
-                >
-                  Select one or more areas to shape your route.
-                </motion.p>
-              ) : (
-                <motion.div
-                  key="selected"
-                  className="hero-selection-ready"
-                  initial={{ opacity: 0, height: 0, y: 8 }}
-                  animate={{ opacity: 1, height: "auto", y: 0 }}
-                  exit={{ opacity: 0, height: 0, y: 8 }}
-                  transition={{ type: "spring", stiffness: 250, damping: 26 }}
-                >
-                  <span>Ready to explore: {services.join(", ")}</span>
-                  <button type="button" onClick={() => scrollToSection("research")}>
-                    Explore <ArrowDown size={15} aria-hidden="true" />
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-
-          <div className="hero-proofline" aria-label="AESIR credentials">
+          <div className="hero-proofline hero-reveal hero-reveal--later" aria-label="AESIR credentials">
             <span>Global social technology</span>
             <span>AR · VR · AI · Public policy</span>
             <span>APAC field deployment</span>
           </div>
         </div>
       </div>
+    </section>
+  );
+}
+
+function HeroEvidence() {
+  return (
+    <section className="hero-evidence section-shell" aria-label="AESIR in public dialogue">
+      <figure>
+        <img
+          src={asset("assets/aesir/founder-panel.webp")}
+          alt="Ernest HS CHAN speaking during an industry panel"
+          width="1600"
+          height="1200"
+          loading="lazy"
+          decoding="async"
+        />
+        <figcaption>
+          <span>Applied knowledge in public</span>
+          <span>Research · Industry · Policy</span>
+        </figcaption>
+      </figure>
     </section>
   );
 }
@@ -1016,7 +969,7 @@ function Contact() {
             programs, or technology deployment.
           </p>
           <a href={contactUrl} target="_blank" rel="noreferrer">
-            Contact AESIR <ArrowUpRight size={20} aria-hidden="true" />
+            Contact AESIR
           </a>
         </div>
       </div>
@@ -1025,8 +978,6 @@ function Contact() {
 }
 
 export function AesirResearchSite() {
-  useEntryMotion();
-
   useEffect(() => {
     window.history.scrollRestoration = "manual";
 
@@ -1052,6 +1003,7 @@ export function AesirResearchSite() {
       <Header />
       <main>
         <Hero />
+        <HeroEvidence />
         <Thesis />
         <ResearchAreas />
         <Method />

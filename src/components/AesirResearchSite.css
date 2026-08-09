@@ -144,12 +144,6 @@
   transition: opacity 160ms ease;
 }
 
-.desktop-nav > span {
-  margin-right: 2px;
-  color: rgba(17, 17, 17, 0.35);
-  font-size: 1.08rem;
-}
-
 .desktop-nav button:hover::after,
 .desktop-nav button:focus-visible::after {
   opacity: 0;
@@ -220,6 +214,7 @@
   inset: 0;
   overflow: hidden;
   background: #f7f8fb;
+  contain: layout paint style;
   pointer-events: none;
 }
 
@@ -283,108 +278,16 @@
   animation: blink 1s step-end infinite;
 }
 
-.hero-selector {
-  width: min(100%, 640px);
-  margin-top: 35px;
+.hero-reveal {
+  animation: hero-reveal 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.hero-selector h2 {
-  color: #111820;
-  font-family: "Inter", "DM Sans", sans-serif;
-  font-size: clamp(1.25rem, 2vw, 1.55rem);
-  font-weight: 550;
-  line-height: 1.25;
-  letter-spacing: -0.025em;
+.hero-reveal--delayed {
+  animation-delay: 100ms;
 }
 
-.hero-selector > p {
-  margin-top: 6px;
-  color: #6b7a89;
-  font-size: 0.83rem;
-  line-height: 1.5;
-}
-
-.hero-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.hero-pills > button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 46px;
-  padding: 0 18px;
-  border: 1px solid #dfe7ee;
-  border-radius: var(--launch-pill);
-  color: #274f78;
-  background: rgba(255, 255, 255, 0.92);
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: color 170ms ease, background-color 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
-}
-
-.hero-pills > button:hover {
-  border-color: #b9cfe2;
-  background: #edf4fa;
-}
-
-.hero-pills > button.is-selected {
-  border-color: #274f78;
-  color: #fff;
-  background: #274f78;
-  box-shadow: 0 10px 24px rgba(39, 79, 120, 0.16);
-}
-
-.hero-selection-empty {
-  min-height: 46px;
-  padding-top: 18px;
-  color: #415365;
-  font-size: 0.75rem;
-  font-style: italic;
-}
-
-.hero-selection-ready {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  min-height: 54px;
-  margin-top: 14px;
-  padding: 9px 10px 9px 17px;
-  overflow: hidden;
-  border: 1px solid #dfe7ee;
-  border-radius: 16px;
-  color: #33495e;
-  background: rgba(250, 252, 254, 0.92);
-  font-size: 0.78rem;
-}
-
-.hero-selection-ready > span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.hero-selection-ready button {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 6px;
-  min-height: 36px;
-  padding: 0 13px;
-  border: 0;
-  border-radius: var(--launch-pill);
-  color: #274f78;
-  background: #e6f0f8;
-  font-size: 0.69rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  cursor: pointer;
+.hero-reveal--later {
+  animation-delay: 180ms;
 }
 
 .hero-proofline {
@@ -403,6 +306,47 @@
   margin-right: 18px;
   color: #9eb4c8;
   content: "·";
+}
+
+.hero-evidence {
+  padding-top: 88px;
+}
+
+.hero-evidence figure {
+  width: min(100%, 1000px);
+  margin-inline: auto;
+}
+
+.hero-evidence img {
+  aspect-ratio: 16 / 8.9;
+  border-radius: 24px;
+  object-fit: cover;
+  object-position: center;
+  box-shadow: 0 20px 52px rgba(31, 69, 105, 0.14);
+}
+
+.hero-evidence figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 2px 0;
+  color: rgba(21, 38, 58, 0.72);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .thesis-section,
@@ -1549,35 +1493,6 @@
     font-size: 0.94rem;
   }
 
-  .hero-selector {
-    margin-top: 30px;
-  }
-
-  .hero-pills {
-    gap: 8px;
-  }
-
-  .hero-pills > button {
-    min-height: 42px;
-    padding-inline: 15px;
-    font-size: 0.76rem;
-  }
-
-  .hero-selection-ready {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 13px;
-  }
-
-  .hero-selection-ready > span {
-    white-space: normal;
-  }
-
-  .hero-selection-ready button {
-    width: 100%;
-    justify-content: center;
-  }
-
   .hero-proofline {
     gap: 8px 12px;
     margin-top: 26px;
@@ -1593,6 +1508,21 @@
 
   .hero-video video {
     object-position: 68% center;
+  }
+
+  .hero-evidence {
+    padding-top: 48px;
+  }
+
+  .hero-evidence img {
+    aspect-ratio: 4 / 3;
+    border-radius: 16px;
+  }
+
+  .hero-evidence figcaption {
+    align-items: flex-start;
+    padding-top: 16px;
+    font-size: 0.66rem;
   }
 
   .thesis-section,
@@ -1817,6 +1747,10 @@
   }
 
   .typewriter-cursor {
+    animation: none;
+  }
+
+  .hero-reveal {
     animation: none;
   }
 }
