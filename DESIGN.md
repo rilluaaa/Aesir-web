@@ -176,8 +176,8 @@ The system is editorial before it is technological. Cobalt, mist blue, cool pape
 - Monumental Crimson Text statements on a paper-white field.
 - DM Sans interface copy with compact, disciplined metadata.
 - Institutional-blue actions with mist, haze, and soft-paper evidence groups.
-- A fixed, paper-white 88px desktop header with comma-paced navigation and an underlined contact action.
-- A full-viewport interactive video hero with research multi-select and a stateful route into the research panels.
+- A fixed, paper-white 88px desktop header with clean navigation and an underlined Contact action.
+- A full-viewport interactive video hero followed by a centred documentary image of Ernest HS CHAN in public dialogue.
 - Independent 16px cards paced by consistent 12px gaps.
 - Local static WebP archive previews that avoid third-party thumbnail requests.
 - Responsive compositions that preserve the launch-like pacing on small screens.
@@ -292,11 +292,11 @@ Soft geometry is hierarchical. Large research panels use a 30px radius, secondar
 
 ### Navigation
 
-The desktop header is a full-width, 88px paper-white fixed surface with centred comma-separated Inter links and an underlined contact action. At 900px it becomes a 76px bar; a three-line 44px menu control transforms into an X and opens a full-screen ruled navigation overlay with a blue contact action.
+The desktop header is a full-width, 88px paper-white fixed surface with centred Inter links and an underlined Contact action. At 900px it becomes a 76px bar; a three-line 44px menu control transforms into an X and opens a full-screen ruled navigation overlay with a blue contact action. The Deployment label retains the original Evidence section anchor and behaviour.
 
 ### Hero Media
 
-The hero media is an unframed full-bleed MP4. Desktop mouse movement scrubs the timeline from the visitor's horizontal delta; mobile plays normally and loops. Reduced-motion visitors receive a paused frame. A white-to-transparent readability veil protects the left copy without obscuring the figure. The copy includes a typewritten thesis, concise positioning, three multi-select research pills, an animated selection status, and a direct route to Research.
+The hero media is an unframed full-bleed local MP4 with an immediate WebP poster. Desktop uses a motion-interpolated 1080p/120fps source and coalesces pointer input through a display-synchronised requestAnimationFrame loop; mobile uses a lighter 720p/60fps source, plays normally, and loops. Reduced-motion visitors receive a paused frame. A white-to-transparent readability veil protects the left copy without obscuring the figure. The copy is limited to the typewritten thesis, concise positioning, and the compact proof line. Immediately below, Ernest HS CHAN's panel photograph returns as a centred documentary figure.
 
 ### Research Selector
 
@@ -312,7 +312,7 @@ Applied outputs form a vertical 12px-spaced stack of 16px cards. Archive Paper a
 
 ### Documentary Media
 
-The hero video uses `object-fit: cover` and keeps the cognitive figure right-aligned. Evidence, leadership, archive, project-card, and project-detail imagery uses `object-fit: contain` inside a deliberate mist, haze, white, or dark field whenever the complete artifact must remain visible. Project cards use a 16:10 frame with 14px padding; the project viewer centres original project media within a padded Clear Mist field and caps it at 62vh.
+The responsive hero video sources use `object-fit: cover` and keep the cognitive figure right-aligned. The follow-up Ernest image uses the former centred editorial crop and direct cool shadow. Evidence, leadership, archive, project-card, and project-detail imagery uses `object-fit: contain` inside a deliberate mist, haze, white, or dark field whenever the complete artifact must remain visible. Project cards use a 16:10 frame with 14px padding; the project viewer centres original project media within a padded Clear Mist field and caps it at 62vh.
 
 ### Project Card
 
@@ -330,7 +330,7 @@ The standalone viewer uses a 28px white panel on Viewer Paper, a padded Clear Mi
 - **Do** use blue for purposeful action and the mist–haze–sky range for tonal evidence groups.
 - **Do** keep the header full-width, fixed, and geometrically stable.
 - **Do** keep the hero video full-bleed, right-aligned, and free of a card frame.
-- **Do** preserve desktop scrubbing, mobile autoplay, and the reduced-motion pause.
+- **Do** preserve 120Hz-coalesced desktop scrubbing, lightweight mobile autoplay, and the reduced-motion pause.
 - **Do** serve local static WebP previews in archive cards and preserve original media in project detail.
 - **Do** keep research, method, and output items as independent 16px cards with consistent 12px gaps.
 - **Do** preserve visible focus, 44px or larger targets, reduced-motion behavior, and verified-link gating.
