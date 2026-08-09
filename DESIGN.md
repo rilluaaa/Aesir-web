@@ -296,7 +296,7 @@ The desktop header is a full-width, 88px paper-white fixed surface with centred 
 
 ### Hero Media
 
-The hero media is an unframed full-bleed local MP4 with an immediate WebP poster. Desktop uses a motion-interpolated 1080p/120fps source and coalesces pointer input through a display-synchronised requestAnimationFrame loop; mobile uses a lighter 720p/60fps source, plays normally, and loops. Reduced-motion visitors receive a paused frame. A white-to-transparent readability veil protects the left copy without obscuring the figure. The copy is limited to the typewritten thesis, concise positioning, and the compact proof line. Immediately below, Ernest HS CHAN's panel photograph returns as a centred documentary figure.
+The hero media is an unframed full-bleed local MP4 with an immediate WebP poster. Large or high-density desktops receive a motion-interpolated 1440p/120fps source, standard desktops retain the lighter 1080p/120fps source, and mobile uses a 720p/60fps source that plays normally and loops. Desktop pointer position maps absolutely across the video timeline—left, neutral centre, and right—then coalesces seeking through a display-synchronised requestAnimationFrame loop, so gaze direction no longer depends on the pointer's entry position. Reduced-motion visitors receive a paused frame. A white-to-transparent readability veil protects the left copy without obscuring the figure. The copy is limited to the typewritten thesis, concise positioning, and the compact proof line. Immediately below, Ernest HS CHAN's panel photograph returns as a centred documentary figure.
 
 ### Research Selector
 

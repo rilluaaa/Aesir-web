@@ -313,7 +313,6 @@ function BackgroundVideo() {
     const video = videoRef.current;
     if (!video) return undefined;
 
-    let previousX = null;
     let targetTime = 0;
     let renderedTime = 0;
     let animationFrame = 0;
@@ -322,24 +321,16 @@ function BackgroundVideo() {
 
     const onMouseMove = (event) => {
       if (window.innerWidth < 1024 || !Number.isFinite(video.duration)) return;
-      if (previousX === null) {
-        previousX = event.clientX;
-        targetTime = video.currentTime;
-        renderedTime = video.currentTime;
-        return;
-      }
-
-      const delta = event.clientX - previousX;
-      previousX = event.clientX;
-      targetTime = Math.min(
-        video.duration,
-        Math.max(0, targetTime + (delta / window.innerWidth) * 0.8 * video.duration),
-      );
+      const pointerProgress = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
+      const finalFrame = Math.max(0, video.duration - 1 / 120);
+      targetTime = pointerProgress * finalFrame;
     };
 
     const onLoadedMetadata = () => {
-      targetTime = video.currentTime;
-      renderedTime = video.currentTime;
+      const neutralTime = Math.max(0, (video.duration - 1 / 120) / 2);
+      targetTime = neutralTime;
+      renderedTime = neutralTime;
+      video.currentTime = neutralTime;
     };
 
     const renderScrub = (timestamp) => {
@@ -363,7 +354,6 @@ function BackgroundVideo() {
     };
 
     const updateScrubLoop = () => {
-      previousX = null;
       if (window.innerWidth >= 1024 && !animationFrame) {
         animationFrame = window.requestAnimationFrame(renderScrub);
       } else if (window.innerWidth < 1024 && animationFrame) {
@@ -416,6 +406,11 @@ function BackgroundVideo() {
         preload="auto"
         poster={asset("assets/aesir/cognitive-hero-poster.webp")}
       >
+        <source
+          media="(min-width: 1440px), (min-width: 1024px) and (min-resolution: 1.5dppx)"
+          src={asset("assets/aesir/cognitive-hero-1440p-120fps.mp4")}
+          type="video/mp4"
+        />
         <source
           media="(min-width: 1024px)"
           src={asset("assets/aesir/cognitive-hero-120fps.mp4")}
