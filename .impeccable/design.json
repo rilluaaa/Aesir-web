@@ -1,50 +1,206 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-09T10:26:13.680Z",
+  "generatedAt": "2026-08-09T11:46:57.524Z",
   "title": "Design System: AESIR Research Launch",
   "extensions": {
     "colorMeta": {
-      "ink": { "role": "neutral", "displayName": "Editorial Ink", "canonical": "#151713", "tonalRamp": ["oklch(15% 0.008 128.9)", "oklch(26% 0.008 128.9)", "oklch(38% 0.008 128.9)", "oklch(50% 0.008 128.9)", "oklch(62% 0.008 128.9)", "oklch(74% 0.008 128.9)", "oklch(86% 0.008 128.9)", "oklch(95% 0.008 128.9)"] },
-      "muted": { "role": "neutral", "displayName": "Quiet Record", "canonical": "#6f746c", "tonalRamp": ["oklch(15% 0.014 133.5)", "oklch(26% 0.014 133.5)", "oklch(38% 0.014 133.5)", "oklch(50% 0.014 133.5)", "oklch(62% 0.014 133.5)", "oklch(74% 0.014 133.5)", "oklch(86% 0.014 133.5)", "oklch(95% 0.014 133.5)"] },
-      "moss": { "role": "primary", "displayName": "Launch Moss", "canonical": "#50651b", "tonalRamp": ["oklch(15% 0.102 124)", "oklch(26% 0.102 124)", "oklch(38% 0.102 124)", "oklch(50% 0.102 124)", "oklch(62% 0.102 124)", "oklch(74% 0.102 124)", "oklch(86% 0.102 124)", "oklch(95% 0.102 124)"] },
-      "moss-dark": { "role": "primary", "displayName": "Deep Moss", "canonical": "#394b11", "tonalRamp": ["oklch(15% 0.084 125.3)", "oklch(26% 0.084 125.3)", "oklch(38% 0.084 125.3)", "oklch(50% 0.084 125.3)", "oklch(62% 0.084 125.3)", "oklch(74% 0.084 125.3)", "oklch(86% 0.084 125.3)", "oklch(95% 0.084 125.3)"] },
-      "sage": { "role": "secondary", "displayName": "Documentary Sage", "canonical": "#9faa8d", "tonalRamp": ["oklch(15% 0.043 124.4)", "oklch(26% 0.043 124.4)", "oklch(38% 0.043 124.4)", "oklch(50% 0.043 124.4)", "oklch(62% 0.043 124.4)", "oklch(74% 0.043 124.4)", "oklch(86% 0.043 124.4)", "oklch(95% 0.043 124.4)"] },
-      "sage-soft": { "role": "secondary", "displayName": "Pale Sage", "canonical": "#e8eed4", "tonalRamp": ["oklch(15% 0.035 117.6)", "oklch(26% 0.035 117.6)", "oklch(38% 0.035 117.6)", "oklch(50% 0.035 117.6)", "oklch(62% 0.035 117.6)", "oklch(74% 0.035 117.6)", "oklch(86% 0.035 117.6)", "oklch(95% 0.035 117.6)"] },
-      "cream": { "role": "secondary", "displayName": "Archive Cream", "canonical": "#f4f0e6", "tonalRamp": ["oklch(15% 0.014 88.7)", "oklch(26% 0.014 88.7)", "oklch(38% 0.014 88.7)", "oklch(50% 0.014 88.7)", "oklch(62% 0.014 88.7)", "oklch(74% 0.014 88.7)", "oklch(86% 0.014 88.7)", "oklch(95% 0.014 88.7)"] },
-      "warm-panel": { "role": "secondary", "displayName": "Warm Research Clay", "canonical": "#eadfd4", "tonalRamp": ["oklch(15% 0.019 67.6)", "oklch(26% 0.019 67.6)", "oklch(38% 0.019 67.6)", "oklch(50% 0.019 67.6)", "oklch(62% 0.019 67.6)", "oklch(74% 0.019 67.6)", "oklch(86% 0.019 67.6)", "oklch(95% 0.019 67.6)"] },
-      "paper-soft": { "role": "neutral", "displayName": "Soft Paper", "canonical": "#f7f7f3", "tonalRamp": ["oklch(15% 0.005 106.5)", "oklch(26% 0.005 106.5)", "oklch(38% 0.005 106.5)", "oklch(50% 0.005 106.5)", "oklch(62% 0.005 106.5)", "oklch(74% 0.005 106.5)", "oklch(86% 0.005 106.5)", "oklch(95% 0.005 106.5)"] },
-      "paper-tint": { "role": "neutral", "displayName": "Paper Tint", "canonical": "#fafaf7", "tonalRamp": ["oklch(15% 0.004 106.5)", "oklch(26% 0.004 106.5)", "oklch(38% 0.004 106.5)", "oklch(50% 0.004 106.5)", "oklch(62% 0.004 106.5)", "oklch(74% 0.004 106.5)", "oklch(86% 0.004 106.5)", "oklch(95% 0.004 106.5)"] },
-      "line": { "role": "neutral", "displayName": "Measured Rule", "canonical": "#e4e5df", "tonalRamp": ["oklch(15% 0.008 114.2)", "oklch(26% 0.008 114.2)", "oklch(38% 0.008 114.2)", "oklch(50% 0.008 114.2)", "oklch(62% 0.008 114.2)", "oklch(74% 0.008 114.2)", "oklch(86% 0.008 114.2)", "oklch(95% 0.008 114.2)"] },
-      "white": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff", "tonalRamp": ["oklch(15% 0 0)", "oklch(26% 0 0)", "oklch(38% 0 0)", "oklch(50% 0 0)", "oklch(62% 0 0)", "oklch(74% 0 0)", "oklch(86% 0 0)", "oklch(95% 0 0)"] }
+      "ink": {
+        "role": "neutral",
+        "displayName": "Editorial Ink",
+        "canonical": "#1b1816"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Quiet Record",
+        "canonical": "#716963"
+      },
+      "clay": {
+        "role": "primary",
+        "displayName": "Launch Clay",
+        "canonical": "#8d4d3b"
+      },
+      "clay-dark": {
+        "role": "primary",
+        "displayName": "Deep Clay",
+        "canonical": "#6f3729"
+      },
+      "sand": {
+        "role": "secondary",
+        "displayName": "Natural Sand",
+        "canonical": "#c7b5a2"
+      },
+      "sand-soft": {
+        "role": "secondary",
+        "displayName": "Soft Sand",
+        "canonical": "#f1e5dc"
+      },
+      "cream": {
+        "role": "secondary",
+        "displayName": "Archive Cream",
+        "canonical": "#f5efe8"
+      },
+      "warm-panel": {
+        "role": "secondary",
+        "displayName": "Warm Research Clay",
+        "canonical": "#eadfd4",
+        "tonalRamp": [
+          "oklch(15% 0.019 67.6)",
+          "oklch(26% 0.019 67.6)",
+          "oklch(38% 0.019 67.6)",
+          "oklch(50% 0.019 67.6)",
+          "oklch(62% 0.019 67.6)",
+          "oklch(74% 0.019 67.6)",
+          "oklch(86% 0.019 67.6)",
+          "oklch(95% 0.019 67.6)"
+        ]
+      },
+      "paper-soft": {
+        "role": "neutral",
+        "displayName": "Soft Paper",
+        "canonical": "#f7f7f3",
+        "tonalRamp": [
+          "oklch(15% 0.005 106.5)",
+          "oklch(26% 0.005 106.5)",
+          "oklch(38% 0.005 106.5)",
+          "oklch(50% 0.005 106.5)",
+          "oklch(62% 0.005 106.5)",
+          "oklch(74% 0.005 106.5)",
+          "oklch(86% 0.005 106.5)",
+          "oklch(95% 0.005 106.5)"
+        ]
+      },
+      "paper-tint": {
+        "role": "neutral",
+        "displayName": "Paper Tint",
+        "canonical": "#fafaf7",
+        "tonalRamp": [
+          "oklch(15% 0.004 106.5)",
+          "oklch(26% 0.004 106.5)",
+          "oklch(38% 0.004 106.5)",
+          "oklch(50% 0.004 106.5)",
+          "oklch(62% 0.004 106.5)",
+          "oklch(74% 0.004 106.5)",
+          "oklch(86% 0.004 106.5)",
+          "oklch(95% 0.004 106.5)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Measured Rule",
+        "canonical": "#e7dfd7"
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(26% 0 0)",
+          "oklch(38% 0 0)",
+          "oklch(50% 0 0)",
+          "oklch(62% 0 0)",
+          "oklch(74% 0 0)",
+          "oklch(86% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Launch Display", "purpose": "Centred hero and final launch statements." },
-      "headline": { "displayName": "Editorial Headline", "purpose": "Section theses and major transitions." },
-      "title": { "displayName": "Research Title", "purpose": "Research tabs and component-level serif titles." },
-      "body": { "displayName": "Evidence Body", "purpose": "Explanations, evidence, controls, and field records." },
-      "label": { "displayName": "Record Label", "purpose": "Categories, proof points, captions, and definition terms." },
-      "case-heading": { "displayName": "Case Group Heading", "purpose": "Introduces the applied-case group at clamp(2.5rem, 4vw, 4rem)." },
-      "case-title": { "displayName": "Case Title", "purpose": "Research-case card titles at 1.7rem and line-height 1.06." },
-      "case-body": { "displayName": "Case Body", "purpose": "Research-case evidence copy at 0.86rem and line-height 1.68." }
+      "display": {
+        "displayName": "Launch Display",
+        "purpose": "Centred hero and final launch statements."
+      },
+      "headline": {
+        "displayName": "Editorial Headline",
+        "purpose": "Section theses and major transitions."
+      },
+      "title": {
+        "displayName": "Research Title",
+        "purpose": "Research tabs and component-level serif titles."
+      },
+      "body": {
+        "displayName": "Evidence Body",
+        "purpose": "Explanations, evidence, controls, and field records."
+      },
+      "label": {
+        "displayName": "Record Label",
+        "purpose": "Categories, proof points, captions, and definition terms."
+      },
+      "case-heading": {
+        "displayName": "Case Group Heading",
+        "purpose": "Introduces the applied-case group at clamp(2.5rem, 4vw, 4rem)."
+      },
+      "case-title": {
+        "displayName": "Case Title",
+        "purpose": "Research-case card titles at 1.7rem and line-height 1.06."
+      },
+      "case-body": {
+        "displayName": "Case Body",
+        "purpose": "Research-case evidence copy at 0.86rem and line-height 1.68."
+      }
     },
     "shadows": [
-      { "name": "launch-object", "value": "0 18px 54px rgba(36, 42, 29, 0.1)", "purpose": "Shared soft elevation token for raised editorial objects." },
-      { "name": "hero-media", "value": "0 22px 65px rgba(25, 31, 17, 0.24)", "purpose": "Framed documentary image inside the sage hero enclosure." },
-      { "name": "compact-navigation", "value": "0 10px 34px rgba(21, 23, 19, 0.08)", "purpose": "Floating desktop navigation after scrolling." },
-      { "name": "temporary-menu", "value": "0 20px 40px rgba(21, 23, 19, 0.08)", "purpose": "Open mobile navigation only." },
-      { "name": "viewer-panel", "value": "0 24px 70px rgba(36, 42, 29, 0.1)", "purpose": "Single focused media object in the standalone project viewer." }
+      {
+        "name": "launch-object",
+        "value": "0 18px 54px rgba(64, 43, 34, 0.1)",
+        "purpose": "Shared warm elevation token for raised editorial objects."
+      },
+      {
+        "name": "hero-media",
+        "value": "0 20px 52px rgba(58, 38, 30, 0.13)",
+        "purpose": "Direct shadow beneath the unframed full-frame documentary image."
+      },
+      {
+        "name": "temporary-menu",
+        "value": "0 20px 40px rgba(27, 24, 22, 0.08)",
+        "purpose": "Open mobile navigation only."
+      },
+      {
+        "name": "viewer-panel",
+        "value": "0 24px 70px rgba(64, 43, 34, 0.1)",
+        "purpose": "Single focused media object in the standalone project viewer."
+      }
     ],
     "motion": [
-      { "name": "micro", "value": "160ms ease", "purpose": "Arrow movement and link underlines." },
-      { "name": "control", "value": "180ms ease", "purpose": "Moss action color and two-pixel lift." },
-      { "name": "research-panel", "value": "320ms ease", "purpose": "Selected research panel fade-and-rise." },
-      { "name": "hero-entry", "value": "540ms cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "One-time hero reveal when motion is permitted." },
-      { "name": "reduced-motion", "value": "0.01ms", "purpose": "Effective removal of transitions and animation under prefers-reduced-motion." }
+      {
+        "name": "micro",
+        "value": "160ms ease",
+        "purpose": "Arrow movement and link underlines."
+      },
+      {
+        "name": "control",
+        "value": "180ms ease",
+        "purpose": "Clay action color and two-pixel lift."
+      },
+      {
+        "name": "research-panel",
+        "value": "320ms ease",
+        "purpose": "Selected research panel fade-and-rise."
+      },
+      {
+        "name": "hero-entry",
+        "value": "540ms cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "One-time hero reveal when motion is permitted."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "Effective removal of transitions and animation under prefers-reduced-motion."
+      }
     ],
     "breakpoints": [
-      { "name": "content-compact", "value": "1100px" },
-      { "name": "navigation-mobile", "value": "900px" },
-      { "name": "single-column", "value": "640px" }
+      {
+        "name": "content-compact",
+        "value": "1100px"
+      },
+      {
+        "name": "navigation-mobile",
+        "value": "900px"
+      },
+      {
+        "name": "single-column",
+        "value": "640px"
+      }
     ]
   },
   "components": [
@@ -52,24 +208,24 @@
       "name": "Primary Action",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Moss launch action for research exploration and contact.",
+      "description": "Clay launch action for research exploration and contact.",
       "html": "<button class=\"ds-primary-action\">Explore the research <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 5v14M19 12l-7 7-7-7\"/></svg></button>",
-      "css": ".ds-primary-action{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:206px;height:50px;border:0;border-radius:999px;background:var(--launch-moss,#50651b);padding:0 25px;color:#fff;font:600 .85rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;cursor:pointer;transition:background 180ms ease,transform 180ms ease}.ds-primary-action svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ds-primary-action:hover{background:var(--launch-moss-dark,#394b11);transform:translateY(-2px)}.ds-primary-action:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}.ds-primary-action:active{transform:translateY(0)}"
+      "css": ".ds-primary-action{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:206px;height:50px;border:0;border-radius:999px;background:var(--launch-clay,#8d4d3b);padding:0 25px;color:#fff;font:600 .85rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;cursor:pointer;transition:background 180ms ease,transform 180ms ease}.ds-primary-action svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ds-primary-action:hover{background:var(--launch-clay-dark,#6f3729);transform:translateY(-2px)}.ds-primary-action:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px var(--launch-clay-dark,#6f3729)}.ds-primary-action:active{transform:translateY(0)}"
     },
     {
-      "name": "Compact Navigation",
+      "name": "Sticky Navigation",
       "kind": "nav",
-      "description": "Floating desktop navigation state revealed after the hero begins to scroll.",
+      "description": "Stable full-width opaque navigation that remains geometrically unchanged while scrolling.",
       "html": "<nav class=\"ds-launch-nav\" aria-label=\"Primary navigation\"><button>Research</button><button>Method</button><button>Evidence</button><button>Projects</button><button>Leadership</button></nav>",
-      "css": ".ds-launch-nav{display:flex;width:530px;height:60px;align-items:center;justify-content:center;gap:28px;border:1px solid rgba(21,23,19,.06);border-radius:999px;background:rgba(244,244,240,.92);box-shadow:0 10px 34px rgba(21,23,19,.08);backdrop-filter:blur(16px)}.ds-launch-nav button{position:relative;border:0;background:transparent;padding:12px 0;color:var(--launch-ink,#151713);font:600 .82rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;cursor:pointer}.ds-launch-nav button::after{position:absolute;right:0;bottom:7px;left:0;height:1px;background:currentColor;content:'';opacity:0;transform:scaleX(.3);transition:opacity 160ms ease,transform 160ms ease}.ds-launch-nav button:hover::after,.ds-launch-nav button:focus-visible::after{opacity:1;transform:scaleX(1)}.ds-launch-nav button:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}.ds-launch-nav button:active{color:var(--launch-moss-dark,#394b11)}"
+      "css": ".ds-launch-nav{display:flex;width:100%;height:96px;align-items:center;justify-content:center;gap:35px;border-bottom:1px solid var(--launch-line,#e7dfd7);background:#fff;padding:0 40px}.ds-launch-nav button{position:relative;border:0;background:transparent;padding:12px 0;color:var(--launch-ink,#1b1816);font:600 .82rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;cursor:pointer}.ds-launch-nav button::after{position:absolute;right:0;bottom:7px;left:0;height:1px;background:currentColor;content:'';opacity:0;transform:scaleX(.3);transition:opacity 160ms ease,transform 160ms ease}.ds-launch-nav button:hover::after,.ds-launch-nav button:focus-visible::after{opacity:1;transform:scaleX(1)}.ds-launch-nav button:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px var(--launch-clay-dark,#6f3729)}.ds-launch-nav button:active{color:var(--launch-clay-dark,#6f3729)}"
     },
     {
       "name": "Method Card",
       "kind": "card",
       "refersTo": "method-card",
-      "description": "Independent process card with a monumental moss sequence number.",
+      "description": "Independent process card with a monumental clay sequence number.",
       "html": "<article class=\"ds-method-card\"><span>01</span><h3>Research</h3><p>Frame a human problem with scientific, market, and policy context.</p></article>",
-      "css": ".ds-method-card{min-height:360px;border-radius:16px;background:#fff;padding:28px 28px 38px;color:var(--launch-ink,#151713)}.ds-method-card>span{display:block;color:var(--launch-moss,#50651b);font:400 clamp(5rem,8vw,7.8rem)/.9 'Crimson Text',Georgia,serif;letter-spacing:-.06em}.ds-method-card h3{margin:74px 0 0;font:400 2rem/1.05 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-method-card p{margin:16px 0 0;color:var(--launch-muted,#6f746c);font:400 .87rem/1.65 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-method-card:nth-child(even){background:var(--launch-sage-soft,#e8eed4)}"
+      "css": ".ds-method-card{min-height:360px;border-radius:16px;background:#fff;padding:28px 28px 38px;color:var(--launch-ink,#1b1816)}.ds-method-card>span{display:block;color:var(--launch-clay,#8d4d3b);font:400 clamp(5rem,8vw,7.8rem)/.9 'Crimson Text',Georgia,serif;letter-spacing:-.06em}.ds-method-card h3{margin:74px 0 0;font:400 2rem/1.05 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-method-card p{margin:16px 0 0;color:var(--launch-muted,#716963);font:400 .87rem/1.65 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-method-card:nth-child(even){background:var(--launch-sand-soft,#f1e5dc)}"
     },
     {
       "name": "Output Card",
@@ -77,7 +233,7 @@
       "refersTo": "output-card",
       "description": "Compact independent evidence card in the applied-output stack.",
       "html": "<article class=\"ds-output-card\"><h3>Health and rehabilitation</h3><p>Mixed-reality rehearsal, care support, preventive games, and assistive learning tools.</p></article>",
-      "css": ".ds-output-card{border-radius:16px;background:#f7f7f3;padding:24px;color:var(--launch-ink,#151713)}.ds-output-card h3{margin:0;font:400 1.6rem/1.1 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-output-card p{margin:12px 0 0;color:var(--launch-muted,#6f746c);font:400 .85rem/1.65 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-output-card:nth-child(even){background:var(--launch-sage-soft,#e8eed4)}"
+      "css": ".ds-output-card{border-radius:16px;background:#f7f7f3;padding:24px;color:var(--launch-ink,#1b1816)}.ds-output-card h3{margin:0;font:400 1.6rem/1.1 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-output-card p{margin:12px 0 0;color:var(--launch-muted,#716963);font:400 .85rem/1.65 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-output-card:nth-child(even){background:var(--launch-sand-soft,#f1e5dc)}"
     },
     {
       "name": "Selected Research Tab",
@@ -85,7 +241,7 @@
       "refersTo": "research-tab-active",
       "description": "Active independent card in the three-part tonal research selector.",
       "html": "<button class=\"ds-research-tab\" role=\"tab\" aria-selected=\"true\"><strong>Society 5.0</strong><span>Human-Centric Cyber-Physical Frameworks</span></button>",
-      "css": ".ds-research-tab{display:block;width:100%;min-height:154px;border:0;border-radius:16px;background:var(--launch-moss,#50651b);padding:27px 28px;color:#fff;text-align:left;cursor:pointer;transition:color 180ms ease,background 180ms ease}.ds-research-tab strong{display:block;font:400 1.8rem/1.05 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-research-tab span{display:block;margin-top:18px;font:400 .78rem/1.45 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-research-tab:hover{background:var(--launch-moss-dark,#394b11)}.ds-research-tab:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}.ds-research-tab:active{background:#2f3f0d}"
+      "css": ".ds-research-tab{display:block;width:100%;min-height:154px;border:0;border-radius:16px;background:var(--launch-clay,#8d4d3b);padding:27px 28px;color:#fff;text-align:left;cursor:pointer;transition:color 180ms ease,background 180ms ease}.ds-research-tab strong{display:block;font:400 1.8rem/1.05 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-research-tab span{display:block;margin-top:18px;font:400 .78rem/1.45 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-research-tab:hover{background:var(--launch-clay-dark,#6f3729)}.ds-research-tab:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px var(--launch-clay-dark,#6f3729)}.ds-research-tab:active{background:#5f2d22}"
     },
     {
       "name": "Research Tag",
@@ -93,7 +249,7 @@
       "refersTo": "research-tag",
       "description": "Compact non-actionable taxonomy label inside a research panel.",
       "html": "<span class=\"ds-research-tag\">Smart Cities</span>",
-      "css": ".ds-research-tag{display:inline-flex;border:1px solid rgba(80,101,27,.22);border-radius:999px;background:transparent;padding:9px 13px;color:var(--launch-moss-dark,#394b11);font:600 .72rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}"
+      "css": ".ds-research-tag{display:inline-flex;border:1px solid rgba(141,77,59,.24);border-radius:999px;background:transparent;padding:9px 13px;color:var(--launch-clay-dark,#6f3729);font:600 .72rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}"
     },
     {
       "name": "Project Search",
@@ -101,55 +257,83 @@
       "refersTo": "search-field",
       "description": "Pill search field for filtering the complete archive.",
       "html": "<label class=\"ds-project-search\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><span class=\"ds-search-label\">Search projects</span><input type=\"search\" placeholder=\"Search the archive\"></label>",
-      "css": ".ds-project-search{display:flex;align-items:center;gap:11px;border:1px solid var(--launch-line,#e4e5df);border-radius:999px;background:#fafaf7;padding:13px 18px;color:var(--launch-muted,#6f746c)}.ds-project-search svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.ds-search-label{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.ds-project-search input{width:100%;border:0;outline:0;background:transparent;color:var(--launch-ink,#151713);font:400 .86rem/1.5 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-project-search input::placeholder{color:var(--launch-muted,#6f746c);opacity:1}.ds-project-search:focus-within{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}"
+      "css": ".ds-project-search{display:flex;align-items:center;gap:11px;border:1px solid var(--launch-line,#e7dfd7);border-radius:999px;background:#fafaf7;padding:13px 18px;color:var(--launch-muted,#716963)}.ds-project-search svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}.ds-search-label{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.ds-project-search input{width:100%;border:0;outline:0;background:transparent;color:var(--launch-ink,#1b1816);font:400 .86rem/1.5 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-project-search input::placeholder{color:var(--launch-muted,#716963);opacity:1}.ds-project-search:focus-within{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px var(--launch-clay-dark,#6f3729)}"
     },
     {
       "name": "Project Card",
       "kind": "card",
       "description": "One of all 106 source records, using previewMedia only in the archive grid and preserving original media for detail.",
       "html": "<a class=\"ds-project-card\" href=\"#\" target=\"_blank\" rel=\"noreferrer\"><div class=\"ds-project-media\"><span>FULL-FRAME PREVIEW MEDIA</span></div><div class=\"ds-project-copy\"><span>IMMERSIVE LEARNING</span><h3>Happy Kingdom AR Playbook</h3><p>An augmented-reality playbook supporting emotional literacy through guided stories and practice.</p><div>View project <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7 17 17 7M7 7h10v10\"/></svg></div></div></a>",
-      "css": ".ds-project-card{display:block;width:min(100%,360px);color:var(--launch-ink,#151713);text-decoration:none}.ds-project-media{display:grid;aspect-ratio:16/10;place-items:center;overflow:hidden;border-radius:22px;background:var(--launch-cream,#f4f0e6);padding:14px;color:var(--launch-muted,#6f746c);font:600 .7rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-project-copy{padding:18px 2px 0}.ds-project-copy>span{color:var(--launch-moss,#50651b);font:700 .7rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-project-card h3{margin:8px 0 0;font:400 1.45rem/1.12 'Crimson Text',Georgia,serif;letter-spacing:-.045em}.ds-project-copy>p{display:-webkit-box;margin:12px 0 0;overflow:hidden;color:var(--launch-muted,#6f746c);font:400 .82rem/1.6 'DM Sans',ui-sans-serif,system-ui,sans-serif;-webkit-box-orient:vertical;-webkit-line-clamp:3}.ds-project-copy>div{display:flex;align-items:center;gap:6px;margin-top:15px;color:var(--launch-muted,#6f746c);font:600 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-project-copy svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform 160ms ease}.ds-project-card:hover .ds-project-media{background:var(--launch-sage-soft,#e8eed4)}.ds-project-card:hover svg{transform:translate(3px,-3px)}.ds-project-card:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}"
+      "css": ".ds-project-card{display:block;width:min(100%,360px);color:var(--launch-ink,#1b1816);text-decoration:none}.ds-project-media{display:grid;aspect-ratio:16/10;place-items:center;overflow:hidden;border-radius:22px;background:var(--launch-cream,#f5efe8);padding:14px;color:var(--launch-muted,#716963);font:600 .7rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-project-copy{padding:18px 2px 0}.ds-project-copy>span{color:var(--launch-clay,#8d4d3b);font:700 .7rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-project-card h3{margin:8px 0 0;font:400 1.45rem/1.12 'Crimson Text',Georgia,serif;letter-spacing:-.045em}.ds-project-copy>p{display:-webkit-box;margin:12px 0 0;overflow:hidden;color:var(--launch-muted,#716963);font:400 .82rem/1.6 'DM Sans',ui-sans-serif,system-ui,sans-serif;-webkit-box-orient:vertical;-webkit-line-clamp:3}.ds-project-copy>div{display:flex;align-items:center;gap:6px;margin-top:15px;color:var(--launch-muted,#716963);font:600 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-project-copy svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform 160ms ease}.ds-project-card:hover .ds-project-media{background:var(--launch-sand-soft,#f1e5dc)}.ds-project-card:hover svg{transform:translate(3px,-3px)}.ds-project-card:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px var(--launch-clay-dark,#6f3729)}"
     },
     {
       "name": "Research Panel",
       "kind": "custom",
       "refersTo": "research-panel",
-      "description": "Tonal research sheet with independent detail and case-study cards.",
-      "html": "<article class=\"ds-research-panel\"><div class=\"ds-research-lead\"><h3>Society 5.0</h3><p>Designing public infrastructure that expands human agency, access, and quality of life.</p></div><dl class=\"ds-research-details\"><div><dt>Context</dt><dd>Human wellbeing leads the system.</dd></div><div><dt>Research focus</dt><dd>Spatial computing and inclusive infrastructure.</dd></div></dl><div class=\"ds-research-cases\"><article><h4>Smart Sports</h4><p>Preventive exercise designed around participation.</p></article><article><h4>Emergency training</h4><p>Safe, repeatable mixed-reality rehearsal.</p></article><article><h4>Public learning</h4><p>Place and data translated into accessible tools.</p></article></div></article>",
-      "css": ".ds-research-panel{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:74px;border-radius:30px;background:var(--launch-sage-soft,#e8eed4);padding:clamp(34px,5vw,68px);color:var(--launch-ink,#151713)}.ds-research-panel h3{margin:0;font:400 clamp(3.4rem,5vw,5.5rem)/.95 'Crimson Text',Georgia,serif;letter-spacing:-.045em}.ds-research-lead>p{margin:24px 0 0;font:400 1.06rem/1.7 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-research-details{display:grid;gap:12px;margin:0}.ds-research-details>div{display:grid;grid-template-columns:135px 1fr;gap:24px;border-radius:16px;background:rgba(255,255,255,.62);padding:20px}.ds-research-details dt{color:var(--launch-moss-dark,#394b11);font:700 .69rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}.ds-research-details dd{margin:0;color:#5b6156;font:400 .92rem/1.7 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-research-cases{display:grid;grid-column:1/-1;grid-template-columns:repeat(3,1fr);gap:12px}.ds-research-cases article{min-height:210px;border-radius:16px;background:var(--launch-moss,#50651b);padding:26px;color:#fff}.ds-research-cases article:nth-child(2){background:var(--launch-sage,#9faa8d);color:var(--launch-ink,#151713)}.ds-research-cases article:nth-child(3){background:#fff;color:var(--launch-ink,#151713)}.ds-research-cases h4{margin:0;font:400 1.7rem/1.06 'Crimson Text',Georgia,serif}.ds-research-cases p{margin:20px 0 0;font:400 .86rem/1.68 'DM Sans',ui-sans-serif,system-ui,sans-serif}@media(max-width:640px){.ds-research-panel{grid-template-columns:1fr;gap:40px;border-radius:22px;padding:28px 23px}.ds-research-details>div,.ds-research-cases{grid-template-columns:1fr}.ds-research-cases article{min-height:0}}"
+      "description": "Tonal research panel with a progressive Description, Research Focus, and Applied Direction narrative followed by applied case studies.",
+      "html": "<article class=\"ds-research-panel\"><div class=\"ds-research-lead\"><h3>Society 5.0</h3><p>Designing public infrastructure that expands human agency, access, and quality of life.</p></div><div class=\"ds-research-journey\"><div class=\"ds-research-steps\" role=\"tablist\"><button aria-selected=\"true\">01 Description</button><button>02 Research Focus</button><button>03 Applied Direction</button></div><section class=\"ds-research-stage\"><span>Description · 01 / 03</span><h4>Technology organised around human wellbeing.</h4><p>Detailed research narrative appears here in two readable paragraphs.</p><div class=\"ds-research-controls\"><button disabled>Previous</button><button>Research Focus →</button></div></section></div><div class=\"ds-research-cases\"><article><h4>Smart Sports</h4><p>Preventive exercise designed around participation.</p></article><article><h4>Emergency training</h4><p>Safe, repeatable mixed-reality rehearsal.</p></article><article><h4>Public learning</h4><p>Place and data translated into accessible tools.</p></article></div></article>",
+      "css": ".ds-research-panel{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:74px;border-radius:30px;background:var(--launch-sand-soft,#f1e5dc);padding:clamp(34px,5vw,68px);color:var(--launch-ink,#1b1816)}.ds-research-panel h3{margin:0;font:400 clamp(3.4rem,5vw,5.5rem)/.95 'Crimson Text',Georgia,serif;letter-spacing:-.04em}.ds-research-lead>p{margin:24px 0 0;font:400 1.06rem/1.7 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-research-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid rgba(111,55,41,.18)}.ds-research-steps button{min-height:54px;border:0;background:transparent;padding:0 12px 16px;color:#75675f;font:700 .7rem/1.35 'DM Sans',sans-serif;text-align:left}.ds-research-steps button[aria-selected=true]{border-bottom:2px solid var(--launch-clay,#8d4d3b);color:var(--launch-clay-dark,#6f3729)}.ds-research-stage{min-height:530px;padding:38px 4px 0}.ds-research-stage>span{color:var(--launch-clay-dark,#6f3729);font:700 .67rem/1.4 'DM Sans',sans-serif;letter-spacing:.1em;text-transform:uppercase}.ds-research-stage h4{max-width:620px;margin:24px 0 0;font:400 clamp(2.55rem,4vw,4rem)/.98 'Crimson Text',Georgia,serif;letter-spacing:-.035em}.ds-research-stage p{max-width:70ch;margin:30px 0 0;color:#5e544e;font:400 .94rem/1.78 'DM Sans',sans-serif}.ds-research-controls{display:flex;justify-content:space-between;gap:16px;margin-top:34px}.ds-research-controls button{min-height:46px;border:1px solid rgba(111,55,41,.28);border-radius:999px;background:rgba(255,255,255,.56);padding:0 18px;color:var(--launch-clay-dark,#6f3729);font:700 .75rem/1.4 'DM Sans',sans-serif}.ds-research-cases{display:grid;grid-column:1/-1;grid-template-columns:repeat(3,1fr);gap:12px;border-top:1px solid rgba(111,55,41,.16);padding-top:42px}.ds-research-cases article{min-height:210px;border-radius:16px;background:var(--launch-clay,#8d4d3b);padding:26px;color:#fff}.ds-research-cases article:nth-child(2){background:var(--launch-sand,#c7b5a2);color:var(--launch-ink,#1b1816)}.ds-research-cases article:nth-child(3){background:#fff;color:var(--launch-ink,#1b1816)}@media(max-width:640px){.ds-research-panel{grid-template-columns:1fr;gap:40px;border-radius:22px;padding:28px 23px}.ds-research-stage{min-height:0;padding-top:30px}.ds-research-controls{gap:8px}.ds-research-controls button{flex:1;min-width:0}.ds-research-cases{grid-template-columns:1fr}.ds-research-cases article{min-height:0}}"
     },
     {
       "name": "Project Viewer Panel",
       "kind": "card",
       "description": "Contained original project.media with one verified action or a neutral unavailable state; previewMedia is grid-only.",
       "html": "<article class=\"ds-viewer-panel\"><div class=\"ds-viewer-media\">FULL-FRAME PROJECT MEDIA</div><div class=\"ds-viewer-content\"><span class=\"ds-viewer-category\">IMMERSIVE LEARNING</span><h3>Happy Kingdom AR Playbook</h3><p class=\"ds-viewer-description\">An augmented-reality playbook supporting emotional literacy through guided stories and practice.</p><div class=\"ds-viewer-actions\"><a class=\"ds-viewer-primary\" href=\"#\">Open Project</a></div><p class=\"ds-viewer-unavailable\" hidden>No verified public project link is currently available.</p></div></article>",
-      "css": ".ds-viewer-panel{overflow:hidden;border-radius:28px;background:#fff;box-shadow:0 24px 70px rgba(36,42,29,.1);color:var(--launch-ink,#151713)}.ds-viewer-media{display:grid;min-height:280px;place-items:center;background:var(--launch-sage,#9faa8d);padding:clamp(16px,3vw,32px);color:#fff;font:600 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-viewer-content{padding:28px}.ds-viewer-category{display:inline-flex;border:1px solid var(--launch-line,#e4e5df);border-radius:999px;background:var(--launch-sage-soft,#e8eed4);padding:7px 11px;color:var(--launch-moss,#50651b);font:700 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-panel h3{margin:16px 0 0;font:400 clamp(2rem,5vw,3.5rem)/1 'Crimson Text',Georgia,serif;letter-spacing:-.04em}.ds-viewer-description{max-width:72ch;margin:24px 0 0;color:var(--launch-muted,#6f746c);font:400 1rem/1.75 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-actions{display:flex;margin-top:24px}.ds-viewer-primary{display:inline-flex;min-height:44px;align-items:center;justify-content:center;border-radius:999px;background:var(--launch-moss,#50651b);padding:11px 16px;color:#fff;font:700 .85rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;text-decoration:none;transition:transform 160ms ease,background 160ms ease}.ds-viewer-primary:hover{background:var(--launch-moss-dark,#394b11);transform:translateY(-2px)}.ds-viewer-primary:focus-visible{outline:3px solid rgba(80,101,27,.38);outline-offset:4px}.ds-viewer-primary:active{transform:translateY(0)}.ds-viewer-unavailable{margin:24px 0 0;color:var(--launch-muted,#6f746c);font:400 .81rem/1.5 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-unavailable[hidden]{display:none}"
+      "css": ".ds-viewer-panel{overflow:hidden;border-radius:28px;background:#fff;box-shadow:0 24px 70px rgba(64,43,34,.1);color:var(--launch-ink,#1b1816)}.ds-viewer-media{display:grid;min-height:280px;place-items:center;background:var(--launch-sand,#c7b5a2);padding:clamp(16px,3vw,32px);color:#fff;font:600 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em}.ds-viewer-content{padding:28px}.ds-viewer-category{display:inline-flex;border:1px solid var(--launch-line,#e7dfd7);border-radius:999px;background:var(--launch-sand-soft,#f1e5dc);padding:7px 11px;color:var(--launch-clay,#8d4d3b);font:700 .75rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-panel h3{margin:16px 0 0;font:400 clamp(2rem,5vw,3.5rem)/1 'Crimson Text',Georgia,serif;letter-spacing:-.04em}.ds-viewer-description{max-width:72ch;margin:24px 0 0;color:var(--launch-muted,#716963);font:400 1rem/1.75 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-actions{display:flex;margin-top:24px}.ds-viewer-primary{display:inline-flex;min-height:44px;align-items:center;justify-content:center;border-radius:999px;background:var(--launch-clay,#8d4d3b);padding:11px 16px;color:#fff;font:700 .85rem/1.4 'DM Sans',ui-sans-serif,system-ui,sans-serif;text-decoration:none;transition:transform 160ms ease,background 160ms ease}.ds-viewer-primary:hover{background:var(--launch-clay-dark,#6f3729);transform:translateY(-2px)}.ds-viewer-primary:focus-visible{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px var(--launch-clay-dark,#6f3729)}.ds-viewer-primary:active{transform:translateY(0)}.ds-viewer-unavailable{margin:24px 0 0;color:var(--launch-muted,#716963);font:400 .81rem/1.5 'DM Sans',ui-sans-serif,system-ui,sans-serif}.ds-viewer-unavailable[hidden]{display:none}"
     }
   ],
   "narrative": {
     "northStar": "The Research Launch",
-    "overview": "AESIR presents applied R&D with the clarity and anticipation of a modern product launch, but the evidence remains the product. Monumental serif claims, generous paper-white space, restrained moss actions, and documentary media make complex research feel consequential, human, and ready for public scrutiny.\n\nThe system is editorial before it is technological. Moss, sage, cream, warm clay, and soft paper group complex evidence into independent tonal cards; shared spacing keeps the system coherent without turning it into a dashboard. Softly rounded, full-frame media keeps real people and field work at the centre. Motion and elevation are brief signals of navigation or action, never ambient spectacle.",
+    "overview": "AESIR presents applied R&D with the clarity and anticipation of a modern product launch, but the evidence remains the product. Monumental serif claims, generous paper-white space, restrained clay actions, and documentary media make complex research feel consequential, human, and ready for public scrutiny.\n\nThe system is editorial before it is technological. Clay, sand, cream, warm clay, and soft paper group complex evidence into independent tonal cards; shared spacing keeps the system coherent without turning it into a dashboard. Softly rounded, full-frame media keeps real people and field work at the centre. Motion and elevation are brief signals of navigation or action, never ambient spectacle.",
     "keyCharacteristics": [
       "Monumental Crimson Text statements on a paper-white field.",
       "DM Sans interface copy with compact, disciplined metadata.",
-      "Moss actions with sage, cream, warm-clay, and soft-paper evidence groups.",
+      "Clay actions with sand, cream, warm-clay, and soft-paper evidence groups.",
       "Independent 16px cards paced by consistent 12px gaps.",
       "Rounded, full-frame documentary media that avoids accidental cropping.",
       "Restrained elevation reserved for navigation, media, and real actions.",
       "Responsive compositions that preserve the launch-like pacing on small screens."
     ],
     "rules": [
-      { "name": "The Paper Leads Rule", "body": "Paper White is the dominant atmosphere; sage and cream organise evidence while moss remains a scarce action signal.", "section": "colors" },
-      { "name": "The Botanical Restraint Rule", "body": "Stay inside the moss-and-sage family; do not add competing saturated technology colors.", "section": "colors" },
-      { "name": "The Two-Voice Rule", "body": "Crimson Text announces claims and sequence; DM Sans navigates, explains, and records evidence.", "section": "typography" },
-      { "name": "The Monument Rule", "body": "Display type earns its scale through short, balanced statements; never stretch dense copy into the display role.", "section": "typography" },
-      { "name": "The Tonal Grouping Rule", "body": "Use aligned 16px cards and consistent 12px gaps for research, method, and output sets; use rules for section boundaries and compact metadata, not as the only grouping device.", "section": "layout" },
-      { "name": "The Elevation as Event Rule", "body": "Shadows mark a framed media object, navigation state, or temporary overlay; ordinary evidence remains on the paper plane.", "section": "elevation" },
-      { "name": "The Radius Hierarchy Rule", "body": "Larger evidence containers receive larger radii; pills belong to actions, search, filters, and compact navigation, not long-form content.", "section": "shapes" }
+      {
+        "name": "The Paper Leads Rule",
+        "body": "Paper White is the dominant atmosphere; sand and cream organise evidence while clay remains a scarce action signal.",
+        "section": "colors"
+      },
+      {
+        "name": "The Earthbound Restraint Rule",
+        "body": "Stay inside the clay-and-sand family; do not add competing saturated technology colors.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Voice Rule",
+        "body": "Crimson Text announces claims and sequence; DM Sans navigates, explains, and records evidence.",
+        "section": "typography"
+      },
+      {
+        "name": "The Monument Rule",
+        "body": "Display type earns its scale through short, balanced statements; never stretch dense copy into the display role.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tonal Grouping Rule",
+        "body": "Use aligned 16px cards and consistent 12px gaps for research, method, and output sets; use rules for section boundaries and compact metadata, not as the only grouping device.",
+        "section": "layout"
+      },
+      {
+        "name": "The Elevation as Event Rule",
+        "body": "Shadows mark a framed media object, navigation state, or temporary overlay; ordinary evidence remains on the paper plane.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Radius Hierarchy Rule",
+        "body": "Larger evidence containers receive larger radii; pills belong to actions, search, filters, and compact navigation, not long-form content.",
+        "section": "shapes"
+      }
     ],
     "dos": [
       "Do let monumental serif statements and paper-white space establish confidence.",
-      "Do use moss for purposeful action and the sage–cream–warm-clay range for tonal evidence groups.",
+      "Do use clay for purposeful action and the sand–cream–warm-clay range for tonal evidence groups.",
       "Do keep research, method, and output items as independent 16px cards with consistent 12px gaps.",
       "Do preserve complete evidence and archive imagery with contained full-frame presentation where cropping would remove information.",
       "Do preserve visible focus, 44px or larger targets, reduced-motion behavior, and verified-link gating.",

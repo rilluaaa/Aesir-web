@@ -1060,7 +1060,13 @@ const isDirectProjectLink = (link) =>
 
 const youtubeThumbnail = (link) => {
   const videoId = link?.match(/[?&]v=([^&]+)/)?.[1] ?? link?.match(/youtu\.be\/([^?]+)/)?.[1];
-  return videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : null;
+  return videoId ? `/assets/video-thumbs/${videoId}.webp` : null;
+};
+
+const localProjectThumbnail = (media) => {
+  if (!media?.startsWith("/assets/projects/")) return media;
+  const filename = media.split("/").pop()?.replace(/\.[^.]+$/, ".webp");
+  return filename ? `/assets/project-thumbs/${filename}` : media;
 };
 
 export const aesirProjects = portfolioProjects.map((project) => {
@@ -1070,7 +1076,7 @@ export const aesirProjects = portfolioProjects.map((project) => {
   return {
     ...project,
     description: curatedProjectDescriptions[project.title] ?? project.description,
-    previewMedia: youtubeThumbnail(link) ?? project.media,
+    previewMedia: youtubeThumbnail(link) ?? localProjectThumbnail(project.media),
     link,
   };
 });
