@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ArrowDown,
+  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   ChevronDown,
@@ -24,12 +25,35 @@ const researchAreas = [
     subtitle: "Human-Centric Cyber-Physical Frameworks",
     summary:
       "Designing public infrastructure that uses advanced technology to expand human agency, access, and quality of life.",
-    context:
-      "Society 5.0 reframes smart-city development around human wellbeing rather than automated efficiency alone. The work responds to Asia's super-ageing population, unequal access to care, and the need for inclusive municipal services.",
-    focus:
-      "Spatial computing, edge and decentralised data networks, active-ageing systems, zero-barrier public spaces, and remote mental-wellness ecosystems.",
-    application:
-      "Frameworks that reduce long-term elderly and disability-care burdens while helping cities move from Industry 4.0 efficiency to human-centred inclusion. AESIR's applied base includes preventive exercise, public-health simulation, citizen science, and sustainability learning.",
+    stages: [
+      {
+        id: "description",
+        label: "Description",
+        title: "Technology organised around human wellbeing.",
+        body: [
+          "Society 5.0 describes a human-centred cyber-physical society in which data, intelligent systems, and the built environment work together to improve daily life. Rather than treating automation as the final goal, it asks whether technology expands participation, dignity, independence, and access to essential services.",
+          "For AESIR, this is especially relevant to Asia's super-ageing population, unequal access to care, and the rising public cost of long-term elderly and disability support. The research connects smart-city strategy with the lived realities of older adults, neurodivergent communities, caregivers, and people who are often excluded by conventional digital infrastructure.",
+        ],
+      },
+      {
+        id: "focus",
+        label: "Research Focus",
+        title: "Moving smart cities beyond automated efficiency.",
+        body: [
+          "AESIR studies how cities can progress from Industry 4.0 efficiency towards public systems that are measurable, inclusive, and responsive to different human capabilities. The work examines how spatial computing can make services understandable in place, how edge computing can support timely interaction, and how decentralised data models can reduce dependence on a single point of control.",
+          "The research also explores active-ageing frameworks, zero-barrier municipal environments, remote mental-wellness support, and public-learning systems that turn complex health or sustainability knowledge into practical action. The central question is not only whether a system works, but who can use it, what burden it removes, and how it contributes to long-term public value.",
+        ],
+      },
+      {
+        id: "application",
+        label: "Applied Direction",
+        title: "From civic frameworks to testable public experiences.",
+        body: [
+          "AESIR translates this agenda into programmes that can be tested with real communities and institutions. Smart Sports applies gerontechnology and movement-based interaction to preventive exercise for older adults, while mixed-reality AED and CPR training gives learners a safe, repeatable environment for practising emergency decisions before a real incident occurs.",
+          "Tree Portal and environmental learning games extend the same principle into citizen science and public education. Together, these deployments create an applied foundation for evaluating participation, comprehension, accessibility, and adoption—evidence that can inform more inclusive healthcare, community services, and smart-city infrastructure.",
+        ],
+      },
+    ],
     tags: ["Smart Cities", "Active Ageing", "Public Infrastructure"],
     cases: [
       {
@@ -55,12 +79,35 @@ const researchAreas = [
     subtitle: "AI Transformation",
     summary:
       "Redesigning institutions, workflows, and human performance for an era in which AI becomes foundational infrastructure.",
-    context:
-      "AX goes beyond digitising records. It changes how organisations allocate attention, make decisions, organise labour, and coordinate autonomous systems with people.",
-    focus:
-      "Cognitive ergonomics, neural-feedback models, micro-expression analytics, cognitive-load measurement, focus economies, and emotional burnout during AI interaction.",
-    application:
-      "Evidence-led transformation blueprints that combine data, behavioural modelling, and interaction design for scalable human-AI collaboration. AESIR's current portfolio provides a practical test bed across camera vision, language learning, conversational interfaces, and motion analytics.",
+    stages: [
+      {
+        id: "description",
+        label: "Description",
+        title: "AI transformation is organisational, not merely digital.",
+        body: [
+          "AX marks the shift from digitising existing records and services to treating AI as a foundational layer of organisational and public infrastructure. It changes how decisions are prepared, how work is distributed, how knowledge moves through a team, and how autonomous systems coordinate with human judgement.",
+          "This transition creates opportunities for faster analysis and more adaptive services, but it also changes attention, responsibility, and the experience of work. AESIR approaches AX as a human-systems challenge: transformation succeeds only when technical capability, governance, cognitive wellbeing, and operational behaviour are designed together.",
+        ],
+      },
+      {
+        id: "focus",
+        label: "Research Focus",
+        title: "Designing for the AI–human co-working era.",
+        body: [
+          "AESIR's research centres on cognitive ergonomics: how people understand, supervise, and sustain attention while working with intelligent systems. Neural-feedback concepts, micro-expression analytics, movement data, and behavioural signals can help reveal cognitive load, loss of focus, uncertainty, or emotional fatigue that conventional productivity measures fail to capture.",
+          "The aim is to develop evidence-led models for feedback timing, task allocation, explainability, and human oversight. By connecting interaction data with organisational behaviour, the research asks how AI can support performance without creating hidden burnout, deskilling, or decision processes that people can no longer interpret or challenge.",
+        ],
+      },
+      {
+        id: "application",
+        label: "Applied Direction",
+        title: "Building practical test beds for responsible AX.",
+        body: [
+          "AESIR's portfolio provides real interfaces through which these questions can be tested. Camera-based sports and exercise systems use pose, hand, skeleton, and depth tracking to interpret movement without physical controllers, creating immediate examples of how AI feedback must remain accurate, legible, and motivating.",
+          "VocabGO, Cantonese speech training, language-learning assistants, and conversational service prototypes extend the research into recognition, communication, and automated response. These deployments support the development of scalable AX blueprints in which performance data, user experience, escalation rules, and meaningful human control are considered from the beginning.",
+        ],
+      },
+    ],
     tags: ["Cognitive Ergonomics", "Human-AI Work", "Behavioural Analytics"],
     cases: [
       {
@@ -86,12 +133,35 @@ const researchAreas = [
     subtitle: "Immersive Neurodiversity & Inclusive Tech Markets",
     summary:
       "Developing scalable immersive systems for neurodivergent learning, assessment, wellbeing, and inclusive technology markets.",
-    context:
-      "Multi-sensory XR and generative AI can create non-pharmacological pathways for people with Autism, Dyslexia, Dementia, ADHD, and other neurodivergent conditions.",
-    focus:
-      "Cognitive spatial data, kinetic tracking, eye-gaze variation, personalised gamified protocols, assistive-technology economics, and clinical learning environments.",
-    application:
-      "Research grounded in AESIR's AR positive-psychology playbook and years of co-design with educators, therapists, NGOs, and care practitioners. The portfolio offers real settings in which personalised, non-pharmacological learning and wellbeing experiences can be tested.",
+    stages: [
+      {
+        id: "description",
+        label: "Description",
+        title: "Inclusive technology built around cognitive difference.",
+        body: [
+          "NEURO Business Futures investigates how immersive environments and generative AI can support neurodivergent learning, communication, assessment, and wellbeing. Multi-sensory XR can present information through space, movement, sound, and guided interaction, creating non-pharmacological pathways that adapt to different ways of processing the world.",
+          "The programme considers Autism, Dyslexia, Dementia, ADHD, and related cognitive conditions without reducing people to a diagnosis. Its purpose is to connect clinical empathy with technology design, then examine how assistive systems can move from isolated prototypes into trustworthy services, sustainable markets, and accessible learning or care environments.",
+        ],
+      },
+      {
+        id: "focus",
+        label: "Research Focus",
+        title: "Turning interaction patterns into personalised support.",
+        body: [
+          "AESIR studies cognitive spatial data, kinetic movement, eye-gaze variation, attention patterns, and responses to multi-sensory feedback. These signals can help researchers and practitioners understand how an individual navigates a task, where cognitive friction appears, and which form of guidance supports participation without adding unnecessary pressure.",
+          "The research combines these observations with personalised gamified protocols, practitioner review, and the design of repeatable clinical-learning environments. It also examines the economics and delivery systems behind assistive technology, because an intervention has limited public value if it cannot be maintained, adopted by practitioners, or scaled across schools, NGOs, clinics, and families.",
+        ],
+      },
+      {
+        id: "application",
+        label: "Applied Direction",
+        title: "Extending a validated base of immersive inclusion.",
+        body: [
+          "Happy Kingdom, Hong Kong's AR positive-psychology playbook, supports children's emotional literacy through stories, play, and guided practice. My Living Diary was co-designed with an autism counsellor, speech therapist, and occupational therapist to help children rehearse everyday vocabulary, communication, and independent-living situations.",
+          "AESIR's VR speech centre adds repeatable public-speaking and social-interaction rehearsal with audio review for practitioners. Together with established NGO, education, and care networks, these projects form a practical testing base for more personalised immersive protocols and for studying how inclusive technology can achieve clinical relevance, user trust, and sustainable deployment.",
+        ],
+      },
+    ],
     tags: ["Neurodiversity", "Clinical Learning", "Assistive Technology"],
     cases: [
       {
@@ -229,14 +299,6 @@ function useEntryMotion() {
 
 function Header() {
   const [open, setOpen] = useState(false);
-  const [compact, setCompact] = useState(false);
-
-  useEffect(() => {
-    const updateHeader = () => setCompact(window.scrollY > 180);
-    updateHeader();
-    window.addEventListener("scroll", updateHeader, { passive: true });
-    return () => window.removeEventListener("scroll", updateHeader);
-  }, []);
 
   const navigate = (id) => {
     scrollToSection(id);
@@ -244,7 +306,7 @@ function Header() {
   };
 
   return (
-    <header className={`aesir-header${compact ? " is-compact" : ""}${open ? " is-menu-open" : ""}`}>
+    <header className={`aesir-header${open ? " is-menu-open" : ""}`}>
       <div className="aesir-header__inner">
         <button className="brand-button" onClick={() => navigate("top")} aria-label="Back to top">
           <img src={asset("assets/aesir/aesir-wordmark.webp")} alt="AESIR" />
@@ -310,6 +372,10 @@ function Hero() {
         <img
           src={asset("assets/aesir/founder-panel.webp")}
           alt="Ernest HS CHAN speaking during an industry panel"
+          width="1600"
+          height="1200"
+          fetchpriority="high"
+          decoding="async"
         />
         <figcaption>
           <span>Applied knowledge in public</span>
@@ -350,14 +416,31 @@ function Thesis() {
 
 function ResearchAreas() {
   const [activeId, setActiveId] = useState(researchAreas[0].id);
+  const [stageIndex, setStageIndex] = useState(0);
   const activeArea = researchAreas.find((area) => area.id === activeId) ?? researchAreas[0];
+  const activeStage = activeArea.stages[stageIndex] ?? activeArea.stages[0];
+  const finalStageIndex = activeArea.stages.length - 1;
+
+  const selectArea = (id) => {
+    setActiveId(id);
+    setStageIndex(0);
+  };
+
+  const onStageKeyDown = (event, index) => {
+    if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+    event.preventDefault();
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const nextIndex = (index + direction + activeArea.stages.length) % activeArea.stages.length;
+    setStageIndex(nextIndex);
+    document.getElementById(`research-stage-tab-${activeArea.id}-${activeArea.stages[nextIndex].id}`)?.focus();
+  };
 
   const onTabKeyDown = (event, index) => {
     if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
     event.preventDefault();
     const direction = event.key === "ArrowRight" ? 1 : -1;
     const nextIndex = (index + direction + researchAreas.length) % researchAreas.length;
-    setActiveId(researchAreas[nextIndex].id);
+    selectArea(researchAreas[nextIndex].id);
     document.getElementById(`research-tab-${nextIndex}`)?.focus();
   };
 
@@ -382,7 +465,7 @@ function ResearchAreas() {
               aria-controls="research-panel"
               tabIndex={selected ? 0 : -1}
               className={selected ? "is-active" : ""}
-              onClick={() => setActiveId(area.id)}
+              onClick={() => selectArea(area.id)}
               onKeyDown={(event) => onTabKeyDown(event, index)}
             >
               <strong>{area.title}</strong>
@@ -406,21 +489,63 @@ function ResearchAreas() {
             {activeArea.tags.map((tag) => <span key={tag}>{tag}</span>)}
           </div>
         </div>
-        <dl className="research-panel__detail">
-          <div>
-            <dt>Context</dt>
-            <dd>{activeArea.context}</dd>
+        <div className="research-journey">
+          <div className="research-journey__steps" role="tablist" aria-label={`${activeArea.title} research sections`}>
+            {activeArea.stages.map((stage, index) => (
+              <button
+                id={`research-stage-tab-${activeArea.id}-${stage.id}`}
+                key={stage.id}
+                type="button"
+                role="tab"
+                aria-selected={stageIndex === index}
+                aria-controls="research-stage-panel"
+                tabIndex={stageIndex === index ? 0 : -1}
+                className={stageIndex === index ? "is-active" : ""}
+                onClick={() => setStageIndex(index)}
+                onKeyDown={(event) => onStageKeyDown(event, index)}
+              >
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                {stage.label}
+              </button>
+            ))}
           </div>
-          <div>
-            <dt>Research focus</dt>
-            <dd>{activeArea.focus}</dd>
-          </div>
-          <div>
-            <dt>Applied direction</dt>
-            <dd>{activeArea.application}</dd>
-          </div>
-        </dl>
-        <div className="research-cases">
+
+          <section
+            id="research-stage-panel"
+            role="tabpanel"
+            aria-labelledby={`research-stage-tab-${activeArea.id}-${activeStage.id}`}
+            className="research-journey__content"
+            key={`${activeArea.id}-${activeStage.id}`}
+          >
+            <div className="research-journey__meta">
+              <span>{activeStage.label}</span>
+              <span>{String(stageIndex + 1).padStart(2, "0")} / {String(activeArea.stages.length).padStart(2, "0")}</span>
+            </div>
+            <h4>{activeStage.title}</h4>
+            <div className="research-journey__body">
+              {activeStage.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </div>
+            <div className="research-journey__controls" aria-label="Research section navigation">
+              <button
+                type="button"
+                disabled={stageIndex === 0}
+                onClick={() => setStageIndex((index) => Math.max(0, index - 1))}
+              >
+                <ArrowLeft size={17} aria-hidden="true" />
+                Previous
+              </button>
+              <button
+                type="button"
+                disabled={stageIndex === finalStageIndex}
+                onClick={() => setStageIndex((index) => Math.min(finalStageIndex, index + 1))}
+              >
+                {stageIndex === finalStageIndex ? "Complete" : activeArea.stages[stageIndex + 1].label}
+                <ArrowRight size={17} aria-hidden="true" />
+              </button>
+            </div>
+          </section>
+        </div>
+        <div id={`research-cases-${activeArea.id}`} className="research-cases">
           <div className="research-cases__heading">
             <h4>What AESIR has already built</h4>
             <p>Selected deployments that demonstrate the practical foundation behind this research direction.</p>

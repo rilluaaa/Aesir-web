@@ -13,7 +13,7 @@ body {
   margin: 0;
   min-width: 320px;
   background: #fff;
-  color: #151713;
+  color: #1b1816;
   font-family: "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -31,8 +31,8 @@ video {
 }
 
 ::selection {
-  background: #e8eed4;
-  color: #151713;
+  background: #f1e5dc;
+  color: #1b1816;
 }
 
 ::-webkit-scrollbar {
@@ -45,7 +45,7 @@ video {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #8b927c;
+  background: #a98d7d;
 }
 
 .sr-only {
