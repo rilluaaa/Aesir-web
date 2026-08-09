@@ -1,7 +1,7 @@
 export const HERO_VIDEO_SOURCES = Object.freeze({
-  mobile: "assets/aesir/cognitive-hero-mobile-1080p-30fps.mp4",
-  desktop1080: "assets/aesir/cognitive-hero-1080p-60fps.mp4",
-  desktop1440: "assets/aesir/cognitive-hero-1440p-60fps.mp4",
+  mobile: "assets/aesir/cognitive-hero-mobile-1080p-60fps.mp4",
+  desktop1080: "assets/aesir/cognitive-hero-1080p-60fps-all-i.mp4",
+  desktop1440: "assets/aesir/cognitive-hero-1440p-60fps-all-i.mp4",
 });
 
 export const HERO_SOURCE_QUALITY = Object.freeze({

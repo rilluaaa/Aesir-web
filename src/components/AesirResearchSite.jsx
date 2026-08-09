@@ -501,33 +501,42 @@ function BackgroundVideo() {
     let lastUpdate = 0;
     let seekInFlight = false;
     let queuedSeekTime = null;
+    let seekFlushFrame = 0;
     const frameRate = 60;
     const frameDuration = 1 / frameRate;
     const frameInterval = 1000 / frameRate;
 
-    const commitSeek = (nextTime) => {
-      const safeDuration = Number.isFinite(video.duration) ? video.duration : 0;
-      const clampedTime = Math.min(safeDuration, Math.max(0, nextTime));
-      if (seekInFlight || video.seeking) {
-        queuedSeekTime = clampedTime;
-        return;
-      }
-      if (Math.abs(video.currentTime - clampedTime) <= frameDuration / 2) return;
+    const flushSeek = () => {
+      seekFlushFrame = 0;
+      if (seekInFlight || video.seeking || queuedSeekTime === null) return;
+
+      const nextTime = queuedSeekTime;
+      queuedSeekTime = null;
+      if (Math.abs(video.currentTime - nextTime) <= frameDuration / 2) return;
 
       seekInFlight = true;
       try {
-        video.currentTime = clampedTime;
+        video.currentTime = nextTime;
       } catch {
         seekInFlight = false;
       }
     };
 
+    const scheduleSeekFlush = () => {
+      if (seekFlushFrame) return;
+      seekFlushFrame = window.requestAnimationFrame(flushSeek);
+    };
+
+    const commitSeek = (nextTime) => {
+      const safeDuration = Number.isFinite(video.duration) ? video.duration : 0;
+      const clampedTime = Math.min(safeDuration, Math.max(0, nextTime));
+      queuedSeekTime = clampedTime;
+      if (!seekInFlight && !video.seeking) flushSeek();
+    };
+
     const onSeeked = () => {
       seekInFlight = false;
-      if (queuedSeekTime === null) return;
-      const latestSeekTime = queuedSeekTime;
-      queuedSeekTime = null;
-      commitSeek(latestSeekTime);
+      if (queuedSeekTime !== null) scheduleSeekFlush();
     };
 
     const onMouseMove = (event) => {
@@ -573,6 +582,7 @@ function BackgroundVideo() {
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
       video.removeEventListener("seeked", onSeeked);
       window.cancelAnimationFrame(animationFrame);
+      window.cancelAnimationFrame(seekFlushFrame);
     };
   }, [scrubCapable, videoSource]);
 
