@@ -81,15 +81,6 @@ const portfolioProjects = [
     "sourceSlide": 16
   },
   {
-    "number": "10",
-    "title": "AR Tree Portal",
-    "category": "AR & Motion / Immersive Learning",
-    "description": "AR mobile app for tree conservation and visual tree assessment learning.",
-    "media": "/assets/projects/10-ar-tree-portal.jpg",
-    "link": "https://aesir.hk/",
-    "sourceSlide": 17
-  },
-  {
     "number": "11",
     "title": "AR IG Filter",
     "category": "AR & Motion / Immersive Learning",
@@ -540,15 +531,6 @@ const portfolioProjects = [
     "sourceSlide": 71
   },
   {
-    "number": "62",
-    "title": "Tree Portal",
-    "category": "AI, App & Digital Health",
-    "description": "TREE PORTAL The project employs the “citizen science approach” (「公民科學形式」) to propagate tree knowledge in plain language with the aid of plenty of annotated drawings. In addition, the project adopts “life education approach” (「生命教育形式」) at primary and secondary schools to connect urban...",
-    "media": "/assets/projects/62-tree-portal.gif",
-    "link": "https://aesir.hk/",
-    "sourceSlide": 72
-  },
-  {
     "number": "63",
     "title": "Elderly Dementia Assessment",
     "category": "AI, App & Digital Health",
@@ -556,15 +538,6 @@ const portfolioProjects = [
     "media": "/assets/projects/63-elderly-dementia-assessment.jpg",
     "link": "https://aesir.hk/",
     "sourceSlide": 73
-  },
-  {
-    "number": "64",
-    "title": "Vocab Go Animation",
-    "category": "AI, App & Digital Health",
-    "description": "AI and AR vocabulary learning app using camera object recognition.",
-    "media": "/assets/projects/64-vocab-go-animation.jpg",
-    "link": "https://aesir.hk/",
-    "sourceSlide": 74
   },
   {
     "number": "65",
@@ -962,7 +935,6 @@ const verifiedProjectLinks = {
   "AR Sign Language Kit": "https://www.youtube.com/watch?v=zNyGOkg6OAI",
   "Beat Drugs with AR VR": "https://www.youtube.com/watch?v=o7LFS3jwmyM",
   "AR City Orienteering | MSF HK": "https://www.youtube.com/watch?v=GIdcMsP8SOM",
-  "AR Tree Portal": "https://www.youtube.com/watch?v=yhrEFBBboXc",
   "AR IG Filter": "https://www.youtube.com/watch?v=YL42QmWIKbQ",
   "AR for Cancer Drugs Demonstration": "https://www.youtube.com/watch?v=rvbyFc5HB2k",
   "AR for Heritage Conservation": "https://www.youtube.com/watch?v=RS0azuURYOE",
@@ -976,7 +948,6 @@ const verifiedProjectLinks = {
   "VR Wine Shop": "https://www.youtube.com/watch?v=yHcbJ1ksFlA",
   "SEN Child Fun Share": "https://www.youtube.com/watch?v=37Xp2uWC9Zg",
   "Battle Chinese in Recitation": "https://www.youtube.com/watch?v=dpPfl6tZnDg",
-  "Vocab Go Animation": "https://www.youtube.com/watch?v=zGRWp35bh88",
   "AI Chatbot": "https://www.youtube.com/watch?v=yRQHObSuNqs",
   "Sign Language Challenge": "https://www.youtube.com/watch?v=_GVmK1I95X4",
   "60th Anniversary Raimondi College Interactive Wall": "https://www.youtube.com/watch?v=bt4ZXF29Psc",
@@ -1029,7 +1000,6 @@ const curatedProjectDescriptions = {
   "SEN Child Fun Share": "A parenting mobile application that helps parents and carers practise support activities with children who have special educational needs through training videos, brain and memory games, shared practice, and an emotion diary.",
   "Sport Climbing Challenge Station": "An interactive climbing-learning station covering foundational technique, safety, equipment, and muscle use through exercises, mini-games, and adaptable teaching activities.",
   "Elderly Dementia Assessment": "A digital assessment experience designed to structure dementia-related observations and support more consistent review of an older adult's cognitive responses.",
-  "Tree Portal": "A citizen-science platform that communicates urban-tree knowledge in plain language and uses life-education activities to connect primary and secondary students with the living environment around them.",
   "AR Rehab": "An augmented-reality rehabilitation experience that turns guided movement into visible, repeatable activities for practice and practitioner-supported feedback.",
   "60th Anniversary Raimondi College Interactive Wall": "A large-format interactive wall created for Raimondi College's 60th anniversary, turning school history and celebration content into a touch-led public experience.",
   "Motion Development for Children": "A motion-based activity programme for children that uses playful movement challenges to support coordination, body awareness, and gross-motor development.",

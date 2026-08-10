@@ -153,7 +153,6 @@
 
 .primary-action,
 .contact-layout a,
-.evidence-statement a,
 .mobile-nav a {
   display: inline-flex;
   align-items: center;
@@ -183,7 +182,6 @@
 
 .primary-action:hover,
 .contact-layout a:hover,
-.evidence-statement a:hover,
 .mobile-nav a:hover {
   background: var(--launch-clay-dark);
   transform: translateY(-2px);
@@ -652,10 +650,7 @@
 }
 
 .research-cases__heading {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(280px, 1.2fr);
-  gap: 50px;
-  align-items: end;
+  max-width: 760px;
 }
 
 .research-cases__heading h4,
@@ -669,12 +664,6 @@
 .research-cases__heading h4 {
   font-size: clamp(2.5rem, 4vw, 4rem);
   line-height: 0.98;
-}
-
-.research-cases__heading > p {
-  max-width: 600px;
-  color: #536b82;
-  line-height: 1.7;
 }
 
 .research-cases__grid {
@@ -822,44 +811,6 @@
   height: 100%;
   border-radius: 18px;
   object-fit: contain;
-}
-
-.evidence-statement {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-  margin-top: 32px;
-  padding: 40px 46px;
-  border-radius: var(--launch-radius);
-  color: #fff;
-  background: var(--launch-clay);
-}
-
-.evidence-statement p {
-  max-width: 720px;
-  font-family: "Crimson Text", serif;
-  font-size: clamp(1.75rem, 3vw, 2.8rem);
-  line-height: 1.08;
-  letter-spacing: -0.035em;
-}
-
-.evidence-statement p,
-.evidence-statement a {
-  color: #fff;
-}
-
-.evidence-statement a {
-  flex: none;
-  min-width: 190px;
-  padding: 0 24px;
-  border: 1px solid rgba(255, 255, 255, 0.48);
-  background: transparent;
-}
-
-.evidence-statement a:hover {
-  color: var(--launch-clay-dark);
-  background: #fff;
 }
 
 .projects-section {
@@ -1440,11 +1391,6 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .research-cases__heading {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
   .research-cases__grid {
     grid-template-columns: 1fr;
   }
@@ -1659,16 +1605,6 @@
   .evidence-image {
     aspect-ratio: 4 / 3;
     min-height: 0;
-  }
-
-  .evidence-statement {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 30px 25px;
-  }
-
-  .evidence-statement a {
-    width: 100%;
   }
 
   .project-grid {
