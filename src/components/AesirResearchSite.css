@@ -1576,14 +1576,6 @@
     padding-block: 72px;
   }
 
-  .evidence-section {
-    padding-block: 72px 76px;
-  }
-
-  .projects-section {
-    padding-block: 76px;
-  }
-
   .leadership-section {
     padding-block: 72px;
   }
@@ -1978,13 +1970,13 @@
   .evidence-section {
     height: auto;
     min-height: 0;
-    padding-bottom: 0;
+    padding-block: 72px 0;
   }
 
   .projects-section {
     height: auto;
     min-height: 0;
-    padding-top: 72px;
+    padding-block: 72px 76px;
   }
 
   .projects-heading h2 {

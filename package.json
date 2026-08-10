@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test"
+    "test": "node --test",
+    "test:layout": "VITE_BASE_PATH=/Aesir-web/ VITE_DEFAULT_PAGE=neuro npm run build && node scripts/mobile-evidence-projects-spacing-check.mjs"
   },
   "dependencies": {
     "hls.js": "^1.6.16",
@@ -17,6 +18,7 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
+    "playwright": "^1.62.1",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.17",
     "vite": "^5.0.8"
