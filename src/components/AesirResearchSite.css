@@ -819,14 +819,15 @@
   min-height: 0;
   overflow: hidden;
   border-radius: var(--launch-media-radius);
-  padding: 18px;
-  background: var(--launch-sand);
+  padding: 0;
+  background: transparent;
 }
 
 .evidence-image img {
+  display: block;
   width: 100%;
   height: 100%;
-  border-radius: 18px;
+  border-radius: inherit;
   object-fit: contain;
 }
 
@@ -1834,7 +1835,7 @@
   .evidence-image {
     aspect-ratio: 4 / 3;
     min-height: 0;
-    padding: 12px;
+    padding: 0;
   }
 
   .evidence-statement {
