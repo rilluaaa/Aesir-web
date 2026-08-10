@@ -19,6 +19,9 @@
 }
 
 .aesir-site {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
   min-width: 320px;
   overflow: clip;
   color: var(--launch-ink);
@@ -1442,12 +1445,12 @@
     aspect-ratio: 1;
   }
 
-  .hero-video video {
-    object-position: 68% center;
+  .hero-section .hero-video video {
+    object-position: right var(--hero-focal-y, 50%);
   }
 
-  .hero-video {
-    background-position: 68% center;
+  .hero-section .hero-video {
+    background-position: right var(--hero-focal-y, 50%);
   }
 
   .hero-evidence {
