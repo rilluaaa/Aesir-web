@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -30,6 +30,7 @@ import {
   waitForStableLayout,
 } from "../heroBoot.js";
 import { aesirProjects } from "../projectPortfolio";
+import { CinematicIntro } from "./cinematic/CinematicIntro.jsx";
 import "./AesirResearchSite.css";
 
 const contactUrl = "https://aesir.hk/#contactus";
@@ -37,6 +38,8 @@ const asset = (path) =>
   /^https?:\/\//.test(path)
     ? path
     : `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+const cinematicDesktopFrames = asset("assets/aesir/cinematic-frames-1440");
+const cinematicMobileFrames = asset("assets/aesir/cinematic-frames-720");
 
 const researchAreas = [
   {
@@ -866,12 +869,23 @@ function Header() {
   );
 }
 
-function Hero() {
+function Hero({ mediaEnabled }) {
   const { displayed, done } = useTypewriter("Evidence for an\ninclusive future.");
 
   return (
-    <section id="top" className="hero-section">
-      <BackgroundVideo />
+    <section id="home" className="hero-section">
+      {mediaEnabled ? (
+        <BackgroundVideo />
+      ) : (
+        <div
+          className="hero-video"
+          aria-hidden="true"
+          style={{
+            "--hero-focal-y": "50%",
+            "--hero-poster": `url("${asset("assets/aesir/cognitive-hero-poster.webp")}")`,
+          }}
+        />
+      )}
 
       <div className="hero-content">
         <div className="hero-copy">
@@ -1339,6 +1353,9 @@ function Contact() {
 }
 
 export function AesirResearchSite() {
+  const [heroMediaEnabled, setHeroMediaEnabled] = useState(false);
+  const enableHeroMedia = useCallback(() => setHeroMediaEnabled(true), []);
+
   useEffect(() => {
     window.history.scrollRestoration = "manual";
 
@@ -1361,9 +1378,15 @@ export function AesirResearchSite() {
 
   return (
     <div className="aesir-site">
+      <CinematicIntro
+        desktopFrameBase={cinematicDesktopFrames}
+        mobileFrameBase={cinematicMobileFrames}
+        posterSource={asset("assets/aesir/aesir-cinematic-scroll-poster.webp")}
+        onHandoffApproach={enableHeroMedia}
+      />
       <Header />
       <main>
-        <Hero />
+        <Hero mediaEnabled={heroMediaEnabled} />
         <HeroEvidence />
         <Thesis />
         <ResearchAreas />
