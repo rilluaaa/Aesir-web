@@ -363,6 +363,22 @@ function useTypewriter(text, speed = 38, startDelay = 600) {
   return { displayed, done };
 }
 
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(() => (
+    typeof window !== "undefined" && window.matchMedia(query).matches
+  ));
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(query);
+    const updateMatch = () => setMatches(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, [query]);
+
+  return matches;
+}
+
 function BackgroundVideo() {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
@@ -1135,6 +1151,8 @@ function ProjectLibrary() {
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 640px)");
+  const collapsedProjectLimit = isMobile ? 6 : 12;
 
   const filteredProjects = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -1146,9 +1164,11 @@ function ProjectLibrary() {
     });
   }, [category, query]);
 
-  const visibleProjects = expanded ? filteredProjects : filteredProjects.slice(0, 12);
+  const visibleProjects = expanded
+    ? filteredProjects
+    : filteredProjects.slice(0, collapsedProjectLimit);
 
-  useEffect(() => setExpanded(false), [category, query]);
+  useEffect(() => setExpanded(false), [category, query, collapsedProjectLimit]);
 
   return (
     <section id="projects" className="projects-section section-shell">
@@ -1230,7 +1250,7 @@ function ProjectLibrary() {
         <div className="project-empty">No projects match this search. Try another title or category.</div>
       )}
 
-      {filteredProjects.length > 12 && (
+      {filteredProjects.length > collapsedProjectLimit && (
         <button
           type="button"
           className="archive-toggle"
