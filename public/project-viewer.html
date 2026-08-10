@@ -3,11 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/dm-sans-latin-400-700.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/crimson-text-latin-400.woff2" crossorigin />
     <title>Project | AESIR</title>
     <style>
+      @font-face {
+        font-family: "DM Sans";
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url("./assets/fonts/dm-sans-latin-400-700.woff2") format("woff2");
+      }
+
+      @font-face {
+        font-family: "Crimson Text";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("./assets/fonts/crimson-text-latin-400.woff2") format("woff2");
+      }
+
       :root {
         color-scheme: light;
         --bg: #f3f7fb;

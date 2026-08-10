@@ -4,16 +4,19 @@ export const HERO_BOOT_WATCHDOG_MS = 12000;
 
 export const HERO_BOOT_REQUIREMENTS = Object.freeze([
   "mounted",
+  "fontsReady",
+  "criticalImagesReady",
+  "posterReady",
+  "layoutStable",
+]);
+
+export const HERO_VIDEO_REQUIREMENTS = Object.freeze([
   "sourceResolved",
   "fileFetched",
   "blobAttached",
   "metadataReady",
   "framesWarmed",
   "neutralReady",
-  "fontsReady",
-  "criticalImagesReady",
-  "posterReady",
-  "layoutStable",
 ]);
 
 export const createHeroBootReadiness = (overrides = {}) => ({
@@ -34,6 +37,9 @@ export const createHeroBootReadiness = (overrides = {}) => ({
 export const isHeroBootReady = (readiness) => HERO_BOOT_REQUIREMENTS
   .every((requirement) => readiness?.[requirement] === true);
 
+export const isHeroVideoReady = (readiness) => HERO_VIDEO_REQUIREMENTS
+  .every((requirement) => readiness?.[requirement] === true);
+
 export const resolveHeroDownloadSource = ({ sourceResolved, videoSource }) => (
   sourceResolved === true && typeof videoSource === "string" && videoSource.length > 0
     ? videoSource
@@ -45,7 +51,8 @@ export const getHeroBootRevealMode = ({
   timedOut,
   posterReady,
 }) => {
-  if (isHeroBootReady(readiness)) return "video";
+  if (isHeroBootReady(readiness) && isHeroVideoReady(readiness)) return "video";
+  if (isHeroBootReady(readiness)) return "poster";
   if (timedOut === true && posterReady === true) return "poster";
   return "covered";
 };

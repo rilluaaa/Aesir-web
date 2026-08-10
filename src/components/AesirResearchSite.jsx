@@ -29,6 +29,7 @@ import {
   revealAesirApp,
   waitForStableLayout,
 } from "../heroBoot.js";
+import { installPredictiveMediaScheduler } from "../mediaScheduler.js";
 import { aesirProjects } from "../projectPortfolio";
 import "./AesirResearchSite.css";
 
@@ -234,30 +235,38 @@ const newPhotos = [
     src: "assets/aesir/founder-panel.webp",
     alt: "Ernest HS CHAN speaking during a public panel discussion",
     label: "Public dialogue",
+    width: 1600,
+    height: 1200,
   },
   {
     src: "assets/aesir/ai-for-all.webp",
     alt: "AESIR and programme partners at the AI for All Inclusive Programme",
     label: '"AI for All" Inclusive Programme',
+    width: 1600,
+    height: 1200,
   },
   {
     src: "assets/aesir/hkict-2021.webp",
     alt: "Ernest HS CHAN and participants at the 2021 Hong Kong ICT Awards ceremony",
     label: "Hong Kong ICT Awards",
+    width: 800,
+    height: 600,
   },
   {
     src: "assets/aesir/business-practicum.webp",
     alt: "Business practicum participants and cross-sector partners",
     label: "Cross-sector practice",
+    width: 800,
+    height: 600,
   },
 ];
 
 const archivePhotos = [
-  ["assets/founders/community-program.jpg", "Community counselling and virtual reality programme partners"],
-  ["assets/founders/aesir-presentation.jpeg", "AESIR presentation moment"],
-  ["assets/founders/founder-speaking.jpeg", "Founder speaking at an applied training session"],
-  ["assets/founders/aesir-detail.jpg", "AESIR founders archive photograph"],
-  ["assets/founders/founders-interview.jpg", "AESIR founders interview portrait"],
+  ["assets/founders/community-program.jpg", "Community counselling and virtual reality programme partners", 640, 398],
+  ["assets/founders/aesir-presentation.jpeg", "AESIR presentation moment", 596, 335],
+  ["assets/founders/founder-speaking.jpeg", "Founder speaking at an applied training session", 617, 324],
+  ["assets/founders/aesir-detail.jpg", "AESIR founders archive photograph", 215, 295],
+  ["assets/founders/founders-interview.jpg", "AESIR founders interview portrait", 800, 535],
 ];
 
 const navItems = [
@@ -383,21 +392,23 @@ function BackgroundVideo() {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const resourceLoaderRef = useRef(null);
-  const criticalAssetsPromiseRef = useRef(null);
   const bootRevealStartedRef = useRef(false);
   const revealBootRef = useRef(null);
   const [heroMode, setHeroMode] = useState(getInitialHeroMode);
   const [focalPositionY, setFocalPositionY] = useState(50);
   const [readySource, setReadySource] = useState(null);
+  const [heroInRange, setHeroInRange] = useState(true);
   const [appReady, setAppReady] = useState(() => (
     typeof document !== "undefined"
     && document.documentElement.classList.contains("aesir-app-ready")
   ));
   const { scrubCapable, reducedMotion, videoSource } = heroMode;
-  const posterUrl = asset("assets/aesir/cognitive-hero-poster.webp");
+  const posterUrl = asset(scrubCapable
+    ? "assets/aesir/cognitive-hero-poster.webp"
+    : "assets/aesir/cognitive-hero-mobile-poster.webp");
   const wordmarkUrl = asset("assets/aesir/aesir-wordmark.webp");
 
-  revealBootRef.current = async ({ fallback = false, layoutStable = false } = {}) => {
+  revealBootRef.current = async ({ fallback = false, layoutStable = false, mode = "poster" } = {}) => {
     if (bootRevealStartedRef.current) return;
     bootRevealStartedRef.current = true;
     setAppReady(true);
@@ -407,7 +418,7 @@ function BackgroundVideo() {
     }
 
     if (fallback) document.documentElement.classList.add("aesir-app-fallback");
-    revealAesirApp({ mode: fallback ? "poster" : "video" });
+    revealAesirApp({ mode });
     window.clearTimeout(window.__AESIR_BOOT_WATCHDOG__);
     window.clearTimeout(window.__AESIR_BOOT_HARD_FALLBACK__);
   };
@@ -416,12 +427,35 @@ function BackgroundVideo() {
     const loader = createHeroVideoResourceLoader();
     const criticalController = new AbortController();
     resourceLoaderRef.current = loader;
-    criticalAssetsPromiseRef.current = prepareHeroCriticalAssets({
+    const criticalAssetsPromise = prepareHeroCriticalAssets({
       fontReady: document.fonts?.ready ?? Promise.resolve(),
       posterUrl,
       criticalImageUrls: [wordmarkUrl],
       signal: criticalController.signal,
     }).catch((error) => ({ error }));
+
+    const revealCriticalPoster = async () => {
+      const criticalAssets = await criticalAssetsPromise;
+      if (criticalController.signal.aborted || criticalAssets?.error) return;
+
+      setAppReady(true);
+      await waitForStableLayout({ signal: criticalController.signal });
+      const readiness = createHeroBootReadiness({
+        mounted: true,
+        fontsReady: criticalAssets.fontsReady,
+        criticalImagesReady: criticalAssets.criticalImagesReady,
+        posterReady: criticalAssets.posterReady,
+        layoutStable: true,
+      });
+      const revealMode = getHeroBootRevealMode({
+        readiness,
+        timedOut: false,
+        posterReady: criticalAssets.posterReady,
+      });
+      if (revealMode === "poster") {
+        await revealBootRef.current?.({ layoutStable: true, mode: revealMode });
+      }
+    };
 
     const revealPosterFallback = async () => {
       let posterReady = false;
@@ -437,7 +471,7 @@ function BackgroundVideo() {
         posterReady,
       });
       if (revealMode === "poster") {
-        await revealBootRef.current?.({ fallback: true });
+        await revealBootRef.current?.({ fallback: true, mode: revealMode });
       }
     };
     const onBootTimeout = () => {
@@ -446,6 +480,7 @@ function BackgroundVideo() {
 
     window.addEventListener("aesir:boot-timeout", onBootTimeout);
     if (window.__AESIR_BOOT_TIMED_OUT__) void revealPosterFallback();
+    void revealCriticalPoster();
 
     return () => {
       window.removeEventListener("aesir:boot-timeout", onBootTimeout);
@@ -454,6 +489,17 @@ function BackgroundVideo() {
       resourceLoaderRef.current = null;
     };
   }, [posterUrl, wordmarkUrl]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || typeof IntersectionObserver !== "function") return undefined;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      setHeroInRange(entry.isIntersecting);
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const hoverQuery = window.matchMedia("(any-hover: hover)");
@@ -562,6 +608,12 @@ function BackgroundVideo() {
       videoSource,
     });
     if (!video || !loader || !finalVideoSource) return undefined;
+    if (!heroInRange) {
+      loader.cancelPending();
+      video.pause();
+      return undefined;
+    }
+    if (readySource === finalVideoSource && video.src) return undefined;
 
     const preparationController = new AbortController();
     let resource = null;
@@ -582,39 +634,13 @@ function BackgroundVideo() {
         resource.activate();
         video.dataset.warmupCompleteAt = performance.now().toFixed(1);
         setReadySource(finalVideoSource);
-
-        if (bootRevealStartedRef.current) return;
-
-        const criticalAssets = await criticalAssetsPromiseRef.current;
-        if (criticalAssets?.error) throw criticalAssets.error;
-
-        setAppReady(true);
-        await waitForStableLayout({ signal: preparationController.signal });
-        const readiness = createHeroBootReadiness({
-          mounted: true,
-          sourceResolved: true,
-          fileFetched: true,
-          blobAttached: true,
-          metadataReady: warmup.metadataReady,
-          framesWarmed: warmup.framesWarmed,
-          neutralReady: warmup.neutralReady,
-          fontsReady: criticalAssets.fontsReady,
-          criticalImagesReady: criticalAssets.criticalImagesReady,
-          posterReady: criticalAssets.posterReady,
-          layoutStable: true,
-        });
-
-        if (getHeroBootRevealMode({
-          readiness,
-          timedOut: false,
-          posterReady: criticalAssets.posterReady,
-        }) === "video") {
-          await revealBootRef.current?.({ layoutStable: true });
-        }
+        window.dispatchEvent(new CustomEvent("aesir:hero-ready", {
+          detail: { source: finalVideoSource, warmup },
+        }));
       } catch (error) {
         resource?.release();
         if (!isAbortError(error)) {
-          // Keep the decoded poster behind the white boot cover until the watchdog reveals it.
+          // The decoded poster remains visible if the optional video preparation fails.
         }
       }
     };
@@ -626,7 +652,7 @@ function BackgroundVideo() {
       loader.cancelPending();
       resource?.release();
     };
-  }, [reducedMotion, scrubCapable, videoSource]);
+  }, [heroInRange, reducedMotion, scrubCapable, videoSource]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -650,13 +676,13 @@ function BackgroundVideo() {
       ? new ResizeObserver(updateFocalPosition)
       : null;
     resizeObserver?.observe(container);
-    window.addEventListener("resize", updateFocalPosition, { passive: true });
+    if (!resizeObserver) window.addEventListener("resize", updateFocalPosition, { passive: true });
     video.addEventListener("loadedmetadata", updateFocalPosition);
     updateFocalPosition();
 
     return () => {
       resizeObserver?.disconnect();
-      window.removeEventListener("resize", updateFocalPosition);
+      if (!resizeObserver) window.removeEventListener("resize", updateFocalPosition);
       video.removeEventListener("loadedmetadata", updateFocalPosition);
     };
   }, [videoSource]);
@@ -718,6 +744,7 @@ function BackgroundVideo() {
       if (!Number.isFinite(video.duration)) return;
       const pointerProgress = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
       targetTime = mapPointerToGazeTime(pointerProgress, video.duration);
+      scheduleRender();
     };
 
     const onLoadedMetadata = () => {
@@ -743,14 +770,21 @@ function BackgroundVideo() {
         }
         lastUpdate = timestamp;
       }
-      animationFrame = window.requestAnimationFrame(renderScrub);
+      if (Math.abs(targetTime - renderedTime) > frameDuration / 2) {
+        animationFrame = window.requestAnimationFrame(renderScrub);
+      } else {
+        lastUpdate = 0;
+      }
+    };
+
+    const scheduleRender = () => {
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(renderScrub);
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
     video.addEventListener("loadedmetadata", onLoadedMetadata);
     video.addEventListener("seeked", onSeeked);
     if (video.readyState >= 1) onLoadedMetadata();
-    animationFrame = window.requestAnimationFrame(renderScrub);
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
@@ -764,6 +798,10 @@ function BackgroundVideo() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !appReady || readySource !== videoSource) return undefined;
+    if (!heroInRange) {
+      video.pause();
+      return undefined;
+    }
     const playbackState = getHeroPlaybackState({ scrubCapable, reducedMotion });
 
     video.autoplay = playbackState.autoplay;
@@ -775,7 +813,7 @@ function BackgroundVideo() {
 
     video.pause();
     return undefined;
-  }, [appReady, readySource, reducedMotion, scrubCapable, videoSource]);
+  }, [appReady, heroInRange, readySource, reducedMotion, scrubCapable, videoSource]);
 
   return (
     <div
@@ -824,7 +862,14 @@ function Header() {
     <header className={`aesir-header${open ? " is-menu-open" : ""}`}>
       <div className="aesir-header__inner">
         <button className="brand-button" onClick={() => navigate("top")} aria-label="Back to top">
-          <img src={asset("assets/aesir/aesir-wordmark.webp")} alt="AESIR" />
+          <img
+            src={asset("assets/aesir/aesir-wordmark.webp")}
+            alt="AESIR"
+            width="1342"
+            height="314"
+            fetchPriority="high"
+            decoding="async"
+          />
         </button>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
@@ -904,6 +949,7 @@ function HeroEvidence() {
           height="1200"
           loading="lazy"
           decoding="async"
+          data-predictive-media
         />
         <figcaption aria-label="AESIR credentials">
           <span>Global social technology</span>
@@ -1133,8 +1179,11 @@ function Evidence() {
           <img
             src={asset("assets/aesir/ai-for-all.webp")}
             alt="AESIR and programme partners at an inclusive AI deployment"
+            width="1600"
+            height="1200"
             loading="lazy"
             decoding="async"
+            data-predictive-media
           />
         </figure>
       </div>
@@ -1235,6 +1284,7 @@ function ProjectLibrary() {
                   alt={`${project.title} project media`}
                   loading="lazy"
                   decoding="async"
+                  data-predictive-media
                 />
               </div>
               <div className="project-card__content">
@@ -1286,7 +1336,11 @@ function Leadership() {
           <img
             src={asset("assets/aesir/ernest-reading.webp")}
             alt="AESIR Co-Founder Ernest HS CHAN reading an augmented-reality positive psychology playbook"
+            width="2048"
+            height="1365"
             loading="lazy"
+            decoding="async"
+            data-predictive-media
           />
           <div>
             <h3>Clinical empathy, industrial execution.</h3>
@@ -1301,15 +1355,32 @@ function Leadership() {
         <div className="photo-grid" data-enter>
           {newPhotos.map((photo) => (
             <figure key={photo.src}>
-              <img src={asset(photo.src)} alt={photo.alt} loading="lazy" decoding="async" />
+              <img
+                src={asset(photo.src)}
+                alt={photo.alt}
+                width={photo.width}
+                height={photo.height}
+                loading="lazy"
+                decoding="async"
+                data-predictive-media
+              />
               <figcaption>{photo.label}</figcaption>
             </figure>
           ))}
         </div>
 
         <div className="archive-strip" data-enter>
-          {archivePhotos.map(([src, alt]) => (
-            <img key={src} src={asset(src)} alt={alt} loading="lazy" decoding="async" />
+          {archivePhotos.map(([src, alt, width, height]) => (
+            <img
+              key={src}
+              src={asset(src)}
+              alt={alt}
+              width={width}
+              height={height}
+              loading="lazy"
+              decoding="async"
+              data-predictive-media
+            />
           ))}
         </div>
       </div>
@@ -1339,6 +1410,8 @@ function Contact() {
 }
 
 export function AesirResearchSite() {
+  useEffect(() => installPredictiveMediaScheduler(), []);
+
   useEffect(() => {
     window.history.scrollRestoration = "manual";
 
@@ -1374,7 +1447,15 @@ export function AesirResearchSite() {
         <Contact />
       </main>
       <footer className="aesir-footer">
-        <img src={asset("assets/aesir/aesir-wordmark.webp")} alt="AESIR" />
+        <img
+          src={asset("assets/aesir/aesir-wordmark.webp")}
+          alt="AESIR"
+          width="1342"
+          height="314"
+          loading="lazy"
+          decoding="async"
+          data-predictive-media
+        />
         <p>Evidence-based immersive intelligence.</p>
         <p>© {new Date().getFullYear()} AESIR</p>
       </footer>

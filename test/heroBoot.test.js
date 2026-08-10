@@ -9,6 +9,7 @@ import {
   getHeroWarmupTimes,
   isAbortError,
   isHeroBootReady,
+  isHeroVideoReady,
   prepareHeroCriticalAssets,
   resolveHeroDownloadSource,
   revealAesirApp,
@@ -35,7 +36,7 @@ test("the final source must resolve before a download can begin", () => {
   assert.equal(resolveHeroDownloadSource({ sourceResolved: true, videoSource: "hero.mp4" }), "hero.mp4");
 });
 
-test("loadedData-equivalent readiness cannot reveal before full fetch and warm-up", () => {
+test("loadedData alone cannot reveal before critical poster readiness", () => {
   const loadedDataOnly = createHeroBootReadiness({
     mounted: true,
     sourceResolved: true,
@@ -50,6 +51,25 @@ test("loadedData-equivalent readiness cannot reveal before full fetch and warm-u
     posterReady: true,
   }), "covered");
   assert.equal(isHeroBootReady(completeReadiness()), true);
+  assert.equal(isHeroVideoReady(completeReadiness()), true);
+});
+
+test("decoded critical poster reveals the page while video preparation continues", () => {
+  const posterReadiness = createHeroBootReadiness({
+    mounted: true,
+    fontsReady: true,
+    criticalImagesReady: true,
+    posterReady: true,
+    layoutStable: true,
+  });
+
+  assert.equal(isHeroBootReady(posterReadiness), true);
+  assert.equal(isHeroVideoReady(posterReadiness), false);
+  assert.equal(getHeroBootRevealMode({
+    readiness: posterReadiness,
+    timedOut: false,
+    posterReady: true,
+  }), "poster");
 });
 
 test("full hero fetch uses the HTTP cache and returns the complete Blob", async () => {
