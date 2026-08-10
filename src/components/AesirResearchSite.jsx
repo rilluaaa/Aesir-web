@@ -1058,10 +1058,7 @@ function ResearchAreas() {
           </div>
           <div className="research-cases__grid">
             {activeArea.cases.map((item) => (
-              <article
-                key={item.title}
-                className={item.title === "My Living Diary" ? "research-case--living-diary" : undefined}
-              >
+              <article key={item.title}>
                 <h5>{item.title}</h5>
                 <p>{item.description}</p>
               </article>

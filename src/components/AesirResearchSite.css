@@ -717,8 +717,8 @@
 }
 
 @media (min-width: 901px) {
-  .research-cases__grid article.research-case--living-diary {
-    padding-top: 55px;
+  .research-cases__grid h5 {
+    min-height: calc(2 * 1.06em);
   }
 }
 
