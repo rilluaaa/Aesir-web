@@ -70,7 +70,7 @@ const researchAreas = [
         title: "Turning civic frameworks into public experiences.",
         body: [
           "AESIR translates this agenda into programmes that can be tested with real communities and institutions. Smart Sports applies gerontechnology and movement-based interaction to preventive exercise for older adults, while mixed-reality AED and CPR training gives learners a safe, repeatable environment for practising emergency decisions before a real incident occurs.",
-          "Tree Portal and environmental learning games extend the same principle into citizen science and public education. Together, these deployments create an applied foundation for evaluating participation, comprehension, accessibility, and adoption—evidence that can inform more inclusive healthcare, community services, and smart-city infrastructure.",
+          "Interactive environmental learning projects extend the same principle into citizen science and public education. Together, these deployments create an applied foundation for evaluating participation, comprehension, accessibility, and adoption—evidence that can inform more inclusive healthcare, community services, and smart-city infrastructure.",
         ],
       },
     ],
@@ -124,7 +124,7 @@ const researchAreas = [
         title: "Building practical test beds for responsible AX.",
         body: [
           "AESIR's portfolio provides real interfaces through which these questions can be tested. Camera-based sports and exercise systems use pose, hand, skeleton, and depth tracking to interpret movement without physical controllers, creating immediate examples of how AI feedback must remain accurate, legible, and motivating.",
-          "VocabGO, Cantonese speech training, language-learning assistants, and conversational service prototypes extend the research into recognition, communication, and automated response. These deployments support the development of scalable AX blueprints in which performance data, user experience, escalation rules, and meaningful human control are considered from the beginning.",
+          "Applied AI systems extend the research into recognition, communication, and automated response. These deployments support the development of scalable AX blueprints in which performance data, user experience, escalation rules, and meaningful human control are considered from the beginning.",
         ],
       },
     ],
@@ -159,7 +159,7 @@ const researchAreas = [
         label: "Description",
         title: "Inclusive technology built around cognitive difference.",
         body: [
-          "NEURO Business Futures investigates how immersive environments and generative AI can support neurodivergent learning, communication, assessment, and wellbeing. Multi-sensory XR can present information through space, movement, sound, and guided interaction, creating non-pharmacological pathways that adapt to different ways of processing the world.",
+          "NEURO Business Futures investigates how immersive environments and generative AI can support neurodivergent learning, communication, assessment, and wellbeing. Multi-sensory VR can present information through space, movement, sound, and guided interaction, creating non-pharmacological pathways that adapt to different ways of processing the world.",
           "The programme considers Autism, Dyslexia, Dementia, ADHD, and related cognitive conditions without reducing people to a diagnosis. Its purpose is to connect clinical empathy with technology design, then examine how assistive systems can move from isolated prototypes into trustworthy services, sustainable markets, and accessible learning or care environments.",
         ],
       },
@@ -1055,7 +1055,6 @@ function ResearchAreas() {
         <div id={`research-cases-${activeArea.id}`} className="research-cases">
           <div className="research-cases__heading">
             <h4>What AESIR has already built</h4>
-            <p>Selected deployments that demonstrate the practical foundation behind this research direction.</p>
           </div>
           <div className="research-cases__grid">
             {activeArea.cases.map((item) => (
@@ -1124,15 +1123,6 @@ function Evidence() {
         </figure>
       </div>
 
-      <div className="evidence-statement" data-enter>
-        <p>
-          For partners seeking validated industrial execution, cross-sector governance experience,
-          and real-world clinical empathy.
-        </p>
-        <a href={contactUrl} target="_blank" rel="noreferrer">
-          Start a conversation <ArrowUpRight size={18} aria-hidden="true" />
-        </a>
-      </div>
     </section>
   );
 }
@@ -1166,9 +1156,9 @@ function ProjectLibrary() {
         <div>
           <h2>Field deployments across technology and society.</h2>
           <p>
-            AESIR has delivered a wide range of work across immersive learning, simulation,
-            digital health, motion technology, public education, and digital infrastructure,
-            applying research and technology to different sectors, communities, and real-world needs.
+            AESIR has delivered projects across diverse sectors and real-world contexts,
+            translating research and emerging technology into practical applications for
+            organisations, communities, and everyday life.
           </p>
         </div>
         <div className="project-search">
