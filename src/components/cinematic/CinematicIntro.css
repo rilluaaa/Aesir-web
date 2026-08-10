@@ -36,19 +36,12 @@
   z-index: 1;
   display: block;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 120ms linear;
 }
 
-.cinematic-intro.is-canvas-ready .cinematic-intro__sticky > canvas {
+.cinematic-intro.is-frame-ready .cinematic-intro__sticky > canvas {
   opacity: 1;
-}
-
-.cinematic-intro__sticky > video {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
 }
 
 .cinematic-intro__handoff {

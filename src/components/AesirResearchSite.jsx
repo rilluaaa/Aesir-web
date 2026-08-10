@@ -34,11 +34,12 @@ import { CinematicIntro } from "./cinematic/CinematicIntro.jsx";
 import "./AesirResearchSite.css";
 
 const contactUrl = "https://aesir.hk/#contactus";
-const cinematicSourceUrl = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260729_102822_0e6c87e8-c141-4744-bf32-ad30db296371.mp4";
 const asset = (path) =>
   /^https?:\/\//.test(path)
     ? path
     : `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+const cinematicDesktopFrames = asset("assets/aesir/cinematic-frames-1440");
+const cinematicMobileFrames = asset("assets/aesir/cinematic-frames-720");
 
 const researchAreas = [
   {
@@ -1368,8 +1369,8 @@ export function AesirResearchSite() {
   return (
     <div className="aesir-site">
       <CinematicIntro
-        desktopSource={cinematicSourceUrl}
-        mobileSource={cinematicSourceUrl}
+        desktopFrameBase={cinematicDesktopFrames}
+        mobileFrameBase={cinematicMobileFrames}
         posterSource={asset("assets/aesir/aesir-cinematic-scroll-poster.webp")}
         onHandoffApproach={enableHeroMedia}
       />

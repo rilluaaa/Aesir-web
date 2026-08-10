@@ -1,9 +1,11 @@
 export const CINEMATIC_FRAME_RATE = 24;
+export const CINEMATIC_FRAME_COUNT = 241;
 export const CINEMATIC_SCROLL_HEIGHT_VH = 400;
 export const CINEMATIC_DAMPING_MS = 52;
 export const CINEMATIC_HANDOFF_START = 0.92;
-export const CINEMATIC_PREPARE_CONTENT_AT = 0.76;
+export const CINEMATIC_PREPARE_CONTENT_AT = 0.84;
 export const CINEMATIC_HANDOFF_WASH = 0.18;
+export const CINEMATIC_MIN_FRAME_INTERVAL_MS = 1000 / CINEMATIC_FRAME_RATE;
 
 export const clampCinematicProgress = (value) => (
   Math.min(1, Math.max(0, Number(value) || 0))
@@ -51,6 +53,19 @@ export const selectCinematicSource = ({
   mobileSource,
 }) => Number(viewportWidth) > 900 ? desktopSource : mobileSource;
 
+export const getCinematicFrameIndex = (
+  progress,
+  frameCount = CINEMATIC_FRAME_COUNT,
+) => {
+  const finalFrameIndex = Math.max(0, Math.floor(Number(frameCount) || 1) - 1);
+  return Math.round(clampCinematicProgress(progress) * finalFrameIndex);
+};
+
+export const getCinematicFrameUrl = ({ basePath, frameIndex }) => {
+  const safeIndex = Math.max(0, Math.floor(Number(frameIndex) || 0));
+  return `${String(basePath).replace(/\/$/, "")}/frame-${String(safeIndex + 1).padStart(3, "0")}.webp`;
+};
+
 export const getCinematicFocalY = (progress) => {
   const value = clampCinematicProgress(progress);
   if (value < 0.16) return 0.31;
@@ -70,9 +85,7 @@ export const getCoverSourceRect = ({
   if (
     ![sourceWidth, sourceHeight, destinationWidth, destinationHeight]
       .every((value) => Number.isFinite(value) && value > 0)
-  ) {
-    return { x: 0, y: 0, width: 1, height: 1 };
-  }
+  ) return { x: 0, y: 0, width: 1, height: 1 };
 
   const sourceAspect = sourceWidth / sourceHeight;
   const destinationAspect = destinationWidth / destinationHeight;

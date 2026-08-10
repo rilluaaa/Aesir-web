@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  CINEMATIC_FRAME_COUNT,
   CINEMATIC_FRAME_RATE,
+  CINEMATIC_MIN_FRAME_INTERVAL_MS,
   CINEMATIC_SCROLL_HEIGHT_VH,
-  clampCinematicProgress,
   dampCinematicProgress,
   getCinematicFocalY,
-  getCinematicFrame,
+  getCinematicFrameIndex,
+  getCinematicFrameUrl,
   getCinematicHandoffOpacity,
   getCinematicScrollProgress,
   getCoverSourceRect,
@@ -13,7 +15,6 @@ import {
   shouldPrepareExistingContent,
 } from "../../cinematicIntro.js";
 import {
-  createHeroVideoResourceLoader,
   decodeImageUrl,
   isAbortError,
   revealAesirApp,
@@ -22,58 +23,56 @@ import {
 import "./CinematicIntro.css";
 
 const CONVERGENCE_EPSILON = 0.00015;
-const SEEK_RELEASE_MS = 180;
-const CANVAS_DPR_LIMIT = 1.5;
+const DESKTOP_CACHE_LIMIT = 12;
+const MOBILE_CACHE_LIMIT = 8;
+const DESKTOP_PRELOAD_RADIUS = 4;
+const MOBILE_PRELOAD_RADIUS = 2;
+const PRELOAD_IDLE_MS = 140;
 
-const waitForVideoEvent = (video, eventName, signal) => new Promise((resolve, reject) => {
-  if (signal.aborted) {
-    reject(new DOMException("Cinematic preparation cancelled", "AbortError"));
-    return;
-  }
-
-  const cleanup = () => {
-    video.removeEventListener(eventName, onEvent);
-    signal.removeEventListener("abort", onAbort);
-  };
-  const onEvent = () => {
-    cleanup();
-    resolve();
-  };
-  const onAbort = () => {
-    cleanup();
-    reject(new DOMException("Cinematic preparation cancelled", "AbortError"));
-  };
-
-  video.addEventListener(eventName, onEvent, { once: true });
-  signal.addEventListener("abort", onAbort, { once: true });
+const getSelectedFrameBase = ({ desktopFrameBase, mobileFrameBase }) => selectCinematicSource({
+  viewportWidth: typeof window === "undefined" ? 0 : window.innerWidth,
+  desktopSource: desktopFrameBase,
+  mobileSource: mobileFrameBase,
 });
 
+const decodeFrameBlob = async (blob) => {
+  if (typeof createImageBitmap === "function") return createImageBitmap(blob);
+
+  const objectUrl = URL.createObjectURL(blob);
+  try {
+    const image = new Image();
+    image.decoding = "async";
+    image.src = objectUrl;
+    await image.decode();
+    return image;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+};
+
 export function CinematicIntro({
-  desktopSource,
-  mobileSource,
+  desktopFrameBase,
+  mobileFrameBase,
   posterSource,
   onHandoffApproach,
 }) {
   const sectionRef = useRef(null);
   const canvasRef = useRef(null);
-  const videoRef = useRef(null);
   const metricsRef = useRef({ top: 0, height: 1, viewportHeight: 1 });
   const targetProgressRef = useRef(0);
   const displayedProgressRef = useRef(0);
-  const pendingTimeRef = useRef(null);
-  const seekInFlightRef = useRef(false);
-  const seekTimeoutRef = useRef(0);
+  const pendingFrameIndexRef = useRef(0);
+  const displayedFrameIndexRef = useRef(-1);
   const animationFrameRef = useRef(0);
+  const cadenceTimeoutRef = useRef(0);
   const lastTimestampRef = useRef(0);
-  const lastFrameIndexRef = useRef(-1);
+  const lastFrameRequestAtRef = useRef(Number.NEGATIVE_INFINITY);
   const handoffPreparedRef = useRef(false);
   const visibleRef = useRef(true);
   const reducedMotionRef = useRef(false);
-  const [mediaReady, setMediaReady] = useState(false);
-  const [selectedSource] = useState(() => selectCinematicSource({
-    viewportWidth: typeof window === "undefined" ? 0 : window.innerWidth,
-    desktopSource,
-    mobileSource,
+  const [selectedFrameBase, setSelectedFrameBase] = useState(() => getSelectedFrameBase({
+    desktopFrameBase,
+    mobileFrameBase,
   }));
 
   useEffect(() => {
@@ -98,90 +97,145 @@ export function CinematicIntro({
   }, [posterSource]);
 
   useEffect(() => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas || !selectedSource) return undefined;
-
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    reducedMotionRef.current = reducedMotion;
-    if (reducedMotion) {
-      sectionRef.current?.classList.add("is-handoff-complete");
-      handoffPreparedRef.current = true;
-      onHandoffApproach?.();
-      return undefined;
-    }
-
-    const controller = new AbortController();
-    const loader = createHeroVideoResourceLoader();
-    let resource = null;
-
-    const prepareVideo = async () => {
-      try {
-        resource = await loader.load(selectedSource);
-        video.src = resource.objectUrl;
-        video.load();
-        if (video.readyState < 1) await waitForVideoEvent(video, "loadedmetadata", controller.signal);
-        if (video.readyState < 2) await waitForVideoEvent(video, "loadeddata", controller.signal);
-        const warmTime = Math.min(1 / CINEMATIC_FRAME_RATE, Math.max(0, video.duration - 0.001));
-        if (warmTime > 0) {
-          video.currentTime = warmTime;
-          await waitForVideoEvent(video, "seeked", controller.signal);
-          video.currentTime = 0;
-          await waitForVideoEvent(video, "seeked", controller.signal);
-        }
-        resource.activate();
-        setMediaReady(true);
-      } catch (error) {
-        resource?.release();
-        if (!isAbortError(error)) sectionRef.current?.setAttribute("data-media-fallback", "poster");
-      }
+    let resizeFrame = 0;
+    const updateFrameBase = () => {
+      resizeFrame = 0;
+      const nextBase = getSelectedFrameBase({ desktopFrameBase, mobileFrameBase });
+      setSelectedFrameBase((currentBase) => currentBase === nextBase ? currentBase : nextBase);
+    };
+    const queueFrameBaseUpdate = () => {
+      if (resizeFrame) return;
+      resizeFrame = window.requestAnimationFrame(updateFrameBase);
     };
 
-    void prepareVideo();
+    window.addEventListener("resize", queueFrameBaseUpdate, { passive: true });
+    window.addEventListener("orientationchange", queueFrameBaseUpdate, { passive: true });
     return () => {
-      controller.abort();
-      loader.dispose();
-      resource?.release();
-      video.removeAttribute("src");
-      video.load();
+      window.removeEventListener("resize", queueFrameBaseUpdate);
+      window.removeEventListener("orientationchange", queueFrameBaseUpdate);
+      window.cancelAnimationFrame(resizeFrame);
     };
-  }, [onHandoffApproach, selectedSource]);
+  }, [desktopFrameBase, mobileFrameBase]);
 
   useEffect(() => {
     const section = sectionRef.current;
     const canvas = canvasRef.current;
-    const video = videoRef.current;
-    if (!section || !canvas || !video) return undefined;
+    if (!section || !canvas || !selectedFrameBase) return undefined;
 
     const context = canvas.getContext("2d", { alpha: true, desynchronized: true });
     if (!context) return undefined;
 
     let disposed = false;
+    let preloadTimeout = 0;
+    let lastScrollAt = Number.NEGATIVE_INFINITY;
+    let previousQueuedFrame = 0;
+    let travelDirection = 1;
+    let frameRequestInFlight = false;
+    let latestTargetFrame = 0;
+    const frameCache = new Map();
+    const inFlightFrames = new Map();
+    const mobileFrames = selectedFrameBase === mobileFrameBase;
+    const cacheLimit = mobileFrames ? MOBILE_CACHE_LIMIT : DESKTOP_CACHE_LIMIT;
+    const preloadRadius = mobileFrames ? MOBILE_PRELOAD_RADIUS : DESKTOP_PRELOAD_RADIUS;
 
-    const resizeCanvas = () => {
-      const rect = canvas.getBoundingClientRect();
-      const dpr = Math.min(CANVAS_DPR_LIMIT, Math.max(1, window.devicePixelRatio || 1));
-      const width = Math.max(1, Math.round(rect.width * dpr));
-      const height = Math.max(1, Math.round(rect.height * dpr));
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-        lastFrameIndexRef.current = -1;
+    const closeFrame = (frame) => {
+      if (typeof frame?.close === "function") frame.close();
+    };
+
+    const touchCachedFrame = (frameIndex) => {
+      const frame = frameCache.get(frameIndex);
+      if (!frame) return null;
+      frameCache.delete(frameIndex);
+      frameCache.set(frameIndex, frame);
+      return frame;
+    };
+
+    const trimCache = () => {
+      while (frameCache.size > cacheLimit) {
+        const oldestIndex = frameCache.keys().next().value;
+        const oldestFrame = frameCache.get(oldestIndex);
+        frameCache.delete(oldestIndex);
+        closeFrame(oldestFrame);
       }
     };
 
-    const drawFrame = (progress) => {
-      if (video.readyState < 2 || video.videoWidth <= 0 || video.videoHeight <= 0) return;
-      resizeCanvas();
+    const loadFrame = (frameIndex) => {
+      const cachedFrame = touchCachedFrame(frameIndex);
+      if (cachedFrame) return Promise.resolve(cachedFrame);
+      if (inFlightFrames.has(frameIndex)) return inFlightFrames.get(frameIndex).promise;
+
+      const controller = new AbortController();
+      const promise = fetch(getCinematicFrameUrl({
+        basePath: selectedFrameBase,
+        frameIndex,
+      }), {
+        cache: "force-cache",
+        signal: controller.signal,
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error(`Cinematic frame failed: ${response.status}`);
+          return response.blob();
+        })
+        .then(decodeFrameBlob)
+        .then((frame) => {
+          if (disposed) {
+            closeFrame(frame);
+            return null;
+          }
+          frameCache.set(frameIndex, frame);
+          trimCache();
+          return frame;
+        })
+        .catch((error) => {
+          if (error.name !== "AbortError") section.setAttribute("data-frame-fallback", "poster");
+          return null;
+        })
+        .finally(() => {
+          inFlightFrames.delete(frameIndex);
+        });
+
+      inFlightFrames.set(frameIndex, { controller, promise });
+      return promise;
+    };
+
+    const abortObsoleteFrames = (targetIndex) => {
+      inFlightFrames.forEach(({ controller }, frameIndex) => {
+        if (
+          Math.abs(frameIndex - targetIndex) > 2
+          && Math.abs(frameIndex - latestTargetFrame) > 2
+        ) controller.abort();
+      });
+    };
+
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      const sourceWidth = mobileFrames ? 1280 : 1440;
+      const sourceHeight = mobileFrames ? 720 : 810;
+      const scale = Math.max(0.5, Math.min(
+        window.devicePixelRatio || 1,
+        sourceWidth / Math.max(1, rect.width),
+        sourceHeight / Math.max(1, rect.height),
+      ));
+      const width = Math.max(1, Math.round(rect.width * scale));
+      const height = Math.max(1, Math.round(rect.height * scale));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        displayedFrameIndexRef.current = -1;
+      }
+    };
+
+    const drawFrame = (frame, frameIndex, progress) => {
+      if (!frame || disposed || frameIndex !== pendingFrameIndexRef.current) return;
       const source = getCoverSourceRect({
-        sourceWidth: video.videoWidth,
-        sourceHeight: video.videoHeight,
+        sourceWidth: frame.width || frame.naturalWidth,
+        sourceHeight: frame.height || frame.naturalHeight,
         destinationWidth: canvas.width,
         destinationHeight: canvas.height,
         focalY: getCinematicFocalY(progress),
       });
       context.drawImage(
-        video,
+        frame,
         source.x,
         source.y,
         source.width,
@@ -191,59 +245,98 @@ export function CinematicIntro({
         canvas.width,
         canvas.height,
       );
-      section.classList.add("is-canvas-ready");
+      displayedFrameIndexRef.current = frameIndex;
+      canvas.dataset.frameIndex = String(frameIndex);
+      section.classList.add("is-frame-ready");
     };
 
-    const releaseSeek = () => {
-      window.clearTimeout(seekTimeoutRef.current);
-      seekTimeoutRef.current = 0;
-      seekInFlightRef.current = false;
-      flushLatestSeek();
+    const preloadNearbyFrames = (frameIndex) => {
+      window.clearTimeout(preloadTimeout);
+      const preload = () => {
+        preloadTimeout = 0;
+        const elapsedSinceScroll = performance.now() - lastScrollAt;
+        if (elapsedSinceScroll < PRELOAD_IDLE_MS) {
+          preloadTimeout = window.setTimeout(preload, PRELOAD_IDLE_MS - elapsedSinceScroll);
+          return;
+        }
+        for (let offset = 1; offset <= preloadRadius; offset += 1) {
+          const forward = frameIndex + offset;
+          const backward = frameIndex - offset;
+          if (forward < CINEMATIC_FRAME_COUNT) void loadFrame(forward);
+          if (backward >= 0) void loadFrame(backward);
+        }
+      };
+      preloadTimeout = window.setTimeout(preload, PRELOAD_IDLE_MS);
     };
 
-    const onSeeked = () => {
-      const pendingTime = pendingTimeRef.current;
-      const hasNewerTarget = pendingTime !== null
-        && Math.abs(pendingTime - video.currentTime) > 1 / (CINEMATIC_FRAME_RATE * 2);
-      if (!hasNewerTarget) drawFrame(displayedProgressRef.current);
-      releaseSeek();
+    const preloadInTravelDirection = (frameIndex) => {
+      if (inFlightFrames.size >= 3) return;
+      for (let offset = 1; offset <= 2; offset += 1) {
+        const candidate = frameIndex + (travelDirection * offset);
+        if (
+          candidate >= 0
+          && candidate < CINEMATIC_FRAME_COUNT
+          && !frameCache.has(candidate)
+          && !inFlightFrames.has(candidate)
+        ) void loadFrame(candidate);
+      }
     };
 
-    function flushLatestSeek() {
-      if (
-        disposed
-        || document.hidden
-        || seekInFlightRef.current
-        || video.seeking
-        || pendingTimeRef.current === null
-        || video.readyState < 1
-      ) return;
+    const requestLatestFrame = () => {
+      cadenceTimeoutRef.current = 0;
+      if (disposed || document.hidden || frameRequestInFlight) return;
+      const frameIndex = pendingFrameIndexRef.current;
+      if (frameIndex === displayedFrameIndexRef.current) return;
 
-      const nextTime = pendingTimeRef.current;
-      pendingTimeRef.current = null;
-      if (Math.abs(video.currentTime - nextTime) < 1 / (CINEMATIC_FRAME_RATE * 2)) {
-        drawFrame(displayedProgressRef.current);
+      const now = performance.now();
+      const elapsed = now - lastFrameRequestAtRef.current;
+      if (elapsed < CINEMATIC_MIN_FRAME_INTERVAL_MS) {
+        cadenceTimeoutRef.current = window.setTimeout(
+          requestLatestFrame,
+          CINEMATIC_MIN_FRAME_INTERVAL_MS - elapsed,
+        );
         return;
       }
 
-      seekInFlightRef.current = true;
-      try {
-        video.currentTime = nextTime;
-        seekTimeoutRef.current = window.setTimeout(() => {
-          drawFrame(displayedProgressRef.current);
-          releaseSeek();
-        }, SEEK_RELEASE_MS);
-      } catch {
-        releaseSeek();
-      }
-    }
+      lastFrameRequestAtRef.current = now;
+      abortObsoleteFrames(frameIndex);
+      const requestedProgress = displayedProgressRef.current;
+      frameRequestInFlight = true;
+      void loadFrame(frameIndex)
+        .then((frame) => {
+          if (!frame) return;
+          drawFrame(frame, frameIndex, requestedProgress);
+          if (frameIndex === pendingFrameIndexRef.current) {
+            preloadInTravelDirection(frameIndex);
+            preloadNearbyFrames(frameIndex);
+          }
+        })
+        .finally(() => {
+          frameRequestInFlight = false;
+          if (
+            !disposed
+            && displayedFrameIndexRef.current !== pendingFrameIndexRef.current
+            && !cadenceTimeoutRef.current
+          ) cadenceTimeoutRef.current = window.setTimeout(requestLatestFrame, 0);
+        });
+    };
 
     const queueFrame = (progress) => {
-      const frame = getCinematicFrame(progress, video.duration);
-      if (frame.index === lastFrameIndexRef.current) return;
-      lastFrameIndexRef.current = frame.index;
-      pendingTimeRef.current = frame.time;
-      flushLatestSeek();
+      const frameIndex = getCinematicFrameIndex(progress);
+      if (frameIndex !== previousQueuedFrame) {
+        travelDirection = Math.sign(frameIndex - previousQueuedFrame) || travelDirection;
+        previousQueuedFrame = frameIndex;
+      }
+      pendingFrameIndexRef.current = frameIndex;
+      if (cadenceTimeoutRef.current || frameIndex === displayedFrameIndexRef.current) return;
+      requestLatestFrame();
+    };
+
+    const primeLatestTargetFrame = () => {
+      abortObsoleteFrames(latestTargetFrame);
+      if (!frameCache.has(latestTargetFrame) && !inFlightFrames.has(latestTargetFrame)) {
+        void loadFrame(latestTargetFrame);
+      }
     };
 
     const applyProgress = (progress) => {
@@ -255,6 +348,7 @@ export function CinematicIntro({
     };
 
     const updateTarget = () => {
+      lastScrollAt = performance.now();
       const metrics = metricsRef.current;
       const progress = reducedMotionRef.current
         ? 0
@@ -265,6 +359,7 @@ export function CinematicIntro({
           viewportHeight: metrics.viewportHeight,
         });
       targetProgressRef.current = progress;
+      latestTargetFrame = getCinematicFrameIndex(progress);
       visibleRef.current = window.scrollY >= metrics.top - metrics.viewportHeight
         && window.scrollY <= metrics.top + metrics.height;
 
@@ -292,6 +387,7 @@ export function CinematicIntro({
       displayedProgressRef.current = Math.abs(targetProgressRef.current - next) < CONVERGENCE_EPSILON
         ? targetProgressRef.current
         : next;
+      primeLatestTargetFrame();
       applyProgress(displayedProgressRef.current);
 
       if (
@@ -301,7 +397,7 @@ export function CinematicIntro({
     };
 
     function scheduleRender() {
-      if (animationFrameRef.current || disposed || document.hidden || !mediaReady) return;
+      if (animationFrameRef.current || disposed || document.hidden) return;
       animationFrameRef.current = window.requestAnimationFrame(render);
     }
 
@@ -320,35 +416,41 @@ export function CinematicIntro({
       if (document.hidden) {
         window.cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = 0;
-        pendingTimeRef.current = null;
         return;
       }
       updateTarget();
     };
 
-    video.pause();
-    video.addEventListener("seeked", onSeeked);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    reducedMotionRef.current = reducedMotion;
+    if (reducedMotion) {
+      section.classList.add("is-handoff-complete");
+      handoffPreparedRef.current = true;
+      onHandoffApproach?.();
+    }
+
     window.addEventListener("scroll", updateTarget, { passive: true });
     window.addEventListener("resize", updateMetrics, { passive: true });
     window.addEventListener("orientationchange", updateMetrics, { passive: true });
     document.addEventListener("visibilitychange", onVisibilityChange);
     updateMetrics();
-    if (mediaReady) {
-      drawFrame(0);
-      scheduleRender();
-    }
 
     return () => {
       disposed = true;
-      video.removeEventListener("seeked", onSeeked);
       window.removeEventListener("scroll", updateTarget);
       window.removeEventListener("resize", updateMetrics);
       window.removeEventListener("orientationchange", updateMetrics);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       window.cancelAnimationFrame(animationFrameRef.current);
-      window.clearTimeout(seekTimeoutRef.current);
+      window.clearTimeout(cadenceTimeoutRef.current);
+      cadenceTimeoutRef.current = 0;
+      window.clearTimeout(preloadTimeout);
+      inFlightFrames.forEach(({ controller }) => controller.abort());
+      frameCache.forEach(closeFrame);
+      inFlightFrames.clear();
+      frameCache.clear();
     };
-  }, [mediaReady, onHandoffApproach]);
+  }, [mobileFrameBase, onHandoffApproach, selectedFrameBase]);
 
   return (
     <section
@@ -359,9 +461,14 @@ export function CinematicIntro({
       style={{ "--cinematic-scroll-height": `${CINEMATIC_SCROLL_HEIGHT_VH}vh` }}
     >
       <div className="cinematic-intro__sticky" aria-hidden="true">
-        <img src={posterSource} alt="" decoding="async" draggable="false" />
+        <img
+          src={posterSource}
+          alt=""
+          decoding="async"
+          fetchPriority="high"
+          draggable="false"
+        />
         <canvas ref={canvasRef} />
-        <video ref={videoRef} muted playsInline preload="none" tabIndex="-1" />
         <div className="cinematic-intro__handoff" />
       </div>
     </section>

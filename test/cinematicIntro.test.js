@@ -3,6 +3,8 @@ import test from "node:test";
 
 import {
   dampCinematicProgress,
+  getCinematicFrameIndex,
+  getCinematicFrameUrl,
   getCinematicFocalY,
   getCinematicFrame,
   getCinematicHandoffOpacity,
@@ -42,24 +44,26 @@ test("only one responsive cinematic source is selected", () => {
   assert.equal(selectCinematicSource({ viewportWidth: 390, ...sources }), "mobile.mp4");
 });
 
-test("portrait media cover crop preserves aspect ratio and follows the focal point", () => {
-  const top = getCoverSourceRect({
-    sourceWidth: 1080,
-    sourceHeight: 1920,
-    destinationWidth: 1920,
-    destinationHeight: 1080,
-    focalY: 0.31,
+test("frame sequence targets and URLs are deterministic", () => {
+  assert.equal(getCinematicFrameIndex(0), 0);
+  assert.equal(getCinematicFrameIndex(0.5), 120);
+  assert.equal(getCinematicFrameIndex(1), 240);
+  assert.equal(
+    getCinematicFrameUrl({ basePath: "/frames/", frameIndex: 8 }),
+    "/frames/frame-009.webp",
+  );
+});
+
+test("canvas cover crop preserves source proportions", () => {
+  const crop = getCoverSourceRect({
+    sourceWidth: 1920,
+    sourceHeight: 1080,
+    destinationWidth: 390,
+    destinationHeight: 844,
   });
-  const bottom = getCoverSourceRect({
-    sourceWidth: 1080,
-    sourceHeight: 1920,
-    destinationWidth: 1920,
-    destinationHeight: 1080,
-    focalY: 0.64,
-  });
-  assert.equal(top.width / top.height, 16 / 9);
-  assert.ok(bottom.y > top.y);
-  assert.ok(bottom.y + bottom.height <= 1920);
+  assert.equal(crop.height, 1080);
+  assert.ok(crop.width < 1920);
+  assert.ok(crop.x > 0);
 });
 
 test("scene focal points change only at authored cinematic beats", () => {
@@ -77,6 +81,6 @@ test("handoff stays clear until the final beat and keeps the final frame visible
 });
 
 test("existing hero preparation starts only near the handoff", () => {
-  assert.equal(shouldPrepareExistingContent(0.75), false);
-  assert.equal(shouldPrepareExistingContent(0.76), true);
+  assert.equal(shouldPrepareExistingContent(0.83), false);
+  assert.equal(shouldPrepareExistingContent(0.84), true);
 });
