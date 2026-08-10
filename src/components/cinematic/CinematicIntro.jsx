@@ -23,7 +23,7 @@ import {
 import "./CinematicIntro.css";
 
 const CONVERGENCE_EPSILON = 0.00015;
-const DESKTOP_CACHE_LIMIT = 12;
+const DESKTOP_CACHE_LIMIT = 16;
 const MOBILE_CACHE_LIMIT = 8;
 const DESKTOP_PRELOAD_RADIUS = 4;
 const MOBILE_PRELOAD_RADIUS = 2;
@@ -258,6 +258,20 @@ export function CinematicIntro({
       section.classList.add("is-frame-ready");
     };
 
+    const drawClosestCachedFrame = (progress) => {
+      let closestIndex = -1;
+      let closestDistance = Number.POSITIVE_INFINITY;
+      frameCache.forEach((_, frameIndex) => {
+        const distance = Math.abs(frameIndex - pendingFrameIndexRef.current);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = frameIndex;
+        }
+      });
+      if (closestIndex < 0 || closestIndex === displayedFrameIndexRef.current) return;
+      drawFrame(touchCachedFrame(closestIndex), closestIndex, progress);
+    };
+
     const preloadNearbyFrames = (frameIndex) => {
       window.clearTimeout(preloadTimeout);
       const preload = () => {
@@ -337,6 +351,7 @@ export function CinematicIntro({
         previousQueuedFrame = frameIndex;
       }
       pendingFrameIndexRef.current = frameIndex;
+      drawClosestCachedFrame(progress);
       if (cadenceTimeoutRef.current || frameIndex === displayedFrameIndexRef.current) return;
       requestLatestFrame();
     };
