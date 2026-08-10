@@ -131,6 +131,7 @@ export function CinematicIntro({
     let previousQueuedFrame = 0;
     let travelDirection = 1;
     let frameRequestInFlight = false;
+    let activeFrameRequestIndex = -1;
     let latestTargetFrame = 0;
     const frameCache = new Map();
     const inFlightFrames = new Map();
@@ -201,6 +202,8 @@ export function CinematicIntro({
     const abortObsoleteFrames = (targetIndex) => {
       inFlightFrames.forEach(({ controller }, frameIndex) => {
         if (
+          frameIndex !== activeFrameRequestIndex
+          &&
           Math.abs(frameIndex - targetIndex) > 2
           && Math.abs(frameIndex - latestTargetFrame) > 2
         ) controller.abort();
@@ -226,7 +229,12 @@ export function CinematicIntro({
     };
 
     const drawFrame = (frame, frameIndex, progress) => {
-      if (!frame || disposed || frameIndex !== pendingFrameIndexRef.current) return;
+      if (!frame || disposed) return;
+      const targetIndex = pendingFrameIndexRef.current;
+      const currentDistance = displayedFrameIndexRef.current < 0
+        ? Number.POSITIVE_INFINITY
+        : Math.abs(displayedFrameIndexRef.current - targetIndex);
+      if (Math.abs(frameIndex - targetIndex) >= currentDistance) return;
       const source = getCoverSourceRect({
         sourceWidth: frame.width || frame.naturalWidth,
         sourceHeight: frame.height || frame.naturalHeight,
@@ -300,12 +308,12 @@ export function CinematicIntro({
 
       lastFrameRequestAtRef.current = now;
       abortObsoleteFrames(frameIndex);
-      const requestedProgress = displayedProgressRef.current;
       frameRequestInFlight = true;
+      activeFrameRequestIndex = frameIndex;
       void loadFrame(frameIndex)
         .then((frame) => {
           if (!frame) return;
-          drawFrame(frame, frameIndex, requestedProgress);
+          drawFrame(frame, frameIndex, displayedProgressRef.current);
           if (frameIndex === pendingFrameIndexRef.current) {
             preloadInTravelDirection(frameIndex);
             preloadNearbyFrames(frameIndex);
@@ -313,6 +321,7 @@ export function CinematicIntro({
         })
         .finally(() => {
           frameRequestInFlight = false;
+          activeFrameRequestIndex = -1;
           if (
             !disposed
             && displayedFrameIndexRef.current !== pendingFrameIndexRef.current
