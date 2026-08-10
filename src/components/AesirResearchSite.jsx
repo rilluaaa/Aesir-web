@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -30,9 +30,11 @@ import {
   waitForStableLayout,
 } from "../heroBoot.js";
 import { aesirProjects } from "../projectPortfolio";
+import { CinematicIntro } from "./cinematic/CinematicIntro.jsx";
 import "./AesirResearchSite.css";
 
 const contactUrl = "https://aesir.hk/#contactus";
+const cinematicSourceUrl = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260729_102822_0e6c87e8-c141-4744-bf32-ad30db296371.mp4";
 const asset = (path) =>
   /^https?:\/\//.test(path)
     ? path
@@ -850,12 +852,23 @@ function Header() {
   );
 }
 
-function Hero() {
+function Hero({ mediaEnabled }) {
   const { displayed, done } = useTypewriter("Evidence for an\ninclusive future.");
 
   return (
-    <section id="top" className="hero-section">
-      <BackgroundVideo />
+    <section id="home" className="hero-section">
+      {mediaEnabled ? (
+        <BackgroundVideo />
+      ) : (
+        <div
+          className="hero-video"
+          aria-hidden="true"
+          style={{
+            "--hero-focal-y": "50%",
+            "--hero-poster": `url("${asset("assets/aesir/cognitive-hero-poster.webp")}")`,
+          }}
+        />
+      )}
 
       <div className="hero-content">
         <div className="hero-copy">
@@ -1329,6 +1342,9 @@ function Contact() {
 }
 
 export function AesirResearchSite() {
+  const [heroMediaEnabled, setHeroMediaEnabled] = useState(false);
+  const enableHeroMedia = useCallback(() => setHeroMediaEnabled(true), []);
+
   useEffect(() => {
     window.history.scrollRestoration = "manual";
 
@@ -1351,9 +1367,15 @@ export function AesirResearchSite() {
 
   return (
     <div className="aesir-site">
+      <CinematicIntro
+        desktopSource={cinematicSourceUrl}
+        mobileSource={cinematicSourceUrl}
+        posterSource={asset("assets/aesir/aesir-cinematic-scroll-poster.webp")}
+        onHandoffApproach={enableHeroMedia}
+      />
       <Header />
       <main>
-        <Hero />
+        <Hero mediaEnabled={heroMediaEnabled} />
         <HeroEvidence />
         <Thesis />
         <ResearchAreas />
