@@ -716,6 +716,12 @@
   opacity: 0.88;
 }
 
+@media (min-width: 901px) {
+  .research-cases__grid article.research-case--living-diary {
+    padding-top: 55px;
+  }
+}
+
 .method-section {
   padding-block: 138px;
   background: #f7fafe;
@@ -1467,6 +1473,43 @@
   }
 }
 
+@media (max-width: 767px) {
+  .hero-section {
+    display: grid;
+    grid-template-areas:
+      "headline"
+      "model"
+      "copy";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-content,
+  .hero-copy {
+    display: contents;
+  }
+
+  .hero-copy > div.hero-reveal {
+    z-index: 1;
+    grid-area: headline;
+    padding: 46px 36px 28px;
+    background: #fff;
+  }
+
+  .hero-copy > p {
+    z-index: 1;
+    grid-area: copy;
+    max-width: none;
+    margin-top: 0;
+    padding: 32px 36px 52px;
+    background: #fff;
+  }
+
+  .hero-video {
+    grid-area: model;
+    aspect-ratio: 1;
+  }
+}
+
 @media (max-width: 640px) {
   .section-shell {
     width: calc(100% - 48px);
@@ -1476,24 +1519,20 @@
     width: 100%;
   }
 
-  .hero-content {
-    padding: 36px 24px 42px;
+  .hero-copy > div.hero-reveal {
+    padding: 36px 24px 24px;
   }
 
   .hero-copy h1 {
-    min-height: 2.18em;
+    min-height: 4.16em;
     font-size: clamp(3.25rem, 15.5vw, 4.35rem);
     line-height: 1.04;
     letter-spacing: -0.04em;
   }
 
   .hero-copy > p {
-    margin-top: 21px;
+    padding: 28px 24px 42px;
     font-size: 0.94rem;
-  }
-
-  .hero-video {
-    aspect-ratio: 1;
   }
 
   .hero-video video {
