@@ -1974,6 +1974,28 @@
   }
 }
 
+@media (max-width: 767px) {
+  .evidence-section {
+    height: auto;
+    min-height: 0;
+    padding-bottom: 0;
+  }
+
+  .projects-section {
+    height: auto;
+    min-height: 0;
+    padding-top: 72px;
+  }
+
+  .projects-heading h2 {
+    max-width: 100%;
+    overflow: visible;
+    font-size: clamp(2.8rem, 11vw, 4rem);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .aesir-site *,
   .aesir-site *::before,
