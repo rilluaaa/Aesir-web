@@ -22,12 +22,12 @@ import {
   createHeroBootReadiness,
   createHeroVideoResourceLoader,
   decodeImageUrl,
+  getNextHeroScrubTime,
   getHeroBootRevealMode,
   isAbortError,
   prepareHeroCriticalAssets,
   resolveHeroDownloadSource,
   revealAesirApp,
-  waitForDecodedVideoFrame,
   waitForStableLayout,
 } from "../heroBoot.js";
 import { installPredictiveMediaScheduler } from "../mediaScheduler.js";
@@ -335,10 +335,30 @@ const getInitialHeroMode = () => {
     anyFinePointer: window.matchMedia("(any-pointer: fine)").matches,
   });
 
+  const connection = getConnection();
+  const sourceEnvironment = {
+    scrubCapable,
+    constrainedNetwork: isConstrainedNetwork({
+      saveData: connection?.saveData,
+      effectiveType: connection?.effectiveType,
+    }),
+    renderedWidth: window.innerWidth,
+    renderedHeight: window.innerHeight,
+    devicePixelRatio: window.devicePixelRatio,
+    hardwareConcurrency: navigator.hardwareConcurrency,
+    deviceMemory: navigator.deviceMemory,
+  };
+  const initialQuality = selectHeroSourceQuality({
+    ...sourceEnvironment,
+    supports1440p: null,
+  });
+
   return {
     scrubCapable,
     reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    videoSource: null,
+    videoSource: initialQuality === HERO_SOURCE_QUALITY.standard
+      ? selectHeroVideoSource({ quality: initialQuality, scrubCapable })
+      : null,
   };
 };
 
@@ -773,124 +793,159 @@ function BackgroundVideo() {
       || readySource !== videoSource
     ) return undefined;
 
-    let targetTime = 0;
-    let renderedTime = 0;
-    let animationFrame = 0;
-    let lastUpdate = 0;
-    let seekInFlight = false;
-    let queuedSeekTime = null;
-    let seekFlushFrame = 0;
-    let seekRecoveryTimer = 0;
+    let presentedTime = video.currentTime;
+    let lastPresentedAt = 0;
+    let seekActive = false;
+    let presentedFrame = null;
+    let frameCallbackId = null;
+    let presentationFallbackTimer = 0;
+    let seekWatchdogTimer = 0;
+    let fallbackFrame = 0;
+    let fallbackSecondFrame = 0;
     let scrubReadyAnnounced = false;
-    const readinessController = new AbortController();
     const frameRate = 60;
     const frameDuration = 1 / frameRate;
     const frameInterval = 1000 / frameRate;
+    const settleThreshold = frameDuration / 4;
+    let disposed = false;
 
-    const announceScrubReady = async () => {
-      if (scrubReadyAnnounced || readinessController.signal.aborted) return;
-      const decodedTarget = targetTime;
-      try {
-        await waitForDecodedVideoFrame(video, { signal: readinessController.signal });
-        if (
-          readinessController.signal.aborted
-          || seekInFlight
-          || queuedSeekTime !== null
-          || Math.abs(targetTime - decodedTarget) > frameDuration / 2
-          || Math.abs(video.currentTime - decodedTarget) > frameDuration * 2
-        ) return;
-        scrubReadyAnnounced = true;
-        setScrubReadySource(videoSource);
-      } catch (error) {
-        if (!isAbortError(error)) {
-          // Keep the boot cover until a subsequent decoded frame confirms scrub readiness.
-        }
+    const announceScrubReady = () => {
+      if (scrubReadyAnnounced || disposed) return;
+      scrubReadyAnnounced = true;
+      setScrubReadySource(videoSource);
+    };
+
+    const cancelActivePresentationWait = () => {
+      if (frameCallbackId !== null && typeof video.cancelVideoFrameCallback === "function") {
+        video.cancelVideoFrameCallback(frameCallbackId);
       }
+      frameCallbackId = null;
+      window.clearTimeout(presentationFallbackTimer);
+      window.clearTimeout(seekWatchdogTimer);
+      window.cancelAnimationFrame(fallbackFrame);
+      window.cancelAnimationFrame(fallbackSecondFrame);
+      presentationFallbackTimer = 0;
+      seekWatchdogTimer = 0;
+      fallbackFrame = 0;
+      fallbackSecondFrame = 0;
     };
 
-    const flushSeek = () => {
-      seekFlushFrame = 0;
-      if (seekInFlight || queuedSeekTime === null) return;
+    const getDesiredTime = () => mapPointerToGazeTime(
+      latestPointerProgressRef.current,
+      video.duration,
+    );
 
-      const nextTime = queuedSeekTime;
-      queuedSeekTime = null;
-      if (Math.abs(video.currentTime - nextTime) <= frameDuration / 2) return;
+    let pumpScrub;
 
-      seekInFlight = true;
-      try {
-        video.currentTime = nextTime;
-        window.clearTimeout(seekRecoveryTimer);
-        seekRecoveryTimer = window.setTimeout(() => {
-          seekInFlight = false;
-          if (queuedSeekTime !== null) scheduleSeekFlush();
-          else void announceScrubReady();
-        }, 250);
-      } catch {
-        seekInFlight = false;
-      }
+    const finishPresentedFrame = (timestamp, mediaTime = video.currentTime) => {
+      if (!seekActive || disposed) return;
+      cancelActivePresentationWait();
+
+      const presentedAt = Number.isFinite(timestamp) ? timestamp : performance.now();
+      const elapsed = lastPresentedAt
+        ? Math.max(frameInterval, presentedAt - lastPresentedAt)
+        : frameInterval;
+      lastPresentedAt = presentedAt;
+      presentedTime = Number.isFinite(mediaTime) ? mediaTime : video.currentTime;
+      seekActive = false;
+      presentedFrame = null;
+      announceScrubReady();
+      pumpScrub(elapsed);
     };
 
-    const scheduleSeekFlush = () => {
-      if (seekFlushFrame) return;
-      seekFlushFrame = window.requestAnimationFrame(flushSeek);
-    };
-
-    const commitSeek = (nextTime) => {
-      const safeDuration = Number.isFinite(video.duration) ? video.duration : 0;
-      const clampedTime = Math.min(safeDuration, Math.max(0, nextTime));
-      queuedSeekTime = clampedTime;
-      if (!seekInFlight) flushSeek();
+    const finishAfterPaint = () => {
+      if (!seekActive || disposed) return;
+      fallbackFrame = window.requestAnimationFrame(() => {
+        fallbackFrame = 0;
+        fallbackSecondFrame = window.requestAnimationFrame(() => {
+          fallbackSecondFrame = 0;
+          finishPresentedFrame(performance.now(), video.currentTime);
+        });
+      });
     };
 
     const onSeeked = () => {
-      window.clearTimeout(seekRecoveryTimer);
-      seekInFlight = false;
-      if (queuedSeekTime !== null) scheduleSeekFlush();
-      else void announceScrubReady();
+      if (!seekActive || disposed) return;
+      window.clearTimeout(seekWatchdogTimer);
+      seekWatchdogTimer = 0;
+
+      if (presentedFrame) {
+        finishPresentedFrame(presentedFrame.timestamp, presentedFrame.mediaTime);
+        return;
+      }
+
+      if (typeof video.requestVideoFrameCallback === "function") {
+        presentationFallbackTimer = window.setTimeout(finishAfterPaint, 24);
+      } else {
+        finishAfterPaint();
+      }
+    };
+
+    const recoverMissingSeekEvent = () => {
+      if (!seekActive || disposed) return;
+      if (video.seeking || video.readyState < 2) {
+        seekWatchdogTimer = window.setTimeout(recoverMissingSeekEvent, 48);
+        return;
+      }
+      finishAfterPaint();
+    };
+
+    const beginSeek = (nextTime) => {
+      if (seekActive || disposed) return;
+      seekActive = true;
+      presentedFrame = null;
+
+      if (typeof video.requestVideoFrameCallback === "function") {
+        frameCallbackId = video.requestVideoFrameCallback((timestamp, metadata) => {
+          frameCallbackId = null;
+          if (!seekActive || disposed) return;
+          presentedFrame = {
+            timestamp,
+            mediaTime: metadata?.mediaTime ?? video.currentTime,
+          };
+          if (!video.seeking) {
+            finishPresentedFrame(presentedFrame.timestamp, presentedFrame.mediaTime);
+          }
+        });
+      }
+
+      try {
+        video.currentTime = nextTime;
+        seekWatchdogTimer = window.setTimeout(recoverMissingSeekEvent, 80);
+      } catch {
+        cancelActivePresentationWait();
+        seekActive = false;
+      }
+    };
+
+    pumpScrub = (elapsed = frameInterval) => {
+      if (seekActive || disposed || !Number.isFinite(video.duration)) return;
+      const desiredTime = getDesiredTime();
+      if (Math.abs(desiredTime - presentedTime) <= settleThreshold) {
+        presentedTime = desiredTime;
+        lastPresentedAt = 0;
+        announceScrubReady();
+        return;
+      }
+
+      const nextTime = getNextHeroScrubTime({
+        presentedTime,
+        desiredTime,
+        elapsedMs: elapsed,
+        duration: video.duration,
+        minimumStep: frameDuration,
+        snapThreshold: settleThreshold,
+      });
+      beginSeek(nextTime);
     };
 
     const onLoadedMetadata = () => {
-      targetTime = mapPointerToGazeTime(latestPointerProgressRef.current, video.duration);
-      renderedTime = targetTime;
-      queuedSeekTime = null;
-      if (Math.abs(video.currentTime - targetTime) > frameDuration / 2) {
-        commitSeek(targetTime);
-      } else {
-        void announceScrubReady();
-      }
+      presentedTime = video.currentTime;
+      lastPresentedAt = 0;
+      pumpScrub(frameInterval);
     };
 
-    const renderScrub = (timestamp) => {
-      animationFrame = 0;
-      if (
-        Number.isFinite(video.duration)
-        && timestamp - lastUpdate >= frameInterval
-      ) {
-        const elapsed = lastUpdate ? timestamp - lastUpdate : frameInterval;
-        const distance = targetTime - renderedTime;
-        if (Math.abs(distance) > frameDuration / 2) {
-          const smoothing = 1 - Math.exp(-elapsed / 42);
-          renderedTime += distance * smoothing;
-          commitSeek(renderedTime);
-        }
-        lastUpdate = timestamp;
-      }
-      if (Math.abs(targetTime - renderedTime) > frameDuration / 2) {
-        animationFrame = window.requestAnimationFrame(renderScrub);
-      } else {
-        lastUpdate = 0;
-      }
-    };
-
-    const scheduleRender = () => {
-      if (!animationFrame) animationFrame = window.requestAnimationFrame(renderScrub);
-    };
-
-    const syncTargetFromPointer = () => {
-      if (!Number.isFinite(video.duration)) return;
-      targetTime = mapPointerToGazeTime(latestPointerProgressRef.current, video.duration);
-      scheduleRender();
-    };
+    const syncTargetFromPointer = () => pumpScrub(frameInterval);
 
     syncScrubTargetRef.current = syncTargetFromPointer;
     video.addEventListener("loadedmetadata", onLoadedMetadata);
@@ -898,15 +953,14 @@ function BackgroundVideo() {
     if (video.readyState >= 1) onLoadedMetadata();
 
     return () => {
+      disposed = true;
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
       video.removeEventListener("seeked", onSeeked);
       if (syncScrubTargetRef.current === syncTargetFromPointer) {
         syncScrubTargetRef.current = null;
       }
-      window.cancelAnimationFrame(animationFrame);
-      window.cancelAnimationFrame(seekFlushFrame);
-      window.clearTimeout(seekRecoveryTimer);
-      readinessController.abort();
+      cancelActivePresentationWait();
+      seekActive = false;
     };
   }, [documentVisible, heroInRange, readySource, reducedMotion, scrubCapable, videoSource]);
 

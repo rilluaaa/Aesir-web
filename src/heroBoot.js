@@ -68,11 +68,39 @@ export const getHeroWarmupTimes = ({
 
   return [
     mapPointerToGazeTime(0, duration),
-    mapPointerToGazeTime(1 / 3, duration),
-    mapPointerToGazeTime(2 / 3, duration),
     mapPointerToGazeTime(1, duration),
     neutral,
   ];
+};
+
+export const getNextHeroScrubTime = ({
+  presentedTime,
+  desiredTime,
+  elapsedMs,
+  duration,
+  responseMs = 42,
+  minimumStep = 1 / 60,
+  snapThreshold = 1 / 240,
+}) => {
+  const safeDuration = Number.isFinite(duration) && duration > 0 ? duration : 0;
+  const current = Math.min(safeDuration, Math.max(0, Number(presentedTime) || 0));
+  const desired = Math.min(safeDuration, Math.max(0, Number(desiredTime) || 0));
+  const distance = desired - current;
+  if (Math.abs(distance) <= snapThreshold) return desired;
+
+  const safeElapsed = Math.max(1, Number(elapsedMs) || (1000 / 60));
+  const safeResponse = Math.max(1, Number(responseMs) || 42);
+  const alpha = 1 - Math.exp(-safeElapsed / safeResponse);
+  const easedStep = Math.abs(distance) * alpha;
+  const step = Math.min(
+    Math.abs(distance),
+    Math.max(easedStep, Math.min(Math.abs(distance), minimumStep)),
+  );
+  const next = current + Math.sign(distance) * step;
+
+  return Math.abs(desired - next) <= snapThreshold
+    ? desired
+    : Math.min(safeDuration, Math.max(0, next));
 };
 
 const createAbortError = () => {
