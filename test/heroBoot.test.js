@@ -99,6 +99,65 @@ test("an unactivated native media URL can be released during effect cleanup", as
   assert.equal(loader.getActiveSourceUrl(), null);
 });
 
+test("scrub desktops fully buffer exactly one selected source and revoke it on replacement", async () => {
+  const fetches = [];
+  const revoked = [];
+  const videoBlob = { size: 5331520 };
+  const loader = createHeroVideoResourceLoader({
+    fetchImpl: async (url, options) => {
+      fetches.push({ url, options });
+      return { ok: true, status: 200, blob: async () => videoBlob };
+    },
+    createObjectURL: (blob) => {
+      assert.equal(blob, videoBlob);
+      return "blob:hero-1440";
+    },
+    revokeObjectURL: (url) => revoked.push(url),
+  });
+
+  const buffered = await loader.load("/hero-1440.mp4", { bufferFully: true });
+  assert.equal(buffered.mediaUrl, "blob:hero-1440");
+  assert.equal(buffered.fullyBuffered, true);
+  assert.equal(buffered.byteLength, 5331520);
+  assert.equal(fetches.length, 1);
+  assert.equal(fetches[0].url, "/hero-1440.mp4");
+  assert.equal(fetches[0].options.cache, "force-cache");
+  assert.equal(fetches[0].options.priority, "high");
+  buffered.activate();
+
+  const replacement = await loader.load("/hero-1080.mp4");
+  replacement.activate();
+  assert.deepEqual(revoked, ["blob:hero-1440"]);
+  assert.equal(loader.getActiveSourceUrl(), "/hero-1080.mp4");
+  loader.dispose();
+});
+
+test("changing quality aborts an obsolete full-buffer request", async () => {
+  let obsoleteSignal;
+  const loader = createHeroVideoResourceLoader({
+    fetchImpl: async (_url, options) => {
+      obsoleteSignal = options.signal;
+      return new Promise((_resolve, reject) => {
+        options.signal.addEventListener("abort", () => {
+          reject(new DOMException("Cancelled", "AbortError"));
+        }, { once: true });
+      });
+    },
+    createObjectURL: () => "blob:obsolete",
+    revokeObjectURL: () => {},
+  });
+
+  const obsolete = loader.load("/hero-1440.mp4", { bufferFully: true }).catch((error) => error);
+  await Promise.resolve();
+  const current = await loader.load("/hero-1080.mp4");
+
+  assert.equal(obsoleteSignal.aborted, true);
+  assert.equal(isAbortError(await obsolete), true);
+  current.activate();
+  assert.equal(loader.getActiveSourceUrl(), "/hero-1080.mp4");
+  loader.dispose();
+});
+
 test("a settled paused frame confirms readiness on paint frames without the long timeout", async () => {
   const callbacks = [];
   const video = {

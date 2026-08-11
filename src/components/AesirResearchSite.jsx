@@ -426,6 +426,7 @@ function BackgroundVideo() {
   const latestPointerProgressRef = useRef(0.5);
   const syncScrubTargetRef = useRef(null);
   const revealBootRef = useRef(null);
+  const interactiveReadySourceRef = useRef(null);
   const [heroMode, setHeroMode] = useState(getInitialHeroMode);
   const [focalPositionY, setFocalPositionY] = useState(50);
   const [readySource, setReadySource] = useState(null);
@@ -490,8 +491,6 @@ function BackgroundVideo() {
     const revealCriticalPoster = async () => {
       const criticalAssets = await criticalAssetsPromise;
       if (criticalController.signal.aborted || criticalAssets?.error) return;
-      if (scrubCapable && !reducedMotion) return;
-
       setAppReady(true);
       await waitForStableLayout({ signal: criticalController.signal });
       const readiness = createHeroBootReadiness({
@@ -528,17 +527,7 @@ function BackgroundVideo() {
         await revealBootRef.current?.({ fallback: true, mode: revealMode });
       }
     };
-    const onBootTimeout = () => {
-      if (scrubCapable && !reducedMotion) {
-        window.setTimeout(() => {
-          if (!bootRevealStartedRef.current) {
-            window.clearTimeout(window.__AESIR_BOOT_HARD_FALLBACK__);
-          }
-        }, 0);
-        return;
-      }
-      void revealPosterFallback();
-    };
+    const onBootTimeout = () => void revealPosterFallback();
 
     window.addEventListener("aesir:boot-timeout", onBootTimeout);
     if (window.__AESIR_BOOT_TIMED_OUT__) onBootTimeout();
@@ -551,7 +540,7 @@ function BackgroundVideo() {
         criticalAssetsPromiseRef.current = null;
       }
     };
-  }, [posterUrl, reducedMotion, scrubCapable, wordmarkUrl]);
+  }, [posterUrl, wordmarkUrl]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -689,11 +678,23 @@ function BackgroundVideo() {
 
     const prepareSelectedSource = async () => {
       try {
-        resource = await loader.load(asset(finalVideoSource));
-        if (preparationController.signal.aborted) throw new DOMException("Cancelled", "AbortError");
-
         setReadySource(null);
         setScrubReadySource(null);
+        interactiveReadySourceRef.current = null;
+        delete video.dataset.resourceReadyAt;
+        delete video.dataset.interactiveReadyAt;
+        delete video.dataset.resourceStrategy;
+        delete video.dataset.resourceBytes;
+
+        resource = await loader.load(asset(finalVideoSource), {
+          bufferFully: scrubCapable && !reducedMotion,
+          signal: preparationController.signal,
+        });
+        if (preparationController.signal.aborted) throw new DOMException("Cancelled", "AbortError");
+
+        video.dataset.resourceReadyAt = performance.now().toFixed(1);
+        video.dataset.resourceStrategy = resource.fullyBuffered ? "blob" : "native";
+        video.dataset.resourceBytes = String(resource.byteLength || 0);
         const warmup = await attachAndWarmHeroVideo({
           video,
           sourceUrl: resource.mediaUrl,
@@ -710,9 +711,6 @@ function BackgroundVideo() {
         heroWarmupRef.current = { source: finalVideoSource, warmup };
         video.dataset.warmupCompleteAt = performance.now().toFixed(1);
         setReadySource(finalVideoSource);
-        window.dispatchEvent(new CustomEvent("aesir:hero-ready", {
-          detail: { source: finalVideoSource, warmup },
-        }));
       } catch (error) {
         if (activeResourceRef.current?.resource !== resource) resource?.release();
         if (!isAbortError(error)) {
@@ -997,6 +995,31 @@ function BackgroundVideo() {
       seekActive = false;
     };
   }, [documentVisible, heroInRange, readySource, reducedMotion, scrubCapable, videoSource]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const interactiveReady = readySource === videoSource && (
+      !scrubCapable
+      || reducedMotion
+      || scrubReadySource === videoSource
+    );
+    if (
+      !video
+      || !interactiveReady
+      || interactiveReadySourceRef.current === videoSource
+    ) return;
+
+    interactiveReadySourceRef.current = videoSource;
+    video.dataset.interactiveReadyAt = performance.now().toFixed(1);
+    window.dispatchEvent(new CustomEvent("aesir:hero-ready", {
+      detail: {
+        source: videoSource,
+        warmup: heroWarmupRef.current?.warmup,
+        resourceStrategy: video.dataset.resourceStrategy,
+        resourceBytes: Number(video.dataset.resourceBytes || 0),
+      },
+    }));
+  }, [readySource, reducedMotion, scrubCapable, scrubReadySource, videoSource]);
 
   useEffect(() => {
     if (

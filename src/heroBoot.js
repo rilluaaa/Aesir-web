@@ -131,40 +131,112 @@ const throwIfAborted = (signal) => {
   if (signal?.aborted) throw createAbortError();
 };
 
-export const createHeroVideoResourceLoader = () => {
+export const createHeroVideoResourceLoader = ({
+  fetchImpl = globalThis.fetch?.bind(globalThis),
+  createObjectURL = globalThis.URL?.createObjectURL?.bind(globalThis.URL),
+  revokeObjectURL = globalThis.URL?.revokeObjectURL?.bind(globalThis.URL),
+} = {}) => {
   let requestVersion = 0;
   let activeSourceUrl = null;
+  let activeResource = null;
+  let pendingController = null;
   let disposed = false;
 
   const cancelPending = () => {
     requestVersion += 1;
+    pendingController?.abort();
+    pendingController = null;
   };
 
-  const load = async (sourceUrl) => {
+  const load = async (sourceUrl, { bufferFully = false, signal } = {}) => {
     if (disposed) throw new Error("The hero resource loader has been disposed.");
     if (!sourceUrl) throw new Error("A final hero source is required.");
 
     cancelPending();
     const version = requestVersion;
-    await Promise.resolve();
-    if (disposed || version !== requestVersion) throw createAbortError();
+    if (activeSourceUrl && activeSourceUrl !== sourceUrl) {
+      activeResource?.dispose();
+      activeResource = null;
+      activeSourceUrl = null;
+    }
+
+    let mediaUrl = sourceUrl;
+    let objectUrl = null;
+    let byteLength = 0;
+
+    if (bufferFully) {
+      if (typeof fetchImpl !== "function" || typeof createObjectURL !== "function") {
+        throw new Error("Full Hero buffering requires fetch and URL.createObjectURL support.");
+      }
+
+      const controller = new AbortController();
+      pendingController = controller;
+      const onAbort = () => controller.abort();
+      signal?.addEventListener("abort", onAbort, { once: true });
+
+      try {
+        throwIfAborted(signal);
+        const response = await fetchImpl(sourceUrl, {
+          cache: "force-cache",
+          priority: "high",
+          signal: controller.signal,
+        });
+        if (!response?.ok) {
+          throw new Error(`Unable to buffer Hero video: ${response?.status || "network error"}.`);
+        }
+        const blob = await response.blob();
+        throwIfAborted(signal);
+        if (disposed || version !== requestVersion) throw createAbortError();
+        objectUrl = createObjectURL(blob);
+        mediaUrl = objectUrl;
+        byteLength = Number(blob?.size) || 0;
+      } catch (error) {
+        if (controller.signal.aborted && !isAbortError(error)) throw createAbortError();
+        throw error;
+      } finally {
+        signal?.removeEventListener("abort", onAbort);
+        if (pendingController === controller) pendingController = null;
+      }
+    } else {
+      await Promise.resolve();
+      throwIfAborted(signal);
+      if (disposed || version !== requestVersion) throw createAbortError();
+    }
 
     let activated = false;
     let released = false;
+    let revoked = false;
+    const revokeMediaUrl = () => {
+      if (!objectUrl || revoked) return;
+      revoked = true;
+      revokeObjectURL?.(objectUrl);
+    };
 
-    return {
-      mediaUrl: sourceUrl,
+    const resource = {
+      mediaUrl,
       sourceUrl,
+      fullyBuffered: bufferFully,
+      byteLength,
+      dispose() {
+        if (released) return;
+        released = true;
+        activated = false;
+        revokeMediaUrl();
+      },
       activate() {
         if (released || disposed || version !== requestVersion) throw createAbortError();
+        if (activeResource && activeResource !== resource) activeResource.dispose();
+        activeResource = resource;
         activeSourceUrl = sourceUrl;
         activated = true;
       },
       release() {
         if (activated) return;
-        released = true;
+        resource.dispose();
       },
     };
+
+    return resource;
   };
 
   return {
@@ -175,6 +247,8 @@ export const createHeroVideoResourceLoader = () => {
       if (disposed) return;
       disposed = true;
       cancelPending();
+      activeResource?.dispose();
+      activeResource = null;
       activeSourceUrl = null;
     },
   };
