@@ -27,6 +27,7 @@ import {
   prepareHeroCriticalAssets,
   resolveHeroDownloadSource,
   revealAesirApp,
+  waitForDecodedVideoFrame,
   waitForStableLayout,
 } from "../heroBoot.js";
 import { installPredictiveMediaScheduler } from "../mediaScheduler.js";
@@ -397,12 +398,21 @@ function BackgroundVideo() {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const resourceLoaderRef = useRef(null);
+  const activeResourceRef = useRef(null);
+  const criticalAssetsPromiseRef = useRef(null);
+  const heroWarmupRef = useRef(null);
   const bootRevealStartedRef = useRef(false);
+  const latestPointerProgressRef = useRef(0.5);
+  const syncScrubTargetRef = useRef(null);
   const revealBootRef = useRef(null);
   const [heroMode, setHeroMode] = useState(getInitialHeroMode);
   const [focalPositionY, setFocalPositionY] = useState(50);
   const [readySource, setReadySource] = useState(null);
+  const [scrubReadySource, setScrubReadySource] = useState(null);
   const [heroInRange, setHeroInRange] = useState(true);
+  const [documentVisible, setDocumentVisible] = useState(() => (
+    typeof document === "undefined" || document.visibilityState !== "hidden"
+  ));
   const [appReady, setAppReady] = useState(() => (
     typeof document !== "undefined"
     && document.documentElement.classList.contains("aesir-app-ready")
@@ -430,18 +440,30 @@ function BackgroundVideo() {
 
   useEffect(() => {
     const loader = createHeroVideoResourceLoader();
-    const criticalController = new AbortController();
     resourceLoaderRef.current = loader;
+
+    return () => {
+      loader.dispose();
+      if (resourceLoaderRef.current === loader) resourceLoaderRef.current = null;
+      activeResourceRef.current = null;
+      heroWarmupRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const criticalController = new AbortController();
     const criticalAssetsPromise = prepareHeroCriticalAssets({
       fontReady: document.fonts?.ready ?? Promise.resolve(),
       posterUrl,
       criticalImageUrls: [wordmarkUrl],
       signal: criticalController.signal,
     }).catch((error) => ({ error }));
+    criticalAssetsPromiseRef.current = criticalAssetsPromise;
 
     const revealCriticalPoster = async () => {
       const criticalAssets = await criticalAssetsPromise;
       if (criticalController.signal.aborted || criticalAssets?.error) return;
+      if (scrubCapable && !reducedMotion) return;
 
       setAppReady(true);
       await waitForStableLayout({ signal: criticalController.signal });
@@ -480,20 +502,29 @@ function BackgroundVideo() {
       }
     };
     const onBootTimeout = () => {
+      if (scrubCapable && !reducedMotion) {
+        window.setTimeout(() => {
+          if (!bootRevealStartedRef.current) {
+            window.clearTimeout(window.__AESIR_BOOT_HARD_FALLBACK__);
+          }
+        }, 0);
+        return;
+      }
       void revealPosterFallback();
     };
 
     window.addEventListener("aesir:boot-timeout", onBootTimeout);
-    if (window.__AESIR_BOOT_TIMED_OUT__) void revealPosterFallback();
+    if (window.__AESIR_BOOT_TIMED_OUT__) onBootTimeout();
     void revealCriticalPoster();
 
     return () => {
       window.removeEventListener("aesir:boot-timeout", onBootTimeout);
       criticalController.abort();
-      loader.dispose();
-      resourceLoaderRef.current = null;
+      if (criticalAssetsPromiseRef.current === criticalAssetsPromise) {
+        criticalAssetsPromiseRef.current = null;
+      }
     };
-  }, [posterUrl, wordmarkUrl]);
+  }, [posterUrl, reducedMotion, scrubCapable, wordmarkUrl]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -504,6 +535,13 @@ function BackgroundVideo() {
     });
     observer.observe(container);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const updateVisibility = () => setDocumentVisible(document.visibilityState !== "hidden");
+    document.addEventListener("visibilitychange", updateVisibility);
+    updateVisibility();
+    return () => document.removeEventListener("visibilitychange", updateVisibility);
   }, []);
 
   useEffect(() => {
@@ -613,12 +651,11 @@ function BackgroundVideo() {
       videoSource,
     });
     if (!video || !loader || !finalVideoSource) return undefined;
-    if (!heroInRange) {
-      loader.cancelPending();
-      video.pause();
-      return undefined;
-    }
-    if (readySource === finalVideoSource && video.src) return undefined;
+    if (
+      activeResourceRef.current?.source === finalVideoSource
+      && readySource === finalVideoSource
+      && video.src
+    ) return undefined;
 
     const preparationController = new AbortController();
     let resource = null;
@@ -629,6 +666,7 @@ function BackgroundVideo() {
         if (preparationController.signal.aborted) throw new DOMException("Cancelled", "AbortError");
 
         setReadySource(null);
+        setScrubReadySource(null);
         const warmup = await attachAndWarmHeroVideo({
           video,
           objectUrl: resource.objectUrl,
@@ -637,15 +675,24 @@ function BackgroundVideo() {
           signal: preparationController.signal,
         });
         resource.activate();
+        activeResourceRef.current = {
+          source: finalVideoSource,
+          objectUrl: resource.objectUrl,
+          resource,
+        };
+        heroWarmupRef.current = { source: finalVideoSource, warmup };
         video.dataset.warmupCompleteAt = performance.now().toFixed(1);
         setReadySource(finalVideoSource);
         window.dispatchEvent(new CustomEvent("aesir:hero-ready", {
           detail: { source: finalVideoSource, warmup },
         }));
       } catch (error) {
-        resource?.release();
+        if (activeResourceRef.current?.resource !== resource) resource?.release();
         if (!isAbortError(error)) {
-          // The decoded poster remains visible if the optional video preparation fails.
+          const criticalAssets = await criticalAssetsPromiseRef.current;
+          if (criticalAssets && !bootRevealStartedRef.current && !criticalAssets.error) {
+            await revealBootRef.current?.({ fallback: true, mode: "poster" });
+          }
         }
       }
     };
@@ -655,9 +702,9 @@ function BackgroundVideo() {
     return () => {
       preparationController.abort();
       loader.cancelPending();
-      resource?.release();
+      if (activeResourceRef.current?.resource !== resource) resource?.release();
     };
-  }, [heroInRange, reducedMotion, scrubCapable, videoSource]);
+  }, [reducedMotion, scrubCapable, videoSource]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -693,11 +740,30 @@ function BackgroundVideo() {
   }, [videoSource]);
 
   useEffect(() => {
+    if (!scrubCapable || reducedMotion) return undefined;
+
+    const onMouseMove = (event) => {
+      latestPointerProgressRef.current = Math.min(
+        1,
+        Math.max(0, event.clientX / window.innerWidth),
+      );
+      if (heroInRange && documentVisible) syncScrubTargetRef.current?.();
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    if (heroInRange && documentVisible) syncScrubTargetRef.current?.();
+
+    return () => window.removeEventListener("mousemove", onMouseMove);
+  }, [documentVisible, heroInRange, reducedMotion, scrubCapable]);
+
+  useEffect(() => {
     const video = videoRef.current;
     if (
       !video
       || !scrubCapable
       || reducedMotion
+      || !heroInRange
+      || !documentVisible
       || readySource !== videoSource
     ) return undefined;
 
@@ -708,13 +774,37 @@ function BackgroundVideo() {
     let seekInFlight = false;
     let queuedSeekTime = null;
     let seekFlushFrame = 0;
+    let seekRecoveryTimer = 0;
+    let scrubReadyAnnounced = false;
+    const readinessController = new AbortController();
     const frameRate = 60;
     const frameDuration = 1 / frameRate;
     const frameInterval = 1000 / frameRate;
 
+    const announceScrubReady = async () => {
+      if (scrubReadyAnnounced || readinessController.signal.aborted) return;
+      const decodedTarget = targetTime;
+      try {
+        await waitForDecodedVideoFrame(video, { signal: readinessController.signal });
+        if (
+          readinessController.signal.aborted
+          || seekInFlight
+          || queuedSeekTime !== null
+          || Math.abs(targetTime - decodedTarget) > frameDuration / 2
+          || Math.abs(video.currentTime - decodedTarget) > frameDuration * 2
+        ) return;
+        scrubReadyAnnounced = true;
+        setScrubReadySource(videoSource);
+      } catch (error) {
+        if (!isAbortError(error)) {
+          // Keep the boot cover until a subsequent decoded frame confirms scrub readiness.
+        }
+      }
+    };
+
     const flushSeek = () => {
       seekFlushFrame = 0;
-      if (seekInFlight || video.seeking || queuedSeekTime === null) return;
+      if (seekInFlight || queuedSeekTime === null) return;
 
       const nextTime = queuedSeekTime;
       queuedSeekTime = null;
@@ -723,6 +813,12 @@ function BackgroundVideo() {
       seekInFlight = true;
       try {
         video.currentTime = nextTime;
+        window.clearTimeout(seekRecoveryTimer);
+        seekRecoveryTimer = window.setTimeout(() => {
+          seekInFlight = false;
+          if (queuedSeekTime !== null) scheduleSeekFlush();
+          else void announceScrubReady();
+        }, 250);
       } catch {
         seekInFlight = false;
       }
@@ -737,27 +833,25 @@ function BackgroundVideo() {
       const safeDuration = Number.isFinite(video.duration) ? video.duration : 0;
       const clampedTime = Math.min(safeDuration, Math.max(0, nextTime));
       queuedSeekTime = clampedTime;
-      if (!seekInFlight && !video.seeking) flushSeek();
+      if (!seekInFlight) flushSeek();
     };
 
     const onSeeked = () => {
+      window.clearTimeout(seekRecoveryTimer);
       seekInFlight = false;
       if (queuedSeekTime !== null) scheduleSeekFlush();
-    };
-
-    const onMouseMove = (event) => {
-      if (!Number.isFinite(video.duration)) return;
-      const pointerProgress = Math.min(1, Math.max(0, event.clientX / window.innerWidth));
-      targetTime = mapPointerToGazeTime(pointerProgress, video.duration);
-      scheduleRender();
+      else void announceScrubReady();
     };
 
     const onLoadedMetadata = () => {
-      const neutralTime = mapPointerToGazeTime(0.5, video.duration);
-      targetTime = neutralTime;
-      renderedTime = neutralTime;
+      targetTime = mapPointerToGazeTime(latestPointerProgressRef.current, video.duration);
+      renderedTime = targetTime;
       queuedSeekTime = null;
-      commitSeek(neutralTime);
+      if (Math.abs(video.currentTime - targetTime) > frameDuration / 2) {
+        commitSeek(targetTime);
+      } else {
+        void announceScrubReady();
+      }
     };
 
     const renderScrub = (timestamp) => {
@@ -786,24 +880,86 @@ function BackgroundVideo() {
       if (!animationFrame) animationFrame = window.requestAnimationFrame(renderScrub);
     };
 
-    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    const syncTargetFromPointer = () => {
+      if (!Number.isFinite(video.duration)) return;
+      targetTime = mapPointerToGazeTime(latestPointerProgressRef.current, video.duration);
+      scheduleRender();
+    };
+
+    syncScrubTargetRef.current = syncTargetFromPointer;
     video.addEventListener("loadedmetadata", onLoadedMetadata);
     video.addEventListener("seeked", onSeeked);
     if (video.readyState >= 1) onLoadedMetadata();
 
     return () => {
-      window.removeEventListener("mousemove", onMouseMove);
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
       video.removeEventListener("seeked", onSeeked);
+      if (syncScrubTargetRef.current === syncTargetFromPointer) {
+        syncScrubTargetRef.current = null;
+      }
       window.cancelAnimationFrame(animationFrame);
       window.cancelAnimationFrame(seekFlushFrame);
+      window.clearTimeout(seekRecoveryTimer);
+      readinessController.abort();
     };
-  }, [readySource, reducedMotion, scrubCapable, videoSource]);
+  }, [documentVisible, heroInRange, readySource, reducedMotion, scrubCapable, videoSource]);
+
+  useEffect(() => {
+    if (
+      !scrubCapable
+      || reducedMotion
+      || readySource !== videoSource
+      || scrubReadySource !== videoSource
+      || bootRevealStartedRef.current
+    ) return undefined;
+
+    const revealController = new AbortController();
+
+    const revealInteractiveHero = async () => {
+      const criticalAssets = await criticalAssetsPromiseRef.current;
+      const warmupRecord = heroWarmupRef.current;
+      if (
+        revealController.signal.aborted
+        || criticalAssets?.error
+        || warmupRecord?.source !== videoSource
+      ) return;
+
+      await waitForStableLayout({ signal: revealController.signal });
+      const readiness = createHeroBootReadiness({
+        mounted: true,
+        sourceResolved: true,
+        fileFetched: true,
+        blobAttached: true,
+        metadataReady: warmupRecord.warmup.metadataReady,
+        framesWarmed: warmupRecord.warmup.framesWarmed,
+        neutralReady: warmupRecord.warmup.neutralReady,
+        fontsReady: criticalAssets?.fontsReady,
+        criticalImagesReady: criticalAssets?.criticalImagesReady,
+        posterReady: criticalAssets?.posterReady,
+        layoutStable: true,
+      });
+
+      if (getHeroBootRevealMode({
+        readiness,
+        timedOut: false,
+        posterReady: criticalAssets?.posterReady,
+      }) === "video") {
+        await revealBootRef.current?.({ layoutStable: true, mode: "video" });
+      }
+    };
+
+    void revealInteractiveHero().catch((error) => {
+      if (!isAbortError(error)) {
+        // A genuine preparation failure remains covered until the poster fallback path runs.
+      }
+    });
+    return () => revealController.abort();
+  }, [readySource, reducedMotion, scrubCapable, scrubReadySource, videoSource]);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !appReady || readySource !== videoSource) return undefined;
-    if (!heroInRange) {
+    if (!heroInRange || !documentVisible) {
       video.pause();
       return undefined;
     }
@@ -818,7 +974,7 @@ function BackgroundVideo() {
 
     video.pause();
     return undefined;
-  }, [appReady, heroInRange, readySource, reducedMotion, scrubCapable, videoSource]);
+  }, [appReady, documentVisible, heroInRange, readySource, reducedMotion, scrubCapable, videoSource]);
 
   return (
     <div
