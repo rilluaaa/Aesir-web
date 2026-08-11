@@ -262,6 +262,7 @@ const newPhotos = [
 ];
 
 const archivePhotos = [
+  ["assets/founders/ernest-elon-musk-hong-kong.jpeg", "Ernest HS CHAN with Elon Musk between the China and Hong Kong flags", 960, 697],
   ["assets/founders/community-program.jpg", "Community counselling and virtual reality programme partners", 640, 398],
   ["assets/founders/aesir-presentation.jpeg", "AESIR presentation moment", 596, 335],
   ["assets/founders/founder-speaking.jpeg", "Founder speaking at an applied training session", 617, 324],
