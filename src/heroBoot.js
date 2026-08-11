@@ -103,6 +103,18 @@ export const getNextHeroScrubTime = ({
     : Math.min(safeDuration, Math.max(0, next));
 };
 
+export const getHeroScrubDelay = ({
+  now,
+  lastSeekStartedAt,
+  intervalMs = 1000 / 45,
+}) => {
+  const currentTime = Number.isFinite(now) ? now : 0;
+  const previousTime = Number.isFinite(lastSeekStartedAt) ? lastSeekStartedAt : 0;
+  const minimumInterval = Math.max(0, Number(intervalMs) || 0);
+  if (previousTime <= 0 || previousTime > currentTime) return 0;
+  return Math.max(0, minimumInterval - (currentTime - previousTime));
+};
+
 const createAbortError = () => {
   if (typeof DOMException === "function") {
     return new DOMException("The hero preparation was cancelled.", "AbortError");

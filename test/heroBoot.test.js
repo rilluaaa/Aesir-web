@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   createHeroBootReadiness,
   createHeroVideoResourceLoader,
+  getHeroScrubDelay,
   getNextHeroScrubTime,
   getHeroBootRevealMode,
   getHeroWarmupTimes,
@@ -183,6 +184,24 @@ test("decoder-driven scrub step preserves easing and reacts to micro movements",
   assert.ok(regular > 1.975 && regular < 3.832);
   assert.equal(micro, 1.985);
   assert.ok(lateFrame > regular);
+});
+
+test("decoder-driven scrub cadence waits only for the remaining display interval", () => {
+  assert.equal(getHeroScrubDelay({
+    now: 100,
+    lastSeekStartedAt: 0,
+    intervalMs: 20,
+  }), 0);
+  assert.equal(getHeroScrubDelay({
+    now: 112,
+    lastSeekStartedAt: 100,
+    intervalMs: 20,
+  }), 8);
+  assert.equal(getHeroScrubDelay({
+    now: 125,
+    lastSeekStartedAt: 100,
+    intervalMs: 20,
+  }), 0);
 });
 
 test("reduced motion warms only the neutral frame while mobile warms its start", () => {

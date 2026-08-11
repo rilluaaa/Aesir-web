@@ -22,6 +22,7 @@ import {
   createHeroBootReadiness,
   createHeroVideoResourceLoader,
   decodeImageUrl,
+  getHeroScrubDelay,
   getNextHeroScrubTime,
   getHeroBootRevealMode,
   isAbortError,
@@ -800,13 +801,16 @@ function BackgroundVideo() {
     let frameCallbackId = null;
     let presentationFallbackTimer = 0;
     let seekWatchdogTimer = 0;
+    let scrubPumpTimer = 0;
     let fallbackFrame = 0;
     let fallbackSecondFrame = 0;
     let scrubReadyAnnounced = false;
     const frameRate = 60;
     const frameDuration = 1 / frameRate;
     const frameInterval = 1000 / frameRate;
-    const settleThreshold = frameDuration / 4;
+    const scrubInterval = 1000 / 45;
+    const settleThreshold = frameDuration / 2;
+    let lastSeekStartedAt = 0;
     let disposed = false;
 
     const announceScrubReady = () => {
@@ -836,6 +840,7 @@ function BackgroundVideo() {
     );
 
     let pumpScrub;
+    let scheduleScrubPump;
 
     const finishPresentedFrame = (timestamp, mediaTime = video.currentTime) => {
       if (!seekActive || disposed) return;
@@ -850,7 +855,7 @@ function BackgroundVideo() {
       seekActive = false;
       presentedFrame = null;
       announceScrubReady();
-      pumpScrub(elapsed);
+      scheduleScrubPump(elapsed);
     };
 
     const finishAfterPaint = () => {
@@ -910,6 +915,7 @@ function BackgroundVideo() {
       }
 
       try {
+        lastSeekStartedAt = performance.now();
         video.currentTime = nextTime;
         seekWatchdogTimer = window.setTimeout(recoverMissingSeekEvent, 80);
       } catch {
@@ -939,13 +945,39 @@ function BackgroundVideo() {
       beginSeek(nextTime);
     };
 
+    scheduleScrubPump = (minimumElapsed = frameInterval) => {
+      if (seekActive || disposed || scrubPumpTimer) return;
+      const now = performance.now();
+      const delay = getHeroScrubDelay({
+        now,
+        lastSeekStartedAt,
+        intervalMs: scrubInterval,
+      });
+      if (delay <= 1) {
+        const elapsed = lastPresentedAt
+          ? Math.max(minimumElapsed, now - lastPresentedAt)
+          : minimumElapsed;
+        pumpScrub(elapsed);
+        return;
+      }
+
+      scrubPumpTimer = window.setTimeout(() => {
+        scrubPumpTimer = 0;
+        const pumpAt = performance.now();
+        const elapsed = lastPresentedAt
+          ? Math.max(minimumElapsed, pumpAt - lastPresentedAt)
+          : minimumElapsed;
+        pumpScrub(elapsed);
+      }, delay);
+    };
+
     const onLoadedMetadata = () => {
       presentedTime = video.currentTime;
       lastPresentedAt = 0;
-      pumpScrub(frameInterval);
+      scheduleScrubPump(frameInterval);
     };
 
-    const syncTargetFromPointer = () => pumpScrub(frameInterval);
+    const syncTargetFromPointer = () => scheduleScrubPump(frameInterval);
 
     syncScrubTargetRef.current = syncTargetFromPointer;
     video.addEventListener("loadedmetadata", onLoadedMetadata);
@@ -960,6 +992,8 @@ function BackgroundVideo() {
         syncScrubTargetRef.current = null;
       }
       cancelActivePresentationWait();
+      window.clearTimeout(scrubPumpTimer);
+      scrubPumpTimer = 0;
       seekActive = false;
     };
   }, [documentVisible, heroInRange, readySource, reducedMotion, scrubCapable, videoSource]);
