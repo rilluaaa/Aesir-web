@@ -68,6 +68,8 @@ export const getHeroWarmupTimes = ({
 
   return [
     mapPointerToGazeTime(0, duration),
+    mapPointerToGazeTime(1 / 3, duration),
+    mapPointerToGazeTime(2 / 3, duration),
     mapPointerToGazeTime(1, duration),
     neutral,
   ];

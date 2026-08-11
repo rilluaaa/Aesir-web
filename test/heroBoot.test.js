@@ -143,7 +143,7 @@ test("critical first-view assets coordinate fonts, poster and wordmark decoding"
   });
 });
 
-test("desktop warm-up decodes left, right and finishes at neutral", async () => {
+test("desktop warm-up covers both smoothing corridors and finishes at neutral", async () => {
   const decoded = [];
   const times = await warmHeroVideoFrames({
     duration: 3.966667,
@@ -152,11 +152,13 @@ test("desktop warm-up decodes left, right and finishes at neutral", async () => 
     seekFrame: async (time) => decoded.push(time),
   });
 
-  assert.equal(times.length, 3);
+  assert.equal(times.length, 5);
   assert.deepEqual(decoded, times);
   assert.ok(Math.abs(times[0] - 0.116) < 0.001);
-  assert.ok(Math.abs(times[1] - 3.832) < 0.001);
-  assert.ok(Math.abs(times[2] - 1.975) < 0.001);
+  assert.ok(times[1] > times[0] && times[1] < 1.975);
+  assert.ok(times[2] > 1.975 && times[2] < 3.832);
+  assert.ok(Math.abs(times[3] - 3.832) < 0.001);
+  assert.ok(Math.abs(times[4] - 1.975) < 0.001);
 });
 
 test("reduced motion warms only the neutral frame while mobile warms its start", () => {
