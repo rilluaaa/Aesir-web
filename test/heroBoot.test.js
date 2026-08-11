@@ -4,7 +4,6 @@ import test from "node:test";
 import {
   createHeroBootReadiness,
   createHeroVideoResourceLoader,
-  fetchHeroBlob,
   getHeroBootRevealMode,
   getHeroWarmupTimes,
   isAbortError,
@@ -13,14 +12,14 @@ import {
   prepareHeroCriticalAssets,
   resolveHeroDownloadSource,
   revealAesirApp,
+  waitForDecodedVideoFrame,
   warmHeroVideoFrames,
 } from "../src/heroBoot.js";
 
 const completeReadiness = () => createHeroBootReadiness({
   mounted: true,
   sourceResolved: true,
-  fileFetched: true,
-  blobAttached: true,
+  sourceAttached: true,
   metadataReady: true,
   framesWarmed: true,
   neutralReady: true,
@@ -40,7 +39,7 @@ test("loadedData alone cannot reveal before critical poster readiness", () => {
   const loadedDataOnly = createHeroBootReadiness({
     mounted: true,
     sourceResolved: true,
-    blobAttached: true,
+    sourceAttached: true,
     metadataReady: true,
   });
 
@@ -72,72 +71,54 @@ test("decoded critical poster reveals the page while video preparation continues
   }), "poster");
 });
 
-test("full hero fetch uses the HTTP cache and returns the complete Blob", async () => {
-  const expectedBlob = new Blob(["complete-video"]);
-  let received;
-  const actualBlob = await fetchHeroBlob({
-    sourceUrl: "/hero.mp4",
-    signal: new AbortController().signal,
-    fetchImpl: async (url, options) => {
-      received = { url, options };
-      return { ok: true, blob: async () => expectedBlob };
-    },
-  });
-
-  assert.equal(actualBlob, expectedBlob);
-  assert.equal(received.url, "/hero.mp4");
-  assert.equal(received.options.cache, "force-cache");
-  assert.ok(received.options.signal instanceof AbortSignal);
-});
-
-test("resource loader cancels an obsolete source and revokes stale Blob URLs", async () => {
-  const pending = new Map();
-  const revoked = [];
-  let objectIndex = 0;
-  const loader = createHeroVideoResourceLoader({
-    fetchImpl: (url, { signal }) => new Promise((resolve, reject) => {
-      const onAbort = () => {
-        const error = new Error("cancelled");
-        error.name = "AbortError";
-        reject(error);
-      };
-      signal.addEventListener("abort", onAbort, { once: true });
-      pending.set(url, () => resolve({ ok: true, blob: async () => new Blob([url]) }));
-    }),
-    createObjectURL: () => `blob:hero-${++objectIndex}`,
-    revokeObjectURL: (url) => revoked.push(url),
-  });
-
+test("resource loader keeps the selected native media URL attached", async () => {
+  const loader = createHeroVideoResourceLoader();
   const obsolete = loader.load("/1080.mp4").catch((error) => error);
-  const currentPromise = loader.load("/1440.mp4");
-  pending.get("/1440.mp4")();
-  const current = await currentPromise;
+  const current = await loader.load("/1440.mp4");
   current.activate();
 
   assert.equal(isAbortError(await obsolete), true);
-  assert.equal(loader.getActiveObjectUrl(), "blob:hero-1");
+  assert.equal(current.mediaUrl, "/1440.mp4");
+  assert.equal(loader.getActiveSourceUrl(), "/1440.mp4");
 
-  const replacementPromise = loader.load("/replacement.mp4");
-  pending.get("/replacement.mp4")();
-  const replacement = await replacementPromise;
+  const replacement = await loader.load("/replacement.mp4");
   replacement.activate();
-  assert.deepEqual(revoked, ["blob:hero-1"]);
+  assert.equal(loader.getActiveSourceUrl(), "/replacement.mp4");
 
   loader.dispose();
-  assert.deepEqual(revoked, ["blob:hero-1", "blob:hero-2"]);
+  assert.equal(loader.getActiveSourceUrl(), null);
 });
 
-test("an unactivated Blob URL is released during effect cleanup", async () => {
-  const revoked = [];
-  const loader = createHeroVideoResourceLoader({
-    fetchImpl: async () => ({ ok: true, blob: async () => new Blob(["video"]) }),
-    createObjectURL: () => "blob:unused",
-    revokeObjectURL: (url) => revoked.push(url),
-  });
+test("an unactivated native media URL can be released during effect cleanup", async () => {
+  const loader = createHeroVideoResourceLoader();
   const resource = await loader.load("/hero.mp4");
   resource.release();
   loader.dispose();
-  assert.deepEqual(revoked, ["blob:unused"]);
+  assert.equal(loader.getActiveSourceUrl(), null);
+});
+
+test("a settled paused frame confirms readiness on paint frames without the long timeout", async () => {
+  const callbacks = [];
+  const video = {
+    readyState: 2,
+    seeking: false,
+    requestVideoFrameCallback() {
+      throw new Error("settled paused frames should not wait for playback callbacks");
+    },
+  };
+
+  const ready = waitForDecodedVideoFrame(video, {
+    requestFrame: (callback) => {
+      callbacks.push(callback);
+      return callbacks.length;
+    },
+    cancelFrame: () => {},
+  });
+  callbacks.shift()();
+  callbacks.shift()();
+  await ready;
+
+  assert.equal(callbacks.length, 0);
 });
 
 test("critical first-view assets coordinate fonts, poster and wordmark decoding", async () => {
@@ -162,7 +143,7 @@ test("critical first-view assets coordinate fonts, poster and wordmark decoding"
   });
 });
 
-test("desktop warm-up decodes neutral, left, right and neutral in sequence", async () => {
+test("desktop warm-up decodes left, right and finishes at neutral", async () => {
   const decoded = [];
   const times = await warmHeroVideoFrames({
     duration: 3.966667,
@@ -171,12 +152,11 @@ test("desktop warm-up decodes neutral, left, right and neutral in sequence", asy
     seekFrame: async (time) => decoded.push(time),
   });
 
-  assert.equal(times.length, 4);
+  assert.equal(times.length, 3);
   assert.deepEqual(decoded, times);
-  assert.ok(Math.abs(times[0] - 1.975) < 0.001);
-  assert.ok(Math.abs(times[1] - 0.116) < 0.001);
-  assert.ok(Math.abs(times[2] - 3.832) < 0.001);
-  assert.ok(Math.abs(times[3] - 1.975) < 0.001);
+  assert.ok(Math.abs(times[0] - 0.116) < 0.001);
+  assert.ok(Math.abs(times[1] - 3.832) < 0.001);
+  assert.ok(Math.abs(times[2] - 1.975) < 0.001);
 });
 
 test("reduced motion warms only the neutral frame while mobile warms its start", () => {

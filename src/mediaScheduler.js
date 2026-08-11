@@ -59,6 +59,7 @@ export const installPredictiveMediaScheduler = ({
   let idleTask = null;
   let idleDelay = 0;
   let idleStarted = false;
+  let heroReady = Boolean(documentRef.querySelector(".hero-video video[data-warmup-complete-at]"));
   let scrollFrame = 0;
   let lastScrollY = windowRef.scrollY;
   let lastScrollTime = windowRef.performance?.now?.() ?? Date.now();
@@ -69,6 +70,7 @@ export const installPredictiveMediaScheduler = ({
   };
 
   const prepareMedia = (element, priority = "auto") => {
+    if (!heroReady) return;
     if (!element || element.tagName !== "IMG") return;
     if (element.complete && element.naturalWidth > 0) {
       forgetMedia(element);
@@ -85,6 +87,10 @@ export const installPredictiveMediaScheduler = ({
       element.dataset.mediaPreparedListener = "true";
       element.addEventListener("load", () => forgetMedia(element), { once: true });
       element.addEventListener("error", () => forgetMedia(element), { once: true });
+    }
+
+    if (!element.getAttribute("src") && element.dataset.src) {
+      element.src = element.dataset.src;
     }
   };
 
@@ -194,12 +200,16 @@ export const installPredictiveMediaScheduler = ({
     }, 3500);
   };
 
-  const onHeroReady = () => startIdleWarm();
+  const onHeroReady = () => {
+    heroReady = true;
+    evaluateScroll();
+    startIdleWarm();
+  };
   registerTree(documentRef);
   mutationObserver?.observe(documentRef.body, { childList: true, subtree: true });
   windowRef.addEventListener("scroll", onScroll, { passive: true });
   windowRef.addEventListener("aesir:hero-ready", onHeroReady, { once: true });
-  if (documentRef.querySelector(".hero-video video[data-warmup-complete-at]")) startIdleWarm();
+  if (heroReady) onHeroReady();
 
   return () => {
     windowRef.removeEventListener("scroll", onScroll);

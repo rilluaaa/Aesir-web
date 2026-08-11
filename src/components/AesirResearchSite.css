@@ -26,6 +26,11 @@
   font-family: "DM Sans", sans-serif;
 }
 
+html:not(.aesir-app-ready) .aesir-site,
+html:not(.aesir-app-ready) .aesir-site * {
+  font-family: "Inter", "DM Sans", sans-serif;
+}
+
 .aesir-site button,
 .aesir-site a,
 .aesir-site input {

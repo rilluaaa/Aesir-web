@@ -12,8 +12,7 @@ export const HERO_BOOT_REQUIREMENTS = Object.freeze([
 
 export const HERO_VIDEO_REQUIREMENTS = Object.freeze([
   "sourceResolved",
-  "fileFetched",
-  "blobAttached",
+  "sourceAttached",
   "metadataReady",
   "framesWarmed",
   "neutralReady",
@@ -22,8 +21,7 @@ export const HERO_VIDEO_REQUIREMENTS = Object.freeze([
 export const createHeroBootReadiness = (overrides = {}) => ({
   mounted: false,
   sourceResolved: false,
-  fileFetched: false,
-  blobAttached: false,
+  sourceAttached: false,
   metadataReady: false,
   framesWarmed: false,
   neutralReady: false,
@@ -69,7 +67,6 @@ export const getHeroWarmupTimes = ({
   if (!scrubCapable) return [0];
 
   return [
-    neutral,
     mapPointerToGazeTime(0, duration),
     mapPointerToGazeTime(1, duration),
     neutral,
@@ -92,96 +89,51 @@ const throwIfAborted = (signal) => {
   if (signal?.aborted) throw createAbortError();
 };
 
-export const fetchHeroBlob = async ({
-  sourceUrl,
-  signal,
-  fetchImpl = globalThis.fetch,
-}) => {
-  if (!sourceUrl || typeof fetchImpl !== "function") {
-    throw new Error("A final hero source and fetch implementation are required.");
-  }
-
-  const response = await fetchImpl(sourceUrl, {
-    cache: "force-cache",
-    signal,
-  });
-
-  if (!response.ok) {
-    throw new Error(`Unable to download the selected hero video (${response.status}).`);
-  }
-
-  throwIfAborted(signal);
-  const blob = await response.blob();
-  throwIfAborted(signal);
-  return blob;
-};
-
-export const createHeroVideoResourceLoader = ({
-  fetchImpl = globalThis.fetch,
-  createObjectURL = (blob) => URL.createObjectURL(blob),
-  revokeObjectURL = (url) => URL.revokeObjectURL(url),
-} = {}) => {
+export const createHeroVideoResourceLoader = () => {
   let requestVersion = 0;
-  let pendingController = null;
-  let activeObjectUrl = null;
+  let activeSourceUrl = null;
   let disposed = false;
 
   const cancelPending = () => {
     requestVersion += 1;
-    pendingController?.abort();
-    pendingController = null;
   };
 
   const load = async (sourceUrl) => {
     if (disposed) throw new Error("The hero resource loader has been disposed.");
+    if (!sourceUrl) throw new Error("A final hero source is required.");
 
     cancelPending();
     const version = requestVersion;
-    const controller = new AbortController();
-    pendingController = controller;
+    await Promise.resolve();
+    if (disposed || version !== requestVersion) throw createAbortError();
 
-    try {
-      const blob = await fetchHeroBlob({
-        sourceUrl,
-        signal: controller.signal,
-        fetchImpl,
-      });
-      if (disposed || version !== requestVersion) throw createAbortError();
+    let activated = false;
+    let released = false;
 
-      const objectUrl = createObjectURL(blob);
-      let activated = false;
-      let released = false;
-
-      return {
-        objectUrl,
-        sourceUrl,
-        activate() {
-          if (released || disposed || version !== requestVersion) throw createAbortError();
-          if (activeObjectUrl && activeObjectUrl !== objectUrl) revokeObjectURL(activeObjectUrl);
-          activeObjectUrl = objectUrl;
-          activated = true;
-        },
-        release() {
-          if (released || activated) return;
-          released = true;
-          revokeObjectURL(objectUrl);
-        },
-      };
-    } finally {
-      if (pendingController === controller) pendingController = null;
-    }
+    return {
+      mediaUrl: sourceUrl,
+      sourceUrl,
+      activate() {
+        if (released || disposed || version !== requestVersion) throw createAbortError();
+        activeSourceUrl = sourceUrl;
+        activated = true;
+      },
+      release() {
+        if (activated) return;
+        released = true;
+      },
+    };
   };
 
   return {
     load,
     cancelPending,
-    getActiveObjectUrl: () => activeObjectUrl,
+    getActiveSourceUrl: () => activeSourceUrl,
     dispose() {
       if (disposed) return;
       disposed = true;
       cancelPending();
-      if (activeObjectUrl) revokeObjectURL(activeObjectUrl);
-      activeObjectUrl = null;
+      activeSourceUrl = null;
     },
   };
 };
@@ -224,15 +176,31 @@ const waitForReadyState = async (video, readyState, eventName, signal) => {
   }
 };
 
-export const waitForDecodedVideoFrame = (video, { signal, timeoutMs = 900 } = {}) => (
+export const waitForDecodedVideoFrame = (
+  video,
+  {
+    signal,
+    timeoutMs = 900,
+    requestFrame = globalThis.requestAnimationFrame,
+    cancelFrame = globalThis.cancelAnimationFrame,
+  } = {},
+) => (
   new Promise((resolve, reject) => {
     throwIfAborted(signal);
     let frameCallbackId = null;
+    let animationFrameId = null;
+    let secondAnimationFrameId = null;
     let timeoutId = 0;
 
     const cleanup = () => {
       if (frameCallbackId !== null && typeof video.cancelVideoFrameCallback === "function") {
         video.cancelVideoFrameCallback(frameCallbackId);
+      }
+      if (animationFrameId !== null && typeof cancelFrame === "function") {
+        cancelFrame(animationFrameId);
+      }
+      if (secondAnimationFrameId !== null && typeof cancelFrame === "function") {
+        cancelFrame(secondAnimationFrameId);
       }
       signal?.removeEventListener("abort", onAbort);
       clearTimeout(timeoutId);
@@ -247,6 +215,18 @@ export const waitForDecodedVideoFrame = (video, { signal, timeoutMs = 900 } = {}
     };
 
     signal?.addEventListener("abort", onAbort, { once: true });
+    if (video.readyState >= 2 && video.seeking !== true) {
+      if (typeof requestFrame === "function") {
+        animationFrameId = requestFrame(() => {
+          animationFrameId = null;
+          secondAnimationFrameId = requestFrame(finish);
+        });
+      } else {
+        timeoutId = setTimeout(finish, 32);
+      }
+      return;
+    }
+
     if (typeof video.requestVideoFrameCallback === "function") {
       frameCallbackId = video.requestVideoFrameCallback(finish);
     } else {
@@ -287,14 +267,14 @@ export const warmHeroVideoFrames = async ({
 
 export const attachAndWarmHeroVideo = async ({
   video,
-  objectUrl,
+  sourceUrl,
   scrubCapable,
   reducedMotion,
   signal,
 }) => {
   throwIfAborted(signal);
   video.pause();
-  video.src = objectUrl;
+  video.src = sourceUrl;
   video.load();
 
   await waitForReadyState(video, 1, "loadedmetadata", signal);

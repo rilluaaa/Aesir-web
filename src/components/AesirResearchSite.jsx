@@ -452,8 +452,14 @@ function BackgroundVideo() {
 
   useEffect(() => {
     const criticalController = new AbortController();
+    const fontReady = document.fonts?.load
+      ? Promise.all([
+        document.fonts.load('400 1em "Inter"'),
+        document.fonts.load('500 1em "Inter"'),
+      ])
+      : Promise.resolve();
     const criticalAssetsPromise = prepareHeroCriticalAssets({
-      fontReady: document.fonts?.ready ?? Promise.resolve(),
+      fontReady,
       posterUrl,
       criticalImageUrls: [wordmarkUrl],
       signal: criticalController.signal,
@@ -669,7 +675,7 @@ function BackgroundVideo() {
         setScrubReadySource(null);
         const warmup = await attachAndWarmHeroVideo({
           video,
-          objectUrl: resource.objectUrl,
+          sourceUrl: resource.mediaUrl,
           scrubCapable,
           reducedMotion,
           signal: preparationController.signal,
@@ -677,7 +683,7 @@ function BackgroundVideo() {
         resource.activate();
         activeResourceRef.current = {
           source: finalVideoSource,
-          objectUrl: resource.objectUrl,
+          mediaUrl: resource.mediaUrl,
           resource,
         };
         heroWarmupRef.current = { source: finalVideoSource, warmup };
@@ -928,8 +934,7 @@ function BackgroundVideo() {
       const readiness = createHeroBootReadiness({
         mounted: true,
         sourceResolved: true,
-        fileFetched: true,
-        blobAttached: true,
+        sourceAttached: true,
         metadataReady: warmupRecord.warmup.metadataReady,
         framesWarmed: warmupRecord.warmup.framesWarmed,
         neutralReady: warmupRecord.warmup.neutralReady,
@@ -1104,7 +1109,7 @@ function HeroEvidence() {
     <section className="hero-evidence section-shell" aria-label="AESIR in public dialogue">
       <figure>
         <img
-          src={asset("assets/aesir/founder-panel.webp")}
+          data-src={asset("assets/aesir/founder-panel.webp")}
           alt="Ernest HS CHAN speaking during an industry panel"
           width="1600"
           height="1200"
@@ -1338,7 +1343,7 @@ function Evidence() {
         </div>
         <figure className="evidence-image">
           <img
-            src={asset("assets/aesir/ai-for-all.webp")}
+            data-src={asset("assets/aesir/ai-for-all.webp")}
             alt="AESIR and programme partners at an inclusive AI deployment"
             width="1600"
             height="1200"
@@ -1441,7 +1446,7 @@ function ProjectLibrary() {
             >
               <div className="project-card__media">
                 <img
-                  src={asset(project.previewMedia ?? project.media)}
+                  data-src={asset(project.previewMedia ?? project.media)}
                   alt={`${project.title} project media`}
                   loading="lazy"
                   decoding="async"
@@ -1495,7 +1500,7 @@ function Leadership() {
 
         <div className="leadership-feature" data-enter>
           <img
-            src={asset("assets/aesir/ernest-reading.webp")}
+            data-src={asset("assets/aesir/ernest-reading.webp")}
             alt="AESIR Co-Founder Ernest HS CHAN reading an augmented-reality positive psychology playbook"
             width="2048"
             height="1365"
@@ -1517,7 +1522,7 @@ function Leadership() {
           {newPhotos.map((photo) => (
             <figure key={photo.src}>
               <img
-                src={asset(photo.src)}
+                data-src={asset(photo.src)}
                 alt={photo.alt}
                 width={photo.width}
                 height={photo.height}
@@ -1534,7 +1539,7 @@ function Leadership() {
           {archivePhotos.map(([src, alt, width, height]) => (
             <img
               key={src}
-              src={asset(src)}
+              data-src={asset(src)}
               alt={alt}
               width={width}
               height={height}
@@ -1609,7 +1614,7 @@ export function AesirResearchSite() {
       </main>
       <footer className="aesir-footer">
         <img
-          src={asset("assets/aesir/aesir-wordmark.webp")}
+          data-src={asset("assets/aesir/aesir-wordmark.webp")}
           alt="AESIR"
           width="1342"
           height="314"
