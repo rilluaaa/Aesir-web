@@ -265,8 +265,12 @@ const archivePhotos = [
   ["assets/founders/community-program.jpg", "Community counselling and virtual reality programme partners", 640, 398],
   ["assets/founders/aesir-presentation.jpeg", "AESIR presentation moment", 596, 335],
   ["assets/founders/founder-speaking.jpeg", "Founder speaking at an applied training session", 617, 324],
-  ["assets/founders/aesir-detail.jpg", "AESIR founders archive photograph", 215, 295],
+  ["assets/founders/founders-crates-photo.jpeg", "AESIR founders presenting a Happy Kingdom book at a social innovation space", 1066, 1600],
   ["assets/founders/founders-interview.jpg", "AESIR founders interview portrait", 800, 535],
+  ["assets/founders/dbs-nus-awards-2016.jpeg", "AESIR at the DBS-NUS Social Venture Challenge Asia Awards Ceremony 2016", 960, 587],
+  ["assets/founders/happy-kingdom-with-guest.jpeg", "Ernest presenting the Happy Kingdom book with a guest", 960, 720],
+  ["assets/founders/lion-rock-daily-coverage.jpeg", "Lion Rock Daily coverage of youth employment research", 1149, 1062],
+  ["assets/founders/founders-staircase-photo.jpeg", "AESIR founders with the Happy Kingdom book on a staircase", 1600, 1055],
 ];
 
 const navItems = [
