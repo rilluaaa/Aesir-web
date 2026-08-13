@@ -45,6 +45,13 @@
         font-family: "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
+      html[lang="zh"] body,
+      html[lang="zh"] h1 {
+        font-family: Inter, "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", "Noto Sans CJK TC", "Noto Sans CJK SC", sans-serif;
+        letter-spacing: normal;
+        line-height: 1.35;
+      }
+
       main {
         width: min(940px, calc(100% - 32px));
         margin: 0 auto;
@@ -187,7 +194,7 @@
     <main>
       <div class="topbar">
         <div class="brand">AESIR</div>
-        <a class="back" href="./">Back to website</a>
+        <a class="back" id="back" href="./">Back to website</a>
       </div>
 
       <article class="panel">
@@ -208,24 +215,60 @@
 
     <script>
       const params = new URLSearchParams(window.location.search);
-      const title = params.get("title") || "Project Media";
-      const category = params.get("category") || "Project";
-      const description = params.get("description") || "Project details are being prepared for this archive record.";
+      const allowedLanguages = ["en", "traditional", "simplified"];
+      const requestedLanguage = params.get("lang") || "en";
+      const language = allowedLanguages.includes(requestedLanguage) ? requestedLanguage : "en";
+      const strings = {
+        en: {
+          projectMedia: "Project Media",
+          project: "Project",
+          preparing: "Project details are being prepared for this archive record.",
+          back: "Back to website",
+          open: "Open Project",
+          unavailable: "This archive record does not currently have a verified public project link.",
+          mediaAlt: (title) => `${title} media`,
+        },
+        traditional: {
+          projectMedia: "項目媒體",
+          project: "項目",
+          preparing: "此項目的詳細資料正在整理中。",
+          back: "返回網站",
+          open: "開啟項目",
+          unavailable: "此項目檔案目前未有經核實的公開連結。",
+          mediaAlt: (title) => `${title} 項目媒體`,
+        },
+        simplified: {
+          projectMedia: "项目媒体",
+          project: "项目",
+          preparing: "此项目详细资料正在整理中。",
+          back: "返回网站",
+          open: "打开项目",
+          unavailable: "此项目档案目前没有经核实的公开链接。",
+          mediaAlt: (title) => `${title} 项目媒体`,
+        },
+      }[language];
+      const title = params.get("title") || strings.projectMedia;
+      const category = params.get("category") || strings.project;
+      const description = params.get("description") || strings.preparing;
       const media = params.get("media") || "";
       const link = params.get("link") || "";
 
+      document.documentElement.lang = language === "en" ? "en" : "zh";
       document.title = `${title} | AESIR`;
+      document.getElementById("back").textContent = strings.back;
       document.getElementById("title").textContent = title;
       document.getElementById("category").textContent = category;
       document.getElementById("description").textContent = description;
 
       const mediaElement = document.getElementById("media");
       mediaElement.src = media;
-      mediaElement.alt = `${title} media`;
+      mediaElement.alt = strings.mediaAlt(title);
 
       const sourceLink = document.getElementById("source");
       const actions = document.getElementById("actions");
       const availability = document.getElementById("availability");
+      sourceLink.textContent = strings.open;
+      availability.textContent = strings.unavailable;
 
       if (link) {
         sourceLink.href = link;

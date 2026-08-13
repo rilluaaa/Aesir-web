@@ -19,7 +19,7 @@
 }
 
 .aesir-site {
-  min-width: 320px;
+  min-width: 0;
   overflow: clip;
   color: var(--launch-ink);
   background: var(--launch-white);
@@ -175,7 +175,6 @@ html:not(.aesir-app-ready) .aesir-site * {
 }
 
 .header-contact {
-  justify-self: end;
   min-height: 44px;
   padding: 10px 0;
   color: #111;
@@ -184,6 +183,119 @@ html:not(.aesir-app-ready) .aesir-site * {
   font-weight: 500;
   text-underline-offset: 4px;
   transition: opacity 160ms ease;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: clamp(12px, 1.5vw, 22px);
+}
+
+.language-selector {
+  position: relative;
+  color: #111;
+  font-family: "Inter", "DM Sans", sans-serif;
+}
+
+.language-selector__trigger,
+.language-selector__menu button {
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.language-selector__trigger {
+  min-width: 55px;
+  min-height: 44px;
+  padding: 10px 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.language-selector__trigger span {
+  display: inline-block;
+  margin-left: 2px;
+  transition: transform 160ms ease;
+}
+
+.language-selector__trigger[aria-expanded="true"] span {
+  transform: rotate(180deg);
+}
+
+.language-selector__menu {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 88px;
+  overflow: hidden;
+  border: 1px solid var(--launch-line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--launch-shadow);
+}
+
+.language-selector__menu button {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.language-selector__menu button:hover,
+.language-selector__menu button:focus-visible,
+.language-selector__menu button.is-active {
+  color: var(--launch-clay-dark);
+  background: var(--launch-sand-soft);
+}
+
+html[data-language="traditional"] .aesir-site,
+html[data-language="simplified"] .aesir-site,
+html[data-language="traditional"] .aesir-site h1,
+html[data-language="traditional"] .aesir-site h2,
+html[data-language="traditional"] .aesir-site h3,
+html[data-language="traditional"] .aesir-site h4,
+html[data-language="traditional"] .aesir-site h5,
+html[data-language="traditional"] .aesir-site h6,
+html[data-language="traditional"] .aesir-site strong,
+html[data-language="traditional"] .aesir-site blockquote,
+html[data-language="simplified"] .aesir-site h1,
+html[data-language="simplified"] .aesir-site h2,
+html[data-language="simplified"] .aesir-site h3,
+html[data-language="simplified"] .aesir-site h4,
+html[data-language="simplified"] .aesir-site h5,
+html[data-language="simplified"] .aesir-site h6,
+html[data-language="simplified"] .aesir-site strong,
+html[data-language="simplified"] .aesir-site blockquote {
+  font-family: Inter, "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", "Noto Sans CJK TC", "Noto Sans CJK SC", sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+html[data-language="traditional"] .aesir-site button,
+html[data-language="traditional"] .aesir-site a,
+html[data-language="traditional"] .aesir-site figcaption,
+html[data-language="traditional"] .aesir-site .research-journey__meta,
+html[data-language="traditional"] .aesir-site .project-card__content > span,
+html[data-language="simplified"] .aesir-site button,
+html[data-language="simplified"] .aesir-site a,
+html[data-language="simplified"] .aesir-site figcaption,
+html[data-language="simplified"] .aesir-site .research-journey__meta,
+html[data-language="simplified"] .aesir-site .project-card__content > span {
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+html[data-language="traditional"] .aesir-site p,
+html[data-language="simplified"] .aesir-site p {
+  line-height: 1.75;
 }
 
 .primary-action:hover,
@@ -1323,7 +1435,7 @@ html:not(.aesir-app-ready) .aesir-site * {
   }
 
   .desktop-nav,
-  .header-contact {
+  .header-actions {
     display: none;
   }
 
@@ -1399,6 +1511,43 @@ html:not(.aesir-app-ready) .aesir-site * {
 
   .mobile-nav a {
     margin-top: 20px;
+  }
+
+  .language-selector--mobile {
+    margin-top: 18px;
+  }
+
+  .language-selector--mobile .language-selector__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 56px;
+    border-bottom: 1px solid var(--launch-line);
+    font-size: 1rem;
+    text-align: left;
+  }
+
+  .language-selector--mobile .language-selector__menu {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 14px;
+    box-shadow: none;
+  }
+
+  .language-selector--mobile .language-selector__menu[hidden] {
+    display: none;
+  }
+
+  .language-selector--mobile .language-selector__menu button {
+    justify-content: center;
+    min-height: 48px;
+    padding: 9px 12px;
+    border-bottom: 0;
+    text-align: center;
   }
 
   .hero-section {

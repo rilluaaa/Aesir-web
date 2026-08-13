@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -33,6 +40,13 @@ import {
 } from "../heroBoot.js";
 import { installPredictiveMediaScheduler } from "../mediaScheduler.js";
 import { aesirProjects } from "../projectPortfolio";
+import { localizeProject } from "../i18n/projectTranslations.js";
+import {
+  getInitialLanguage,
+  LANGUAGE_KEYS,
+  LANGUAGE_STORAGE_KEY,
+  languages,
+} from "../i18n/translations.js";
 import "./AesirResearchSite.css";
 
 const contactUrl = "https://aesir.hk/#contactus";
@@ -41,251 +55,53 @@ const asset = (path) =>
     ? path
     : `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 
-const researchAreas = [
-  {
-    id: "society",
-    title: "Society 5.0",
-    subtitle: "Human-Centric Cyber-Physical Frameworks",
-    summary:
-      "Designing public infrastructure that uses advanced technology to expand human agency, access, and quality of life.",
-    stages: [
-      {
-        id: "description",
-        label: "Description",
-        title: "Technology organised around human wellbeing.",
-        body: [
-          "Society 5.0 describes a human-centred cyber-physical society in which data, intelligent systems, and the built environment work together to improve daily life. Rather than treating automation as the final goal, it asks whether technology expands participation, dignity, independence, and access to essential services.",
-          "For AESIR, this is especially relevant to Asia's super-ageing population, unequal access to care, and the rising public cost of long-term elderly and disability support. The research connects smart-city strategy with the lived realities of older adults, neurodivergent communities, caregivers, and people who are often excluded by conventional digital infrastructure.",
-        ],
-      },
-      {
-        id: "focus",
-        label: "Research Focus",
-        title: "Moving smart cities beyond automated efficiency.",
-        body: [
-          "AESIR studies how cities can progress from Industry 4.0 efficiency towards public systems that are measurable, inclusive, and responsive to different human capabilities. The work examines how spatial computing can make services understandable in place, how edge computing can support timely interaction, and how decentralised data models can reduce dependence on a single point of control.",
-          "The research also explores active-ageing frameworks, zero-barrier municipal environments, remote mental-wellness support, and public-learning systems that turn complex health or sustainability knowledge into practical action. The central question is not only whether a system works, but who can use it, what burden it removes, and how it contributes to long-term public value.",
-        ],
-      },
-      {
-        id: "application",
-        label: "Applied Direction",
-        title: "Turning civic frameworks into public experiences.",
-        body: [
-          "AESIR translates this agenda into programmes that can be tested with real communities and institutions. Smart Sports applies gerontechnology and movement-based interaction to preventive exercise for older adults, while mixed-reality AED and CPR training gives learners a safe, repeatable environment for practising emergency decisions before a real incident occurs.",
-          "Interactive environmental learning projects extend the same principle into citizen science and public education. Together, these deployments create an applied foundation for evaluating participation, comprehension, accessibility, and adoption—evidence that can inform more inclusive healthcare, community services, and smart-city infrastructure.",
-        ],
-      },
-    ],
-    tags: ["Smart Cities", "Active Ageing", "Public Infrastructure"],
-    cases: [
-      {
-        title: "Smart Sports for active ageing",
-        description:
-          "AESIR has applied gerontechnology and sports training to preventive exercise for older adults. The work turns movement into an approachable, repeatable experience designed around participation rather than clinical intimidation.",
-      },
-      {
-        title: "Mixed-reality emergency training",
-        description:
-          "A HoloLens AED and CPR simulation created with VTC lets learners practise when and how to use an automated external defibrillator inside a safe, repeatable scenario before facing a real emergency.",
-      },
-      {
-        title: "Public learning through place and data",
-        description:
-          "Tree Portal uses a citizen-science approach to make urban-tree knowledge accessible, while environmental web games translate university research on ocean protection, water filtration, and sustainability into public learning tools.",
-      },
-    ],
-  },
-  {
-    id: "ax",
-    title: "AX",
-    subtitle: "AI Transformation",
-    summary:
-      "Redesigning institutions, workflows, and human performance for an era in which AI becomes foundational infrastructure.",
-    stages: [
-      {
-        id: "description",
-        label: "Description",
-        title: "AI transformation is organisational, not merely digital.",
-        body: [
-          "AX marks the shift from digitising existing records and services to treating AI as a foundational layer of organisational and public infrastructure. It changes how decisions are prepared, how work is distributed, how knowledge moves through a team, and how autonomous systems coordinate with human judgement.",
-          "This transition creates opportunities for faster analysis and more adaptive services, but it also changes attention, responsibility, and the experience of work. AESIR approaches AX as a human-systems challenge: transformation succeeds only when technical capability, governance, cognitive wellbeing, and operational behaviour are designed together.",
-        ],
-      },
-      {
-        id: "focus",
-        label: "Research Focus",
-        title: "Designing for the AI–human co-working era.",
-        body: [
-          "AESIR's research centres on cognitive ergonomics: how people understand, supervise, and sustain attention while working with intelligent systems. Neural-feedback concepts, micro-expression analytics, movement data, and behavioural signals can help reveal cognitive load, loss of focus, uncertainty, or emotional fatigue that conventional productivity measures fail to capture.",
-          "The aim is to develop evidence-led models for feedback timing, task allocation, explainability, and human oversight. By connecting interaction data with organisational behaviour, the research asks how AI can support performance without creating hidden burnout, deskilling, or decision processes that people can no longer interpret or challenge.",
-        ],
-      },
-      {
-        id: "application",
-        label: "Applied Direction",
-        title: "Building practical test beds for responsible AX.",
-        body: [
-          "AESIR's portfolio provides real interfaces through which these questions can be tested. Camera-based sports and exercise systems use pose, hand, skeleton, and depth tracking to interpret movement without physical controllers, creating immediate examples of how AI feedback must remain accurate, legible, and motivating.",
-          "Applied AI systems extend the research into recognition, communication, and automated response. These deployments support the development of scalable AX blueprints in which performance data, user experience, escalation rules, and meaningful human control are considered from the beginning.",
-        ],
-      },
-    ],
-    tags: ["Cognitive Ergonomics", "Human-AI Work", "Behavioural Analytics"],
-    cases: [
-      {
-        title: "Camera-based movement intelligence",
-        description:
-          "Web-based sports and exercise prototypes use pose, skeleton, hand, and depth tracking to interpret movement without physical controllers. These systems explore how AI feedback can stay immediate, legible, and motivating.",
-      },
-      {
-        title: "AI-assisted language learning",
-        description:
-          "VocabGO combines camera object recognition with AR labelling, while the archive also spans Cantonese speech training and language-learning assistants—an applied foundation for studying attention, feedback, and cognitive load.",
-      },
-      {
-        title: "Conversational service interfaces",
-        description:
-          "AESIR has prototyped automated social-media conversations across common messaging channels, examining how organisations can respond faster while keeping tone, escalation, and human oversight visible.",
-      },
-    ],
-  },
-  {
-    id: "neuro",
-    title: "NEURO Business Futures",
-    subtitle: "Immersive Neurodiversity & Inclusive Tech Markets",
-    summary:
-      "Developing scalable immersive systems for neurodivergent learning, assessment, wellbeing, and inclusive technology markets.",
-    stages: [
-      {
-        id: "description",
-        label: "Description",
-        title: "Inclusive technology built around cognitive difference.",
-        body: [
-          "NEURO Business Futures investigates how immersive environments and generative AI can support neurodivergent learning, communication, assessment, and wellbeing. Multi-sensory VR can present information through space, movement, sound, and guided interaction, creating non-pharmacological pathways that adapt to different ways of processing the world.",
-          "The programme considers Autism, Dyslexia, Dementia, ADHD, and related cognitive conditions without reducing people to a diagnosis. Its purpose is to connect clinical empathy with technology design, then examine how assistive systems can move from isolated prototypes into trustworthy services, sustainable markets, and accessible learning or care environments.",
-        ],
-      },
-      {
-        id: "focus",
-        label: "Research Focus",
-        title: "Turning interaction patterns into personalised support.",
-        body: [
-          "AESIR studies cognitive spatial data, kinetic movement, eye-gaze variation, attention patterns, and responses to multi-sensory feedback. These signals can help researchers and practitioners understand how an individual navigates a task, where cognitive friction appears, and which form of guidance supports participation without adding unnecessary pressure.",
-          "The research combines these observations with personalised gamified protocols, practitioner review, and the design of repeatable clinical-learning environments. It also examines the economics and delivery systems behind assistive technology, because an intervention has limited public value if it cannot be maintained, adopted by practitioners, or scaled across schools, NGOs, clinics, and families.",
-        ],
-      },
-      {
-        id: "application",
-        label: "Applied Direction",
-        title: "Extending a validated base of immersive inclusion.",
-        body: [
-          "Happy Kingdom, Hong Kong's AR positive-psychology playbook, supports children's emotional literacy through stories, play, and guided practice. My Living Diary was co-designed with an autism counsellor, speech therapist, and occupational therapist to help children rehearse everyday vocabulary, communication, and independent-living situations.",
-          "AESIR's VR speech centre adds repeatable public-speaking and social-interaction rehearsal with audio review for practitioners. Together with established NGO, education, and care networks, these projects form a practical testing base for more personalised immersive protocols and for studying how inclusive technology can achieve clinical relevance, user trust, and sustainable deployment.",
-        ],
-      },
-    ],
-    tags: ["Neurodiversity", "Clinical Learning", "Assistive Technology"],
-    cases: [
-      {
-        title: "Happy Kingdom AR Playbook",
-        description:
-          "Hong Kong's AR positive-psychology playbook was developed to support children's emotional literacy through guided stories, play, and at-home practice. The programme was recognised as a funded social-innovation venture.",
-      },
-      {
-        title: "My Living Diary",
-        description:
-          "Co-designed with an autism counsellor, speech therapist, and occupational therapist, this AR life-education package helps children practise everyday vocabulary, communication, and independent-living situations.",
-      },
-      {
-        title: "VR speech and social rehearsal",
-        description:
-          "A Unity-based VR speech centre simulates public-speaking and social-interaction situations for children with autism, with audio recording that gives practitioners a repeatable way to review participation and progress.",
-      },
-    ],
-  },
-];
+const LocalizationContext = createContext({
+  language: "en",
+  setLanguage: () => {},
+  copy: languages.en,
+});
 
-const outputs = [
-  {
-    title: "Social innovation ventures",
-    description: "Happy Kingdom and Smart Sports moved inclusive learning and active-ageing concepts into funded, public-facing programmes rather than stopping at presentation-stage prototypes.",
-  },
-  {
-    title: "Health and rehabilitation",
-    description: "Work ranges from mixed-reality AED rehearsal and asthma-care support to elderly fall-prevention games, VR mental-wellness programmes, and assistive learning tools.",
-  },
-  {
-    title: "Education and public knowledge",
-    description: "Projects with universities and education partners translate research into AR comics, sustainability games, language resources, heritage experiences, and interactive classroom platforms.",
-  },
-  {
-    title: "Cross-sector deployment",
-    description: "AESIR has built experiences for NGOs, schools, universities, public bodies, healthcare teams, and commercial partners—testing the same technology under very different user and governance conditions.",
-  },
-];
-
-const methodSteps = [
-  ["Research", "Frame a human problem with scientific, market, and policy context."],
-  ["Prototype", "Turn evidence into testable XR, AI, and interaction architectures."],
-  ["Field Validation", "Work with real users, institutions, practitioners, and communities."],
-  ["Public Value", "Measure adoption, inclusion, wellbeing, and commercial scalability."],
-];
+const useLocalization = () => useContext(LocalizationContext);
 
 const newPhotos = [
   {
     src: "assets/aesir/founder-panel.webp",
-    alt: "Ernest HS CHAN speaking during a public panel discussion",
-    label: "Public dialogue",
     width: 1600,
     height: 1200,
   },
   {
     src: "assets/aesir/ai-for-all.webp",
-    alt: "AESIR and programme partners at the AI for All Inclusive Programme",
-    label: '"AI for All" Inclusive Programme',
     width: 1600,
     height: 1200,
   },
   {
     src: "assets/aesir/hkict-2021.webp",
-    alt: "Ernest HS CHAN and participants at the 2021 Hong Kong ICT Awards ceremony",
-    label: "Hong Kong ICT Awards",
     width: 800,
     height: 600,
   },
   {
     src: "assets/aesir/business-practicum.webp",
-    alt: "Business practicum participants and cross-sector partners",
-    label: "Cross-sector practice",
     width: 800,
     height: 600,
   },
 ];
 
 const archivePhotos = [
-  ["assets/founders/ernest-elon-musk-hong-kong.jpeg", "Ernest HS CHAN with Elon Musk between the China and Hong Kong flags", 960, 697],
-  ["assets/founders/community-program.jpg", "Community counselling and virtual reality programme partners", 640, 398],
-  ["assets/founders/aesir-presentation.jpeg", "AESIR presentation moment", 596, 335],
-  ["assets/founders/founder-speaking.jpeg", "Founder speaking at an applied training session", 617, 324],
-  ["assets/founders/founders-crates-photo.jpeg", "AESIR founders presenting a Happy Kingdom book at a social innovation space", 1066, 1600],
-  ["assets/founders/founders-interview.jpg", "AESIR founders interview portrait", 800, 535],
-  ["assets/founders/dbs-nus-awards-2016.jpeg", "AESIR at the DBS-NUS Social Venture Challenge Asia Awards Ceremony 2016", 960, 587],
-  ["assets/founders/happy-kingdom-with-guest.jpeg", "Ernest presenting the Happy Kingdom book with a guest", 960, 720],
-  ["assets/founders/lion-rock-daily-coverage.jpeg", "Lion Rock Daily coverage of youth employment research", 1149, 1062],
-  ["assets/founders/founders-staircase-photo.jpeg", "AESIR founders with the Happy Kingdom book on a staircase", 1600, 1055],
+  ["assets/founders/ernest-elon-musk-hong-kong.jpeg", 960, 697],
+  ["assets/founders/community-program.jpg", 640, 398],
+  ["assets/founders/aesir-presentation.jpeg", 596, 335],
+  ["assets/founders/founder-speaking.jpeg", 617, 324],
+  ["assets/founders/founders-crates-photo.jpeg", 1066, 1600],
+  ["assets/founders/founders-interview.jpg", 800, 535],
+  ["assets/founders/dbs-nus-awards-2016.jpeg", 960, 587],
+  ["assets/founders/happy-kingdom-with-guest.jpeg", 960, 720],
+  ["assets/founders/lion-rock-daily-coverage.jpeg", 1149, 1062],
+  ["assets/founders/founders-staircase-photo.jpeg", 1600, 1055],
 ];
 
-const navItems = [
-  ["Research", "research"],
-  ["Method", "method"],
-  ["Deployment", "evidence"],
-  ["Projects", "projects"],
-  ["Leadership", "leadership"],
-];
-
-const projectViewer = (project) => {
+const projectViewer = (project, language) => {
   const params = new URLSearchParams({
+    lang: language,
     title: project.title,
     category: project.category,
     description: project.description,
@@ -1115,7 +931,70 @@ function BackgroundVideo() {
   );
 }
 
+function LanguageSelector({ mobile = false }) {
+  const { language, setLanguage, copy } = useLocalization();
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+  const triggerRef = useRef(null);
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event) => {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key !== "Escape" || !open) return;
+      event.stopPropagation();
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [open]);
+
+  const chooseLanguage = (nextLanguage) => {
+    setLanguage(nextLanguage);
+    setOpen(false);
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  };
+
+  return (
+    <div className={`language-selector${mobile ? " language-selector--mobile" : ""}`} ref={rootRef}>
+      <button
+        ref={triggerRef}
+        type="button"
+        className="language-selector__trigger"
+        aria-label={copy.languageSelector}
+        aria-haspopup="menu"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+      >
+        {copy.languageLabel} <span aria-hidden="true">▾</span>
+      </button>
+      <div className="language-selector__menu" role="menu" hidden={!open}>
+        {LANGUAGE_KEYS.map((key) => (
+          <button
+            key={key}
+            type="button"
+            role="menuitemradio"
+            aria-checked={language === key}
+            className={language === key ? "is-active" : ""}
+            onClick={() => chooseLanguage(key)}
+          >
+            {languages[key].languageLabel}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Header() {
+  const { copy } = useLocalization();
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -1138,7 +1017,7 @@ function Header() {
   return (
     <header className={`aesir-header${open ? " is-menu-open" : ""}`}>
       <div className="aesir-header__inner">
-        <button className="brand-button" onClick={() => navigate("top")} aria-label="Back to top">
+        <button className="brand-button" onClick={() => navigate("top")} aria-label={copy.nav.backToTop}>
           <img
             src={asset("assets/aesir/aesir-wordmark.webp")}
             alt="AESIR"
@@ -1149,22 +1028,25 @@ function Header() {
           />
         </button>
 
-        <nav className="desktop-nav" aria-label="Primary navigation">
-          {navItems.map(([label, id]) => (
+        <nav className="desktop-nav" aria-label={copy.nav.primaryLabel}>
+          {copy.nav.items.map(([label, id]) => (
             <button key={id} onClick={() => navigate(id)}>{label}</button>
           ))}
         </nav>
 
-        <a className="header-contact" href={contactUrl} target="_blank" rel="noreferrer">
-          Contact
-        </a>
+        <div className="header-actions">
+          <a className="header-contact" href={contactUrl} target="_blank" rel="noreferrer">
+            {copy.nav.contact}
+          </a>
+          <LanguageSelector />
+        </div>
 
         <button
           className="menu-button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
           aria-controls="mobile-navigation"
-          aria-label={open ? "Close navigation" : "Open navigation"}
+          aria-label={open ? copy.nav.close : copy.nav.open}
         >
           <span />
           <span />
@@ -1172,15 +1054,16 @@ function Header() {
         </button>
 
         <div className={`mobile-nav-overlay${open ? " is-open" : ""}`} aria-hidden={!open}>
-          <nav id="mobile-navigation" className="mobile-nav" aria-label="Mobile navigation">
-            {navItems.map(([label, id]) => (
+          <nav id="mobile-navigation" className="mobile-nav" aria-label={copy.nav.mobileLabel}>
+            {copy.nav.items.map(([label, id]) => (
               <button key={id} onClick={() => navigate(id)}>
                 {label}<ArrowRight size={17} aria-hidden="true" />
               </button>
             ))}
             <a href={contactUrl} target="_blank" rel="noreferrer">
-              Contact AESIR<ArrowUpRight size={17} aria-hidden="true" />
+              {copy.nav.contactAesir}<ArrowUpRight size={17} aria-hidden="true" />
             </a>
+            <LanguageSelector mobile />
           </nav>
         </div>
       </div>
@@ -1189,7 +1072,8 @@ function Header() {
 }
 
 function Hero() {
-  const { displayed, done } = useTypewriter("Evidence for an\ninclusive future.");
+  const { copy } = useLocalization();
+  const { displayed, done } = useTypewriter(copy.hero.headline);
 
   return (
     <section id="top" className="hero-section">
@@ -1205,8 +1089,7 @@ function Hero() {
           </div>
 
           <p className="hero-reveal hero-reveal--delayed">
-            AESIR bridges human neurodiversity and frontier technology, translating industrial-grade
-            AR, VR, AI, and public-policy research into measurable public value.
+            {copy.hero.description}
           </p>
 
         </div>
@@ -1216,22 +1099,22 @@ function Hero() {
 }
 
 function HeroEvidence() {
+  const { copy } = useLocalization();
+
   return (
-    <section className="hero-evidence section-shell" aria-label="AESIR in public dialogue">
+    <section className="hero-evidence section-shell" aria-label={copy.heroEvidence.sectionLabel}>
       <figure>
         <img
           data-src={asset("assets/aesir/founder-panel.webp")}
-          alt="Ernest HS CHAN speaking during an industry panel"
+          alt={copy.heroEvidence.imageAlt}
           width="1600"
           height="1200"
           loading="lazy"
           decoding="async"
           data-predictive-media
         />
-        <figcaption aria-label="AESIR credentials">
-          <span>Global social technology</span>
-          <span>AR · VR · AI · Public policy</span>
-          <span>APAC field deployment</span>
+        <figcaption aria-label={copy.heroEvidence.credentialsLabel}>
+          {copy.heroEvidence.credentials.map((credential) => <span key={credential}>{credential}</span>)}
         </figcaption>
       </figure>
     </section>
@@ -1239,21 +1122,20 @@ function HeroEvidence() {
 }
 
 function Thesis() {
+  const { copy } = useLocalization();
+
   return (
     <section className="thesis-section section-shell" data-enter>
       <div className="thesis-heading">
-        <h2>Immersive pragmatism in practice.</h2>
-        <p>Research earns its value when it survives contact with the real world.</p>
+        <h2>{copy.thesis.title}</h2>
+        <p>{copy.thesis.intro}</p>
       </div>
       <div className="thesis-statement">
         <blockquote>
-          Scientific discovery, proven through deployment.
+          {copy.thesis.statement}
         </blockquote>
         <p className="thesis-body">
-          Built by practical innovators behind a globally recognised social-technology startup, AESIR's
-          footprint connects rigorous data science, human-computer interaction, public policy, and
-          industrial execution. Our fellows do not merely theorise technology; they build, test, and
-          translate it into inclusive digital infrastructure and measurable socioeconomic wellbeing.
+          {copy.thesis.body}
         </p>
       </div>
     </section>
@@ -1261,6 +1143,8 @@ function Thesis() {
 }
 
 function ResearchAreas() {
+  const { copy } = useLocalization();
+  const researchAreas = copy.researchAreas;
   const [activeId, setActiveId] = useState(researchAreas[0].id);
   const [stageIndex, setStageIndex] = useState(0);
   const activeArea = researchAreas.find((area) => area.id === activeId) ?? researchAreas[0];
@@ -1293,13 +1177,11 @@ function ResearchAreas() {
   return (
     <section id="research" className="research-section section-shell">
       <div className="section-intro" data-enter>
-        <h2>Three research areas shaping human-centred technology.</h2>
-        <p>
-          Each area connects a structural challenge with a research agenda and a pathway to field deployment.
-        </p>
+        <h2>{copy.research.title}</h2>
+        <p>{copy.research.intro}</p>
       </div>
 
-      <div className="research-tabs" role="tablist" aria-label="AESIR research areas" data-enter>
+      <div className="research-tabs" role="tablist" aria-label={copy.research.areasLabel} data-enter>
         {researchAreas.map((area, index) => {
           const selected = area.id === activeId;
           return (
@@ -1336,7 +1218,7 @@ function ResearchAreas() {
           </div>
         </div>
         <div className="research-journey">
-          <div className="research-journey__steps" role="tablist" aria-label={`${activeArea.title} research sections`}>
+          <div className="research-journey__steps" role="tablist" aria-label={`${activeArea.title} ${copy.research.sectionsLabel}`}>
             {activeArea.stages.map((stage, index) => (
               <button
                 id={`research-stage-tab-${activeArea.id}-${stage.id}`}
@@ -1371,21 +1253,21 @@ function ResearchAreas() {
             <div className="research-journey__body">
               {activeStage.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             </div>
-            <div className="research-journey__controls" aria-label="Research section navigation">
+            <div className="research-journey__controls" aria-label={copy.research.navigationLabel}>
               <button
                 type="button"
                 disabled={stageIndex === 0}
                 onClick={() => setStageIndex((index) => Math.max(0, index - 1))}
               >
                 <ArrowLeft size={17} aria-hidden="true" />
-                Previous
+                {copy.research.previous}
               </button>
               <button
                 type="button"
                 disabled={stageIndex === finalStageIndex}
                 onClick={() => setStageIndex((index) => Math.min(finalStageIndex, index + 1))}
               >
-                {stageIndex === finalStageIndex ? "Complete" : activeArea.stages[stageIndex + 1].label}
+                {stageIndex === finalStageIndex ? copy.research.complete : activeArea.stages[stageIndex + 1].label}
                 <ArrowRight size={17} aria-hidden="true" />
               </button>
             </div>
@@ -1393,7 +1275,7 @@ function ResearchAreas() {
         </div>
         <div id={`research-cases-${activeArea.id}`} className="research-cases">
           <div className="research-cases__heading">
-            <h4>What AESIR has already built</h4>
+            <h4>{copy.research.built}</h4>
           </div>
           <div className="research-cases__grid">
             {activeArea.cases.map((item) => (
@@ -1410,17 +1292,17 @@ function ResearchAreas() {
 }
 
 function Method() {
+  const { copy } = useLocalization();
+
   return (
     <section id="method" className="method-section">
       <div className="section-shell" data-enter>
         <div className="method-heading">
-          <h2>From evidence to measurable public value.</h2>
-          <p>
-            AESIR treats research, engineering, validation, and adoption as one continuous practice.
-          </p>
+          <h2>{copy.method.title}</h2>
+          <p>{copy.method.intro}</p>
         </div>
         <ol className="method-flow">
-          {methodSteps.map(([title, description], index) => (
+          {copy.method.steps.map(([title, description], index) => (
             <li key={title}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{title}</h3>
@@ -1434,18 +1316,18 @@ function Method() {
 }
 
 function Evidence() {
+  const { copy } = useLocalization();
+
   return (
     <section id="evidence" className="evidence-section section-shell">
       <div className="section-intro" data-enter>
-        <h2>Applied programmes, partnerships, and public outcomes.</h2>
-        <p>
-          A growing body of participatory research, cross-sector collaboration, and deployment-led learning.
-        </p>
+        <h2>{copy.evidence.title}</h2>
+        <p>{copy.evidence.intro}</p>
       </div>
 
       <div className="evidence-story" data-enter>
         <div className="output-list">
-          {outputs.map((output) => (
+          {copy.evidence.outputs.map((output) => (
             <article key={output.title}>
               <h3>{output.title}</h3>
               <p>{output.description}</p>
@@ -1455,7 +1337,7 @@ function Evidence() {
         <figure className="evidence-image">
           <img
             data-src={asset("assets/aesir/ai-for-all.webp")}
-            alt="AESIR and programme partners at an inclusive AI deployment"
+            alt={copy.evidence.imageAlt}
             width="1600"
             height="1200"
             loading="lazy"
@@ -1470,11 +1352,22 @@ function Evidence() {
 }
 
 function ProjectLibrary() {
-  const categories = useMemo(
-    () => ["All", ...Array.from(new Set(aesirProjects.map((project) => project.category)))],
-    [],
+  const { language, copy } = useLocalization();
+  const localizedProjects = useMemo(
+    () => aesirProjects.map((project) => localizeProject(project, language)),
+    [language],
   );
-  const [category, setCategory] = useState("All");
+  const categories = useMemo(
+    () => [
+      { value: "all", label: copy.projects.all },
+      ...Array.from(new Set(aesirProjects.map((project) => project.category))).map((originalCategory) => ({
+        value: originalCategory,
+        label: localizedProjects.find((project) => project.originalCategory === originalCategory)?.category ?? originalCategory,
+      })),
+    ],
+    [copy.projects.all, localizedProjects],
+  );
+  const [category, setCategory] = useState("all");
   const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState(false);
   const isMobile = useMediaQuery("(max-width: 640px)");
@@ -1482,13 +1375,13 @@ function ProjectLibrary() {
 
   const filteredProjects = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return aesirProjects.filter((project) => {
-      const categoryMatches = category === "All" || project.category === category;
+    return localizedProjects.filter((project) => {
+      const categoryMatches = category === "all" || project.originalCategory === category;
       const queryMatches = !normalizedQuery
-        || `${project.title} ${project.category} ${project.description}`.toLowerCase().includes(normalizedQuery);
+        || `${project.title} ${project.category} ${project.description} ${project.originalTitle}`.toLowerCase().includes(normalizedQuery);
       return categoryMatches && queryMatches;
     });
-  }, [category, query]);
+  }, [category, localizedProjects, query]);
 
   const visibleProjects = expanded
     ? filteredProjects
@@ -1500,49 +1393,45 @@ function ProjectLibrary() {
     <section id="projects" className="projects-section section-shell">
       <div className="projects-heading" data-enter>
         <div>
-          <h2>Field deployments across technology and society.</h2>
-          <p>
-            AESIR has delivered projects across diverse sectors and real-world contexts,
-            translating research and emerging technology into practical applications for
-            organisations, communities, and everyday life.
-          </p>
+          <h2>{copy.projects.title}</h2>
+          <p>{copy.projects.intro}</p>
         </div>
         <div className="project-search">
           <Search size={18} aria-hidden="true" />
-          <label className="sr-only" htmlFor="project-search">Search projects</label>
+          <label className="sr-only" htmlFor="project-search">{copy.projects.searchLabel}</label>
           <input
             id="project-search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search the archive"
+            placeholder={copy.projects.searchPlaceholder}
           />
         </div>
       </div>
 
-      <div className="category-filter" aria-label="Filter projects by category" data-enter>
+      <div className="category-filter" aria-label={copy.projects.filterLabel} data-enter>
         {categories.map((item) => (
           <button
-            key={item}
-            className={category === item ? "is-active" : ""}
-            aria-pressed={category === item}
+            key={item.value}
+            className={category === item.value ? "is-active" : ""}
+            aria-pressed={category === item.value}
             onClick={() => {
-              setCategory(item);
+              setCategory(item.value);
               setQuery("");
               setExpanded(false);
             }}
           >
-            {item}
+            {item.label}
           </button>
         ))}
       </div>
 
       <p className="project-context" aria-live="polite">
         {query
-          ? `Showing matches for “${query}”${category === "All" ? "" : ` in ${category}`}`
-          : category === "All"
-            ? "Browsing the complete field archive"
-            : `Browsing ${category}`}
+          ? copy.projects.matches(query, category === "all" ? "" : categories.find((item) => item.value === category)?.label ?? category)
+          : category === "all"
+            ? copy.projects.browseAll
+            : copy.projects.browseCategory(categories.find((item) => item.value === category)?.label ?? category)}
       </p>
 
       {visibleProjects.length > 0 ? (
@@ -1551,14 +1440,14 @@ function ProjectLibrary() {
             <a
               key={`${project.number}-${project.title}-${project.media}`}
               className="project-card"
-              href={projectViewer(project)}
+              href={projectViewer(project, language)}
               target="_blank"
               rel="noreferrer"
             >
               <div className="project-card__media">
                 <img
                   data-src={asset(project.previewMedia ?? project.media)}
-                  alt={`${project.title} project media`}
+                  alt={copy.projects.mediaAlt(project.title)}
                   loading="lazy"
                   decoding="async"
                   data-predictive-media
@@ -1568,13 +1457,13 @@ function ProjectLibrary() {
                 <span>{project.category}</span>
                 <h3>{project.title}</h3>
                 <p>{project.description}</p>
-                <div>View project <ArrowUpRight size={16} aria-hidden="true" /></div>
+                <div>{copy.projects.view} <ArrowUpRight size={16} aria-hidden="true" /></div>
               </div>
             </a>
           ))}
         </div>
       ) : (
-        <div className="project-empty">No projects match this search. Try another title or category.</div>
+        <div className="project-empty">{copy.projects.empty}</div>
       )}
 
       {filteredProjects.length > collapsedProjectLimit && (
@@ -1585,7 +1474,7 @@ function ProjectLibrary() {
           aria-controls="project-grid"
           onClick={() => setExpanded((value) => !value)}
         >
-          {expanded ? "Show fewer projects" : "Explore more projects"}
+          {expanded ? copy.projects.fewer : copy.projects.more}
           <ChevronDown className={expanded ? "is-rotated" : ""} size={18} aria-hidden="true" />
         </button>
       )}
@@ -1594,25 +1483,22 @@ function ProjectLibrary() {
 }
 
 function Leadership() {
+  const { copy } = useLocalization();
+
   return (
     <section id="leadership" className="leadership-section">
       <div className="section-shell">
         <div className="leadership-intro" data-enter>
           <div>
-            <h2>Built by practitioners across sectors and communities.</h2>
-            <p>
-              AESIR was built by social entrepreneurs working across AI, AR, VR, gaming,
-              inclusive education, public innovation, and human-centred technology. The practice
-              connects technical delivery with the realities of classrooms, clinics, community
-              organisations, public programmes, and cross-sector partnerships.
-            </p>
+            <h2>{copy.leadership.title}</h2>
+            <p>{copy.leadership.intro}</p>
           </div>
         </div>
 
         <div className="leadership-feature" data-enter>
           <img
             data-src={asset("assets/aesir/ernest-reading.webp")}
-            alt="AESIR Co-Founder Ernest HS CHAN reading an augmented-reality positive psychology playbook"
+            alt={copy.leadership.featureAlt}
             width="2048"
             height="1365"
             loading="lazy"
@@ -1620,38 +1506,34 @@ function Leadership() {
             data-predictive-media
           />
           <div>
-            <h3>Clinical empathy, industrial execution.</h3>
-            <p>
-              AESIR's research practice grows from years of building with schools, NGOs, hospitals,
-              businesses, and public institutions. That field experience turns inclusion from an
-              abstract principle into a design and deployment requirement.
-            </p>
+            <h3>{copy.leadership.featureTitle}</h3>
+            <p>{copy.leadership.featureBody}</p>
           </div>
         </div>
 
         <div className="photo-grid" data-enter>
-          {newPhotos.map((photo) => (
+          {newPhotos.map((photo, index) => (
             <figure key={photo.src}>
               <img
                 data-src={asset(photo.src)}
-                alt={photo.alt}
+                alt={copy.leadership.photoAlts[index]}
                 width={photo.width}
                 height={photo.height}
                 loading="lazy"
                 decoding="async"
                 data-predictive-media
               />
-              <figcaption>{photo.label}</figcaption>
+              <figcaption>{copy.leadership.photoLabels[index]}</figcaption>
             </figure>
           ))}
         </div>
 
         <div className="archive-strip" data-enter>
-          {archivePhotos.map(([src, alt, width, height]) => (
+          {archivePhotos.map(([src, width, height], index) => (
             <img
               key={src}
               data-src={asset(src)}
-              alt={alt}
+              alt={copy.leadership.archiveAlts[index]}
               width={width}
               height={height}
               loading="lazy"
@@ -1666,19 +1548,20 @@ function Leadership() {
 }
 
 function Contact() {
+  const { copy } = useLocalization();
+
   return (
     <section className="contact-section">
       <div className="section-shell contact-layout" data-enter>
         <h2>
-          Build <span className="contact-word-with">with</span> AESIR
+          {copy.contact.titleBefore}{" "}
+          {copy.contact.titleWith && <span className="contact-word-with">{copy.contact.titleWith}</span>}
+          {copy.contact.titleWith && " "}{copy.contact.titleAfter}
         </h2>
         <div>
-          <p>
-            Connect with AESIR about research collaboration, applied innovation, institutional
-            programs, or technology deployment.
-          </p>
+          <p>{copy.contact.body}</p>
           <a href={contactUrl} target="_blank" rel="noreferrer">
-            Contact AESIR
+            {copy.contact.action}
           </a>
         </div>
       </div>
@@ -1687,7 +1570,19 @@ function Contact() {
 }
 
 export function AesirResearchSite() {
+  const [language, setLanguage] = useState(getInitialLanguage);
+  const copy = languages[language];
+  const localization = useMemo(() => ({ language, setLanguage, copy }), [copy, language]);
+
   useEffect(() => installPredictiveMediaScheduler(), []);
+
+  useEffect(() => {
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    document.documentElement.lang = language === "en" ? "en" : "zh";
+    document.documentElement.dataset.language = language;
+    document.title = copy.seo.title;
+    document.querySelector('meta[name="description"]')?.setAttribute("content", copy.seo.description);
+  }, [copy.seo.description, copy.seo.title, language]);
 
   useEffect(() => {
     window.history.scrollRestoration = "manual";
@@ -1710,6 +1605,7 @@ export function AesirResearchSite() {
   }, []);
 
   return (
+    <LocalizationContext.Provider value={localization}>
     <div className="aesir-site">
       <Header />
       <main>
@@ -1733,9 +1629,10 @@ export function AesirResearchSite() {
           decoding="async"
           data-predictive-media
         />
-        <p>Evidence-based immersive intelligence.</p>
+        <p>{copy.footer}</p>
         <p>© {new Date().getFullYear()} AESIR</p>
       </footer>
     </div>
+    </LocalizationContext.Provider>
   );
 }
