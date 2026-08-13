@@ -76,20 +76,17 @@ export const installPredictiveMediaScheduler = ({
       return;
     }
 
+    const requestedPriority = element.dataset.mediaPriority === "high" ? "high" : priority;
     element.loading = "eager";
-    if (priority === "high" || element.fetchPriority !== "high") {
-      element.fetchPriority = priority;
+    if (requestedPriority === "high" || element.fetchPriority !== "high") {
+      element.fetchPriority = requestedPriority;
     }
-    element.dataset.mediaPrepared = priority;
+    element.dataset.mediaPrepared = requestedPriority;
 
     if (!element.dataset.mediaPreparedListener) {
       element.dataset.mediaPreparedListener = "true";
       element.addEventListener("load", () => forgetMedia(element), { once: true });
       element.addEventListener("error", () => forgetMedia(element), { once: true });
-    }
-
-    if (!element.getAttribute("src") && element.dataset.src) {
-      element.src = element.dataset.src;
     }
   };
 

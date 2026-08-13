@@ -15,6 +15,7 @@ const chineseCopySources = [
   new URL("./translations.js", import.meta.url),
   new URL("./projectTranslations.js", import.meta.url),
   new URL("../projectPortfolio.js", import.meta.url),
+  new URL("../components/AesirResearchSite.jsx", import.meta.url),
   new URL("../../public/project-viewer.html", import.meta.url),
 ];
 
@@ -73,7 +74,10 @@ test("English localization remains byte-for-byte source copy", () => {
 test("Chinese source copy uses natural punctuation spacing", () => {
   for (const sourceUrl of chineseCopySources) {
     const source = readFileSync(sourceUrl, "utf8");
-    assert.doesNotMatch(source, /[，。；：！？][ \t]+/u, `${sourceUrl.pathname} has a space after Chinese punctuation`);
-    assert.doesNotMatch(source, /\u3001/u, `${sourceUrl.pathname} still uses enumeration commas`);
+    assert.doesNotMatch(
+      source,
+      /[，。；：！？、][\u0009-\u000d\u0020\u0085\u00a0\u1680\u2000-\u200b\u2028\u2029\u202f\u205f\u3000\ufeff]+/u,
+      `${sourceUrl.pathname} has Unicode whitespace after Chinese punctuation`,
+    );
   }
 });

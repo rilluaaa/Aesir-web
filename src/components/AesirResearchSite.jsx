@@ -1240,7 +1240,7 @@ function HeroEvidence() {
     <section className="hero-evidence section-shell" aria-label={copy.heroEvidence.sectionLabel}>
       <figure>
         <img
-          data-src={asset("assets/aesir/founder-panel.webp")}
+          src={asset("assets/aesir/founder-panel.webp")}
           alt={copy.heroEvidence.imageAlt}
           width="1600"
           height="1200"
@@ -1472,7 +1472,7 @@ function Evidence() {
         </div>
         <figure className="evidence-image">
           <img
-            data-src={asset("assets/aesir/ai-for-all.webp")}
+            src={asset("assets/aesir/ai-for-all.webp")}
             alt={copy.evidence.imageAlt}
             width="1600"
             height="1200"
@@ -1572,7 +1572,7 @@ function ProjectLibrary() {
 
       {visibleProjects.length > 0 ? (
         <div id="project-grid" className="project-grid" key={`${category}-${query}`}>
-          {visibleProjects.map((project) => (
+          {visibleProjects.map((project, index) => (
             <a
               key={`${project.number}-${project.originalTitle}-${project.media}`}
               className="project-card"
@@ -1582,11 +1582,20 @@ function ProjectLibrary() {
             >
               <div className="project-card__media">
                 <img
-                  data-src={asset(project.previewMedia ?? project.media)}
+                  src={asset(project.previewMedia ?? project.media)}
                   alt={copy.projects.mediaAlt(project.title)}
                   loading="lazy"
                   decoding="async"
                   data-predictive-media
+                  data-media-priority={index < 3 ? "high" : undefined}
+                  onError={(event) => {
+                    const image = event.currentTarget;
+                    const fallbackSrc = asset(project.media);
+                    if (!project.previewMedia || image.dataset.projectFallbackAttempted === "true") return;
+                    if (image.getAttribute("src") === fallbackSrc) return;
+                    image.dataset.projectFallbackAttempted = "true";
+                    image.src = fallbackSrc;
+                  }}
                 />
               </div>
               <div className="project-card__content">
@@ -1633,7 +1642,7 @@ function Leadership() {
 
         <div className="leadership-feature" data-enter>
           <img
-            data-src={asset("assets/aesir/ernest-reading.webp")}
+            src={asset("assets/aesir/ernest-reading.webp")}
             alt={copy.leadership.featureAlt}
             width="2048"
             height="1365"
@@ -1651,7 +1660,7 @@ function Leadership() {
           {newPhotos.map((photo, index) => (
             <figure key={photo.src}>
               <img
-                data-src={asset(photo.src)}
+                src={asset(photo.src)}
                 alt={copy.leadership.photoAlts[index]}
                 width={photo.width}
                 height={photo.height}
@@ -1668,7 +1677,7 @@ function Leadership() {
           {archivePhotos.map(([src, width, height], index) => (
             <img
               key={src}
-              data-src={asset(src)}
+              src={asset(src)}
               alt={copy.leadership.archiveAlts[index]}
               width={width}
               height={height}
@@ -1854,7 +1863,7 @@ export function AesirResearchSite() {
       </main>
       <footer className="aesir-footer">
         <img
-          data-src={asset("assets/aesir/aesir-wordmark.webp")}
+          src={asset("assets/aesir/aesir-wordmark.webp")}
           alt="AESIR"
           width="1342"
           height="314"

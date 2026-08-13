@@ -45,9 +45,24 @@
         font-family: "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
 
+      html[data-language="traditional"] body,
+      html[data-language="traditional"] body * {
+        font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "PingFang SC", "Microsoft YaHei", sans-serif;
+        font-kerning: normal;
+        font-feature-settings: "palt" 1;
+        font-variant-east-asian: proportional-width;
+      }
+
+      html[data-language="simplified"] body,
+      html[data-language="simplified"] body * {
+        font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "PingFang TC", "Microsoft JhengHei", sans-serif;
+        font-kerning: normal;
+        font-feature-settings: "palt" 1;
+        font-variant-east-asian: proportional-width;
+      }
+
       html[lang="zh"] body,
       html[lang="zh"] h1 {
-        font-family: Inter, "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", "Noto Sans CJK TC", "Noto Sans CJK SC", sans-serif;
         letter-spacing: normal;
         line-height: 1.35;
       }
@@ -244,6 +259,7 @@
       const link = params.get("link") || "";
 
       document.documentElement.lang = language === "en" ? "en" : "zh";
+      document.documentElement.dataset.language = language;
       document.title = `${title} | AESIR`;
       document.getElementById("back").textContent = strings.back;
       document.getElementById("title").textContent = title;

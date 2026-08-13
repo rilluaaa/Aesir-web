@@ -7,7 +7,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "node --test",
-    "test:layout": "VITE_BASE_PATH=/Aesir-web/ VITE_DEFAULT_PAGE=neuro npm run build && node scripts/mobile-evidence-projects-spacing-check.mjs"
+    "test:layout": "VITE_BASE_PATH=/Aesir-web/ VITE_DEFAULT_PAGE=neuro npm run build && node scripts/mobile-evidence-projects-spacing-check.mjs",
+    "test:images": "VITE_BASE_PATH=/Aesir-web/ VITE_DEFAULT_PAGE=neuro npm run build && node scripts/no-mouse-project-images-check.mjs"
   },
   "dependencies": {
     "hls.js": "^1.6.16",

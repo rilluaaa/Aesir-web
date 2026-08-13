@@ -324,24 +324,23 @@ html:not(.aesir-app-ready) .aesir-site * {
 }
 
 html[data-language="traditional"] .aesir-site,
+html[data-language="traditional"] .aesir-site * {
+  font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-kerning: normal;
+  font-feature-settings: "palt" 1;
+  font-variant-east-asian: proportional-width;
+}
+
 html[data-language="simplified"] .aesir-site,
-html[data-language="traditional"] .aesir-site h1,
-html[data-language="traditional"] .aesir-site h2,
-html[data-language="traditional"] .aesir-site h3,
-html[data-language="traditional"] .aesir-site h4,
-html[data-language="traditional"] .aesir-site h5,
-html[data-language="traditional"] .aesir-site h6,
-html[data-language="traditional"] .aesir-site strong,
-html[data-language="traditional"] .aesir-site blockquote,
-html[data-language="simplified"] .aesir-site h1,
-html[data-language="simplified"] .aesir-site h2,
-html[data-language="simplified"] .aesir-site h3,
-html[data-language="simplified"] .aesir-site h4,
-html[data-language="simplified"] .aesir-site h5,
-html[data-language="simplified"] .aesir-site h6,
-html[data-language="simplified"] .aesir-site strong,
-html[data-language="simplified"] .aesir-site blockquote {
-  font-family: Inter, "PingFang TC", "PingFang SC", "Microsoft JhengHei", "Microsoft YaHei", "Noto Sans CJK TC", "Noto Sans CJK SC", sans-serif;
+html[data-language="simplified"] .aesir-site * {
+  font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-kerning: normal;
+  font-feature-settings: "palt" 1;
+  font-variant-east-asian: proportional-width;
+}
+
+html[data-language="traditional"] .aesir-site,
+html[data-language="simplified"] .aesir-site {
   letter-spacing: normal;
   text-transform: none;
   word-break: normal;

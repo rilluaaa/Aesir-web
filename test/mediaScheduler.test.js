@@ -7,17 +7,17 @@ import {
   isMediaInPredictiveRange,
 } from "../src/mediaScheduler.js";
 
-const createImage = ({ top = 900, bottom = 1200 } = {}) => {
+const createImage = ({ top = 900, bottom = 1200, priority } = {}) => {
   const listeners = new Map();
   return {
     tagName: "IMG",
-    dataset: { src: "/image.webp" },
+    dataset: priority ? { mediaPriority: priority } : {},
     complete: false,
     naturalWidth: 0,
     isConnected: true,
     loading: "lazy",
     fetchPriority: "auto",
-    src: "",
+    src: "/image.webp",
     getBoundingClientRect: () => ({ top, bottom, left: 0, right: 600 }),
     getAttribute(name) {
       return name === "src" ? this.src : null;
@@ -125,7 +125,28 @@ test("deep archive images remain deferred during initial evaluation", () => {
   const image = createImage({ top: 5200, bottom: 5500 });
   const { cleanup } = installWithImages({ images: [image] });
 
-  assert.equal(image.src, "");
+  assert.equal(image.src, "/image.webp");
   assert.equal(image.loading, "lazy");
+  cleanup();
+});
+
+test("the first project row keeps its explicit high-priority hint", () => {
+  const image = createImage({ top: 980, bottom: 1280, priority: "high" });
+  const { cleanup } = installWithImages({ images: [image] });
+
+  assert.equal(image.src, "/image.webp");
+  assert.equal(image.fetchPriority, "high");
+  assert.equal(image.dataset.mediaPrepared, "high");
+  cleanup();
+});
+
+test("the scheduler never assigns a legacy data-src URL", () => {
+  const image = createImage({ top: 100, bottom: 500 });
+  image.src = "";
+  image.dataset.src = "/legacy.webp";
+  const { cleanup } = installWithImages({ images: [image] });
+
+  assert.equal(image.src, "");
+  assert.equal(image.dataset.src, "/legacy.webp");
   cleanup();
 });
