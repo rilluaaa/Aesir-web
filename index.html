@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" aria-busy="true">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/png" href="/investor/aesir-icon.png" />
+    <link rel="preload" as="font" type="font/woff2" href="/investor/assets/fonts/inter-latin-400-700.woff2" crossorigin />
+    <link rel="preload" as="image" href="/investor/assets/aesir/aesir-wordmark.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/investor/assets/aesir/cognitive-hero-poster.webp" fetchpriority="high" media="(min-width: 1024px) and (any-hover: hover) and (any-pointer: fine)" />
+    <link rel="preload" as="image" href="/investor/assets/aesir/cognitive-hero-mobile-poster.webp" fetchpriority="high" media="(max-width: 1023px), (any-hover: none), (any-pointer: coarse)" />
+    <meta name="theme-color" content="#ffffff" />
+    <style>
+      html:not(.aesir-app-ready),
+      html:not(.aesir-app-ready) body {
+        overflow: hidden;
+      }
+
+      #aesir-boot-cover {
+        position: fixed;
+        z-index: 2147483647;
+        inset: 0;
+        background: #fff;
+        pointer-events: auto;
+        touch-action: none;
+      }
+
+      html.aesir-app-ready #aesir-boot-cover {
+        display: none;
+      }
+    </style>
+    <title>AESIR | Evidence-Based Immersive Intelligence</title>
+    <meta name="description" content="AESIR bridges human neurodiversity and frontier technology through evidence-based immersive intelligence, applied XR, AI, HCI, and public innovation." />
+    <script type="module" crossorigin src="/investor/assets/index-Droi_i2n.js"></script>
+    <link rel="stylesheet" crossorigin href="/investor/assets/index-BaCtQ3Ds.css">
+  </head>
+  <body aria-busy="true">
+    <!--
+      THESIS: AESIR launches research like a tangible product and refuses the generic dark AI-startup look; field evidence becomes the object.
+      OWN-WORLD: Paper white, warm clay and pale sandstone, Crimson Text, DM Sans, pill actions, rounded documentary media, and thin ruled grids.
+      STORY: Thesis, three research areas, method, evidence and film, 106 projects, practitioners, then contact.
+      FIRST VIEWPORT: A quiet top navigation frames a monumental centred thesis above an unframed documentary image of Ernest speaking in public.
+      FORM: Modern Product Launch Figma Community template 1487309170684591074; seed figma-1487309170684591074.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+    -->
+    <div id="aesir-boot-cover" aria-hidden="true"></div>
+    <div id="root"></div>
+    <script>
+      window.__AESIR_BOOT_WATCHDOG__ = window.setTimeout(function () {
+        window.__AESIR_BOOT_TIMED_OUT__ = true;
+        window.dispatchEvent(new Event("aesir:boot-timeout"));
+        window.__AESIR_BOOT_HARD_FALLBACK__ = window.setTimeout(function () {
+          document.documentElement.classList.add("aesir-app-ready", "aesir-app-fallback");
+          document.documentElement.dataset.aesirBoot = "hard-fallback";
+          document.documentElement.dataset.aesirReadyAt = performance.now().toFixed(1);
+          document.documentElement.setAttribute("aria-busy", "false");
+          document.body.setAttribute("aria-busy", "false");
+        }, 500);
+      }, 12000);
+    </script>
+  </body>
+</html>

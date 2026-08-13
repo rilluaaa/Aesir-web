@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/dm-sans-latin-400-700.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/crimson-text-latin-400.woff2" crossorigin />
+    <title>Project | AESIR</title>
+    <style>
+      @font-face {
+        font-family: "DM Sans";
+        font-style: normal;
+        font-weight: 400 700;
+        font-display: swap;
+        src: url("./assets/fonts/dm-sans-latin-400-700.woff2") format("woff2");
+      }
+
+      @font-face {
+        font-family: "Crimson Text";
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("./assets/fonts/crimson-text-latin-400.woff2") format("woff2");
+      }
+
+      :root {
+        color-scheme: light;
+        --bg: #f3f7fb;
+        --panel: #ffffff;
+        --line: #d9e4ee;
+        --text: #15263a;
+        --muted: #607286;
+        --accent: #3f73a8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      html[data-language="traditional"] body,
+      html[data-language="traditional"] body * {
+        font-family: "Heiti TC", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", "Heiti SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+        font-kerning: normal;
+        font-feature-settings: normal;
+        font-variant-east-asian: normal;
+      }
+
+      html[data-language="simplified"] body,
+      html[data-language="simplified"] body * {
+        font-family: "Heiti SC", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "Heiti TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+        font-kerning: normal;
+        font-feature-settings: normal;
+        font-variant-east-asian: normal;
+      }
+
+      html[lang="zh"] body,
+      html[lang="zh"] h1 {
+        letter-spacing: normal;
+        line-height: 1.35;
+      }
+
+      main {
+        width: min(940px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+
+      .back {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 14px;
+        text-decoration: none;
+        color: var(--muted);
+      }
+
+      .panel {
+        overflow: hidden;
+        border: 0;
+        border-radius: 28px;
+        background: var(--panel);
+        box-shadow: 0 24px 70px rgba(31, 69, 105, 0.12);
+      }
+
+      .media {
+        display: grid;
+        place-items: center;
+        min-height: 280px;
+        padding: clamp(16px, 3vw, 32px);
+        background: #aec8df;
+      }
+
+      img {
+        display: block;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        max-height: 62vh;
+        object-fit: contain;
+      }
+
+      .content {
+        padding: 28px;
+      }
+
+      .category {
+        display: inline-flex;
+        margin-bottom: 16px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #e6f0f8;
+        padding: 7px 11px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 820px;
+        font-size: clamp(32px, 5vw, 56px);
+        font-family: "Crimson Text", Georgia, serif;
+        font-weight: 400;
+        letter-spacing: -0.04em;
+        line-height: 1;
+      }
+
+      .description {
+        max-width: 72ch;
+        margin: 24px 0 0;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.75;
+        white-space: pre-line;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        border-radius: 999px;
+        padding: 11px 16px;
+        text-decoration: none;
+        font-weight: 800;
+      }
+
+      .primary {
+        background: var(--accent);
+        color: #ffffff;
+      }
+
+      .button:hover,
+      .back:hover {
+        transform: translateY(-2px);
+      }
+
+      .button,
+      .back {
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <div class="brand">AESIR</div>
+        <a class="back" id="back" href="./">Back to website</a>
+      </div>
+
+      <article class="panel">
+        <div class="media">
+          <img id="media" src="./assets/aesir/ernest-reading.webp" alt="AESIR project media" />
+        </div>
+        <div class="content">
+          <span class="category" id="category"></span>
+          <h1 id="title"></h1>
+          <p class="description" id="description"></p>
+          <div class="actions" id="actions">
+            <a class="button primary" id="source" target="_blank" rel="noopener noreferrer">Open Project</a>
+          </div>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const allowedLanguages = ["en", "traditional", "simplified"];
+      const requestedLanguage = params.get("lang") || "en";
+      const language = allowedLanguages.includes(requestedLanguage) ? requestedLanguage : "en";
+      const strings = {
+        en: {
+          projectMedia: "Project Media",
+          project: "Project",
+          preparing: "Project details are being prepared for this archive record.",
+          back: "Back to website",
+          open: "Open Project",
+          mediaAlt: (title) => `${title} media`,
+        },
+        traditional: {
+          projectMedia: "項目媒體",
+          project: "項目",
+          preparing: "此項目的詳細資料正在整理中。",
+          back: "返回網站",
+          open: "開啟項目",
+          mediaAlt: (title) => `${title} 項目媒體`,
+        },
+        simplified: {
+          projectMedia: "项目媒体",
+          project: "项目",
+          preparing: "此项目详细资料正在整理中。",
+          back: "返回网站",
+          open: "打开项目",
+          mediaAlt: (title) => `${title} 项目媒体`,
+        },
+      }[language];
+      const title = params.get("title") || strings.projectMedia;
+      const category = params.get("category") || strings.project;
+      const description = params.get("description") || strings.preparing;
+      const media = params.get("media") || "";
+      const link = params.get("link") || "";
+
+      document.documentElement.lang = language === "en" ? "en" : "zh";
+      document.documentElement.dataset.language = language;
+      document.title = `${title} | AESIR`;
+      document.getElementById("back").textContent = strings.back;
+      document.getElementById("title").textContent = title;
+      document.getElementById("category").textContent = category;
+      document.getElementById("description").textContent = description;
+
+      const mediaElement = document.getElementById("media");
+      mediaElement.src = media;
+      mediaElement.alt = strings.mediaAlt(title);
+
+      const sourceLink = document.getElementById("source");
+      const actions = document.getElementById("actions");
+      sourceLink.textContent = strings.open;
+
+      if (link) {
+        sourceLink.href = link;
+      } else {
+        actions.hidden = true;
+      }
+    </script>
+  </body>
+</html>
