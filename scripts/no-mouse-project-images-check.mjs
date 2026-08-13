@@ -169,10 +169,10 @@ async function assertChineseTypography(page, language) {
       fontVariantEastAsian: computed.fontVariantEastAsian,
     };
   });
-  const expectedFirstFamily = language === "traditional" ? "PingFang TC" : "PingFang SC";
+  const expectedFirstFamily = language === "traditional" ? "Heiti TC" : "Heiti SC";
   assert.ok(style.fontFamily.startsWith(`\"${expectedFirstFamily}\"`) || style.fontFamily.startsWith(expectedFirstFamily));
-  assert.match(style.fontFeatureSettings, /palt/);
-  assert.match(style.fontVariantEastAsian, /proportional-width/);
+  assert.equal(style.fontFeatureSettings, "normal");
+  assert.equal(style.fontVariantEastAsian, "normal");
 }
 
 const preview = spawn(
