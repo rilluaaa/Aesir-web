@@ -14,6 +14,18 @@ const sharedEnglish = {
     open: "Open navigation",
     close: "Close navigation",
   },
+  sectionNavigation: {
+    label: "Page section navigation",
+    items: [
+      ["Intro", "top"],
+      ["Research", "research"],
+      ["Method", "method"],
+      ["Deployment", "evidence"],
+      ["Projects", "projects"],
+      ["Leadership", "leadership"],
+      ["Contact", "contact"],
+    ],
+  },
   hero: {
     headline: "Evidence for an\ninclusive future.",
     description: "AESIR bridges human neurodiversity and frontier technology, translating industrial-grade AR, VR, AI, and public-policy research into measurable public value.",
@@ -246,6 +258,7 @@ const chinese = {
   traditional: {
     languageLabel: "繁中", languageSelector: "選擇語言",
     nav: { items: [["研究", "research"], ["研究方法", "method"], ["實踐應用", "evidence"], ["項目", "projects"], ["團隊", "leadership"]], contact: "聯絡", contactAesir: "聯絡 AESIR", backToTop: "返回頂部", primaryLabel: "主要導覽", mobileLabel: "流動版導覽", open: "開啟導覽", close: "關閉導覽" },
+    sectionNavigation: { label: "頁面分段導覽", items: [["簡介", "top"], ["研究", "research"], ["研究方法", "method"], ["實踐應用", "evidence"], ["項目", "projects"], ["團隊", "leadership"], ["聯絡", "contact"]] },
     hero: { headline: "以實證共創\n共融未來。", description: "AESIR 連結人類神經多樣性與前沿科技，將工業級 AR、VR、AI 及公共政策研究轉化為可量度的公共價值。" },
     heroEvidence: { sectionLabel: "AESIR 公共對話現場", imageAlt: "Ernest HS CHAN 在業界座談會上發言", credentialsLabel: "AESIR 實績", credentials: ["全球社會科技", "AR · VR · AI · 公共政策", "亞太地區實地應用"] },
     thesis: { title: "沉浸式務實主義，付諸實踐。", intro: "研究只有經得起真實世界的驗證，才真正產生價值。", statement: "科學發現，以實踐驗證。", body: "AESIR 由打造全球認可社會科技初創企業的實踐型創新者建立，足跡橫跨嚴謹的數據科學、人機互動、公共政策與產業實踐。我們的研究人員不只停留於科技理論，而是親自建構、測試，並將研究轉化為更具共融性的數碼基礎設施，以及可量度的社會與經濟福祉。" },
@@ -261,6 +274,7 @@ const chinese = {
   simplified: {
     languageLabel: "简中", languageSelector: "选择语言",
     nav: { items: [["研究", "research"], ["研究方法", "method"], ["实践应用", "evidence"], ["项目", "projects"], ["团队", "leadership"]], contact: "联系", contactAesir: "联系 AESIR", backToTop: "返回顶部", primaryLabel: "主导航", mobileLabel: "移动端导航", open: "打开导航", close: "关闭导航" },
+    sectionNavigation: { label: "页面分段导航", items: [["简介", "top"], ["研究", "research"], ["研究方法", "method"], ["实践应用", "evidence"], ["项目", "projects"], ["团队", "leadership"], ["联系", "contact"]] },
     hero: { headline: "以实证共创\n包容未来。", description: "AESIR 连接人类神经多样性与前沿科技，将工业级 AR、VR、AI 及公共政策研究转化为可衡量的公共价值。" },
     heroEvidence: { sectionLabel: "AESIR 公共对话现场", imageAlt: "Ernest HS CHAN 在行业座谈会上发言", credentialsLabel: "AESIR 实绩", credentials: ["全球社会科技", "AR · VR · AI · 公共政策", "亚太地区落地应用"] },
     thesis: { title: "沉浸式务实主义，付诸实践。", intro: "研究只有经得起真实世界的验证，才真正产生价值。", statement: "科学发现，以实践验证。", body: "AESIR 由打造全球认可社会科技初创企业的实践型创新者建立，实践横跨严谨的数据科学、人机交互、公共政策与产业落地。我们的研究人员不只停留于科技理论，而是亲自构建、测试，并将研究转化为更具包容性的数字基础设施，以及可衡量的社会与经济福祉。" },

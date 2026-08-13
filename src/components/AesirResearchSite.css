@@ -12,6 +12,7 @@
   --launch-radius: 30px;
   --launch-media-radius: 28px;
   --launch-pill: 999px;
+  --aesir-header-height: 88px;
 }
 
 * {
@@ -83,8 +84,9 @@ html:not(.aesir-app-ready) .aesir-site * {
 #method,
 #evidence,
 #projects,
-#leadership {
-  scroll-margin-top: 92px;
+#leadership,
+#contact {
+  scroll-margin-top: var(--aesir-header-height);
 }
 
 .aesir-header {
@@ -145,15 +147,37 @@ html:not(.aesir-app-ready) .aesir-site * {
 }
 
 .desktop-nav button {
+  position: relative;
   padding: 12px 0;
   font-size: clamp(0.92rem, 1.2vw, 1.12rem);
   font-weight: 500;
-  transition: opacity 160ms ease;
+  transition: color 180ms ease, opacity 160ms ease;
 }
 
-.desktop-nav button:hover::after,
-.desktop-nav button:focus-visible::after {
+.desktop-nav button::after,
+.header-contact::after {
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+  left: 0;
+  height: 2px;
+  border-radius: var(--launch-pill);
+  background: var(--launch-clay);
+  content: "";
   opacity: 0;
+  transform: scaleX(0.35);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.desktop-nav button.is-active,
+.header-contact.is-active {
+  color: var(--launch-clay-dark);
+}
+
+.desktop-nav button.is-active::after,
+.header-contact.is-active::after {
+  opacity: 1;
+  transform: scaleX(1);
 }
 
 .primary-action,
@@ -175,6 +199,7 @@ html:not(.aesir-app-ready) .aesir-site * {
 }
 
 .header-contact {
+  position: relative;
   min-height: 44px;
   padding: 10px 0;
   color: #111;
@@ -190,6 +215,50 @@ html:not(.aesir-app-ready) .aesir-site * {
   align-items: center;
   justify-self: end;
   gap: clamp(12px, 1.5vw, 22px);
+}
+
+.section-dot-nav {
+  position: fixed;
+  z-index: 60;
+  top: 50%;
+  right: max(16px, env(safe-area-inset-right));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-50%);
+}
+
+.section-dot {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  place-items: center;
+}
+
+.section-dot span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--launch-muted);
+  opacity: 0.58;
+  transform: scale(0.667);
+  transition: background 180ms ease, opacity 180ms ease, transform 180ms ease;
+}
+
+.section-dot:hover span,
+.section-dot:focus-visible span {
+  background: var(--launch-clay-dark);
+  opacity: 0.9;
+}
+
+.section-dot.is-active span {
+  background: var(--launch-clay);
+  opacity: 1;
+  transform: scale(1);
 }
 
 .language-selector {
@@ -307,14 +376,36 @@ html[data-language="simplified"] .aesir-site p {
 }
 
 .header-contact:hover,
-.desktop-nav button:hover {
-  opacity: 0.58;
+.desktop-nav button:hover,
+.header-contact:focus-visible,
+.desktop-nav button:focus-visible {
+  color: var(--launch-clay-dark);
+  opacity: 1;
 }
 
 .menu-button,
 .mobile-nav-overlay,
 .mobile-nav {
   display: none;
+}
+
+@media (min-width: 901px) and (pointer: fine) {
+  html,
+  body {
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+@media (min-width: 901px) {
+  .contact-section {
+    min-height: calc(100svh - var(--aesir-header-height));
+  }
 }
 
 .hero-section {
@@ -1404,6 +1495,10 @@ html[data-language="simplified"] .aesir-site p {
 }
 
 @media (max-width: 900px) {
+  :root {
+    --aesir-header-height: calc(76px + env(safe-area-inset-top));
+  }
+
   .aesir-header {
     height: calc(76px + env(safe-area-inset-top));
   }
@@ -1435,7 +1530,8 @@ html[data-language="simplified"] .aesir-site p {
   }
 
   .desktop-nav,
-  .header-actions {
+  .header-actions,
+  .section-dot-nav {
     display: none;
   }
 

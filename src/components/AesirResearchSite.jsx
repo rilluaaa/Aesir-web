@@ -1,7 +1,9 @@
 import React, {
+  useCallback,
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -41,6 +43,11 @@ import {
 import { installPredictiveMediaScheduler } from "../mediaScheduler.js";
 import { aesirProjects } from "../projectPortfolio";
 import { localizeProject } from "../i18n/projectTranslations.js";
+import {
+  calculateSectionTargetY,
+  getActiveSectionId,
+  SECTION_IDS,
+} from "../sectionNavigation.js";
 import {
   getInitialLanguage,
   LANGUAGE_KEYS,
@@ -113,16 +120,110 @@ const projectViewer = (project, language) => {
   return `${asset("project-viewer.html")}?${params.toString()}`;
 };
 
-const scrollToSection = (id) => {
-  const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ? "auto"
-    : "smooth";
+const getHeaderHeight = () => (
+  document.querySelector(".aesir-header__inner")
+    ?? document.querySelector(".aesir-header")
+)?.getBoundingClientRect().height ?? 88;
 
-  if (id === "top") {
-    window.scrollTo({ top: 0, behavior });
+let cancelPendingScrollCorrection = () => {};
+
+const getSectionTargetY = (id) => {
+  if (id === "top") return 0;
+
+  const element = document.getElementById(id);
+  if (!element) return null;
+
+  return calculateSectionTargetY({
+    elementTop: element.getBoundingClientRect().top,
+    scrollY: window.scrollY,
+    headerHeight: getHeaderHeight(),
+  });
+};
+
+const scheduleScrollCorrection = (id, behavior) => {
+  cancelPendingScrollCorrection();
+  const interruptionEvents = ["wheel", "touchstart", "keydown"];
+
+  const correctPosition = () => {
+    const targetY = getSectionTargetY(id);
+    if (targetY !== null && Math.abs(window.scrollY - targetY) > 2) {
+      window.scrollTo({ top: targetY, behavior: "auto" });
+    }
+  };
+
+  if (behavior === "auto") {
+    let cancelled = false;
+    const cancel = () => {
+      if (cancelled) return;
+      cancelled = true;
+      window.clearTimeout(correctionTimer);
+      interruptionEvents.forEach((eventName) => {
+        window.removeEventListener(eventName, cancel, true);
+      });
+    };
+    const correctionTimer = window.setTimeout(() => {
+      if (cancelled) return;
+      cancel();
+      correctPosition();
+    }, 1200);
+    interruptionEvents.forEach((eventName) => {
+      window.addEventListener(eventName, cancel, { capture: true, once: true });
+    });
+    cancelPendingScrollCorrection = cancel;
     return;
   }
-  document.getElementById(id)?.scrollIntoView({ behavior, block: "start" });
+
+  let correctionTimer = 0;
+  let fallbackTimer = 0;
+  let finished = false;
+
+  const cleanup = () => {
+    window.removeEventListener("scrollend", finish);
+    interruptionEvents.forEach((eventName) => {
+      window.removeEventListener(eventName, cancel, true);
+    });
+    window.clearTimeout(correctionTimer);
+    window.clearTimeout(fallbackTimer);
+  };
+
+  const cancel = () => {
+    if (finished) return;
+    finished = true;
+    cleanup();
+  };
+
+  const finish = () => {
+    if (finished) return;
+    window.clearTimeout(fallbackTimer);
+    correctionTimer = window.setTimeout(() => {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      correctPosition();
+    }, 80);
+  };
+
+  window.addEventListener("scrollend", finish, { once: true });
+  interruptionEvents.forEach((eventName) => {
+    window.addEventListener(eventName, cancel, { capture: true, once: true });
+  });
+  fallbackTimer = window.setTimeout(finish, 2000);
+  cancelPendingScrollCorrection = cancel;
+};
+
+const scrollToSection = (id, options = {}) => {
+  const behavior = options.behavior ?? (window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? "auto"
+    : "smooth");
+
+  const targetY = getSectionTargetY(id);
+  if (targetY === null) return;
+
+  window.scrollTo({
+    top: targetY,
+    behavior,
+  });
+  scheduleScrollCorrection(id, behavior);
 };
 
 const getConnection = () => navigator.connection
@@ -993,7 +1094,7 @@ function LanguageSelector({ mobile = false }) {
   );
 }
 
-function Header() {
+function Header({ activeSection }) {
   const { copy } = useLocalization();
   const [open, setOpen] = useState(false);
 
@@ -1030,12 +1131,25 @@ function Header() {
 
         <nav className="desktop-nav" aria-label={copy.nav.primaryLabel}>
           {copy.nav.items.map(([label, id]) => (
-            <button key={id} onClick={() => navigate(id)}>{label}</button>
+            <button
+              key={id}
+              type="button"
+              className={activeSection === id ? "is-active" : ""}
+              aria-current={activeSection === id ? "location" : undefined}
+              onClick={() => navigate(id)}
+            >
+              {label}
+            </button>
           ))}
         </nav>
 
         <div className="header-actions">
-          <a className="header-contact" href={contactUrl} target="_blank" rel="noreferrer">
+          <a
+            className={`header-contact${activeSection === "contact" ? " is-active" : ""}`}
+            href={contactUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
             {copy.nav.contact}
           </a>
           <LanguageSelector />
@@ -1068,6 +1182,27 @@ function Header() {
         </div>
       </div>
     </header>
+  );
+}
+
+function SectionDotNavigation({ activeSection }) {
+  const { copy } = useLocalization();
+
+  return (
+    <nav className="section-dot-nav" aria-label={copy.sectionNavigation.label}>
+      {copy.sectionNavigation.items.map(([label, id]) => (
+        <button
+          key={id}
+          type="button"
+          className={`section-dot${activeSection === id ? " is-active" : ""}`}
+          aria-label={label}
+          aria-current={activeSection === id ? "location" : undefined}
+          onClick={() => scrollToSection(id)}
+        >
+          <span aria-hidden="true" />
+        </button>
+      ))}
+    </nav>
   );
 }
 
@@ -1551,7 +1686,7 @@ function Contact() {
   const { copy } = useLocalization();
 
   return (
-    <section className="contact-section">
+    <section id="contact" className="contact-section">
       <div className="section-shell contact-layout" data-enter>
         <h2>
           {copy.contact.titleBefore}{" "}
@@ -1570,9 +1705,53 @@ function Contact() {
 }
 
 export function AesirResearchSite() {
-  const [language, setLanguage] = useState(getInitialLanguage);
+  const [language, setLanguageState] = useState(getInitialLanguage);
+  const [activeSection, setActiveSection] = useState("top");
+  const activeSectionRef = useRef(activeSection);
+  const languageAnchorRef = useRef(null);
   const copy = languages[language];
-  const localization = useMemo(() => ({ language, setLanguage, copy }), [copy, language]);
+
+  activeSectionRef.current = activeSection;
+
+  const setLanguage = useCallback((nextLanguage) => {
+    if (nextLanguage === language) return;
+
+    const currentSection = document.getElementById(activeSectionRef.current);
+    languageAnchorRef.current = currentSection
+      ? {
+          id: activeSectionRef.current,
+          viewportTop: currentSection.getBoundingClientRect().top,
+        }
+      : null;
+    setLanguageState(nextLanguage);
+  }, [language]);
+
+  const localization = useMemo(
+    () => ({ language, setLanguage, copy }),
+    [copy, language, setLanguage],
+  );
+
+  useLayoutEffect(() => {
+    const anchor = languageAnchorRef.current;
+    if (!anchor) return;
+
+    let secondAnimationFrame = 0;
+    const firstAnimationFrame = window.requestAnimationFrame(() => {
+      secondAnimationFrame = window.requestAnimationFrame(() => {
+        languageAnchorRef.current = null;
+        const section = document.getElementById(anchor.id);
+        if (!section) return;
+
+        const delta = section.getBoundingClientRect().top - anchor.viewportTop;
+        if (Math.abs(delta) > 0.5) window.scrollBy({ top: delta, behavior: "auto" });
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(firstAnimationFrame);
+      window.cancelAnimationFrame(secondAnimationFrame);
+    };
+  }, [language]);
 
   useEffect(() => installPredictiveMediaScheduler(), []);
 
@@ -1585,29 +1764,82 @@ export function AesirResearchSite() {
   }, [copy.seo.description, copy.seo.title, language]);
 
   useEffect(() => {
-    window.history.scrollRestoration = "manual";
+    const sections = Object.fromEntries(
+      SECTION_IDS.map((id) => [id, document.getElementById(id)]),
+    );
+    let animationFrame = 0;
 
-    const resolveLegacyHash = () => {
-      if (window.location.hash.startsWith("#/founders")) {
-        window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#leadership`);
-        window.requestAnimationFrame(() => scrollToSection("leadership"));
-      } else if (window.location.hash.startsWith("#/neuro")) {
-        window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#top`);
-        window.scrollTo({ top: 0 });
-      }
+    const updateActiveSection = () => {
+      animationFrame = 0;
+      const referenceY = getHeaderHeight() + Math.min(window.innerHeight * 0.22, 180);
+      const sectionTops = Object.fromEntries(
+        SECTION_IDS.map((id) => [id, sections[id]?.getBoundingClientRect().top]),
+      );
+      const documentElement = document.documentElement;
+      const atDocumentEnd = window.scrollY + window.innerHeight
+        >= documentElement.scrollHeight - 2;
+      const nextSection = getActiveSectionId({
+        sectionTops,
+        referenceY,
+        atDocumentEnd,
+      });
+      setActiveSection((currentSection) => (
+        currentSection === nextSection ? currentSection : nextSection
+      ));
     };
 
-    resolveLegacyHash();
-    if (!window.location.hash) window.scrollTo({ top: 0 });
-    window.addEventListener("hashchange", resolveLegacyHash);
+    const requestUpdate = () => {
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(updateActiveSection);
+    };
 
-    return () => window.removeEventListener("hashchange", resolveLegacyHash);
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    document.fonts?.ready?.then(requestUpdate).catch(() => undefined);
+    requestUpdate();
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+    };
+  }, [language]);
+
+  useEffect(() => {
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+
+    const resolveHash = () => {
+      let targetId = window.location.hash.slice(1);
+
+      if (window.location.hash.startsWith("#/founders")) {
+        window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#leadership`);
+        targetId = "leadership";
+      } else if (window.location.hash.startsWith("#/neuro")) {
+        window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#top`);
+        targetId = "top";
+      }
+
+      if (!SECTION_IDS.includes(targetId)) return;
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => scrollToSection(targetId, { behavior: "auto" }));
+      });
+    };
+
+    resolveHash();
+    if (!window.location.hash) window.scrollTo({ top: 0 });
+    window.addEventListener("hashchange", resolveHash);
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+      window.removeEventListener("hashchange", resolveHash);
+    };
   }, []);
 
   return (
     <LocalizationContext.Provider value={localization}>
     <div className="aesir-site">
-      <Header />
+      <Header activeSection={activeSection} />
+      <SectionDotNavigation activeSection={activeSection} />
       <main>
         <Hero />
         <HeroEvidence />

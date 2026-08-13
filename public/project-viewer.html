@@ -179,12 +179,6 @@
         transition: transform 160ms ease, background 160ms ease;
       }
 
-      .availability-note {
-        margin: 24px 0 0;
-        color: var(--muted);
-        font-size: 13px;
-      }
-
       [hidden] {
         display: none !important;
       }
@@ -208,7 +202,6 @@
           <div class="actions" id="actions">
             <a class="button primary" id="source" target="_blank" rel="noopener noreferrer">Open Project</a>
           </div>
-          <p class="availability-note" id="availability" hidden>This archive record does not currently have a verified public project link.</p>
         </div>
       </article>
     </main>
@@ -225,7 +218,6 @@
           preparing: "Project details are being prepared for this archive record.",
           back: "Back to website",
           open: "Open Project",
-          unavailable: "This archive record does not currently have a verified public project link.",
           mediaAlt: (title) => `${title} media`,
         },
         traditional: {
@@ -234,7 +226,6 @@
           preparing: "此項目的詳細資料正在整理中。",
           back: "返回網站",
           open: "開啟項目",
-          unavailable: "此項目檔案目前未有經核實的公開連結。",
           mediaAlt: (title) => `${title} 項目媒體`,
         },
         simplified: {
@@ -243,7 +234,6 @@
           preparing: "此项目详细资料正在整理中。",
           back: "返回网站",
           open: "打开项目",
-          unavailable: "此项目档案目前没有经核实的公开链接。",
           mediaAlt: (title) => `${title} 项目媒体`,
         },
       }[language];
@@ -266,15 +256,12 @@
 
       const sourceLink = document.getElementById("source");
       const actions = document.getElementById("actions");
-      const availability = document.getElementById("availability");
       sourceLink.textContent = strings.open;
-      availability.textContent = strings.unavailable;
 
       if (link) {
         sourceLink.href = link;
       } else {
         actions.hidden = true;
-        availability.hidden = false;
       }
     </script>
   </body>

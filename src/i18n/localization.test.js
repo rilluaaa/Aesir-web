@@ -9,6 +9,8 @@ import {
 } from "./projectTranslations.js";
 import { LANGUAGE_KEYS, languages } from "./translations.js";
 
+const sectionIds = ["top", "research", "method", "evidence", "projects", "leadership", "contact"];
+
 test("all supported languages expose complete site content", () => {
   assert.deepEqual(LANGUAGE_KEYS, ["en", "traditional", "simplified"]);
   for (const language of LANGUAGE_KEYS) {
@@ -18,6 +20,11 @@ test("all supported languages expose complete site content", () => {
     assert.equal(languages[language].leadership.photoLabels.length, 4);
     assert.equal(languages[language].leadership.photoAlts.length, 4);
     assert.equal(languages[language].leadership.archiveAlts.length, 10);
+    assert.deepEqual(
+      languages[language].sectionNavigation.items.map(([, id]) => id),
+      sectionIds,
+    );
+    assert.ok(languages[language].sectionNavigation.label);
   }
 });
 
