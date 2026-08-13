@@ -192,7 +192,7 @@ const portfolioProjects = [
     "number": "23",
     "title": "AR Penalty Kick: Sharpshooter",
     "category": "AR & Motion / Immersive Learning",
-    "description": "這是一款結合 AI 動態捕捉技術的網頁互動遊戲。只需打開視訊鏡頭，系統便會即時追蹤你的肢體動作。 站穩支撐腳，用力「向前」揮動你的腿，將球狠狠踢進球門！ 遊戲內建 3D 深度分析，確保只有真實的向前踢擊才能得分。 準備好踏上虛擬綠茵場，挑戰人工智能守門員，成為真正的十二碼神射手了嗎？ This is a web-based interactive game that integrates AI motion-capture technology. Simply turn on your webcam, and the system will track your...",
+    "description": "這是一款結合 AI 動態捕捉技術的網頁互動遊戲。只需打開視訊鏡頭，系統便會即時追蹤你的肢體動作。站穩支撐腳，用力「向前」揮動你的腿，將球狠狠踢進球門！遊戲內建 3D 深度分析，確保只有真實的向前踢擊才能得分。準備好踏上虛擬綠茵場，挑戰人工智能守門員，成為真正的十二碼神射手了嗎？This is a web-based interactive game that integrates AI motion-capture technology. Simply turn on your webcam, and the system will track your...",
     "media": "/assets/projects/23-ar-penalty-kick-sharpshooter.jpg",
     "link": "https://aesir.hk/",
     "sourceSlide": 29
@@ -201,7 +201,7 @@ const portfolioProjects = [
     "number": "24",
     "title": "AR Penalty Kick: Goalkeeper",
     "category": "AR & Motion / Immersive Learning",
-    "description": "這是一款結合 AR 手部追蹤技術的體感守門遊戲！打開視訊鏡頭，你的雙手就是最強的防線。看準迎面飛來的足球，迅速揮動雙手將它們一一擋下！挑戰你的反應神經，準備好迎接狂轟濫炸！看看你能創下多高的撲救紀錄，成為球場上的不敗神話！ This is an interactive motion-sensing goalkeeper game that combines AR hand-tracking technology! Simply turn on your webcam, and your hands become the strongest line of...",
+    "description": "這是一款結合 AR 手部追蹤技術的體感守門遊戲！打開視訊鏡頭，你的雙手就是最強的防線。看準迎面飛來的足球，迅速揮動雙手將它們一一擋下！挑戰你的反應神經，準備好迎接狂轟濫炸！看看你能創下多高的撲救紀錄，成為球場上的不敗神話！This is an interactive motion-sensing goalkeeper game that combines AR hand-tracking technology! Simply turn on your webcam, and your hands become the strongest line of...",
     "media": "/assets/projects/24-ar-penalty-kick-goalkeeper.jpg",
     "link": "https://aesir.hk/",
     "sourceSlide": 30
@@ -210,7 +210,7 @@ const portfolioProjects = [
     "number": "25",
     "title": "Street Football Juggling King",
     "category": "AR & Motion / Immersive Learning",
-    "description": "這是一款結合 AI 骨架捕捉技術的體感顛球遊戲。站在鏡頭前，用你的雙腿和膝蓋將不斷落下的足球踢向空中，挑戰最高連擊數！遊戲分為「有邊界保護」的簡單模式，以及「無邊界且彈力降低」的硬核困難模式。挑戰你的反應與平衡極限！打破地心引力，成為真正的街頭顛球王！ This is a motion-sensing football juggling game that combines AI skeleton-tracking technology. Stand in front of the camera and use your legs and knees to kick...",
+    "description": "這是一款結合 AI 骨架捕捉技術的體感顛球遊戲。站在鏡頭前，用你的雙腿和膝蓋將不斷落下的足球踢向空中，挑戰最高連擊數！遊戲分為「有邊界保護」的簡單模式，以及「無邊界且彈力降低」的硬核困難模式。挑戰你的反應與平衡極限！打破地心引力，成為真正的街頭顛球王！This is a motion-sensing football juggling game that combines AI skeleton-tracking technology. Stand in front of the camera and use your legs and knees to kick...",
     "media": "/assets/projects/25-street-football-juggling-king.jpg",
     "link": "https://aesir.hk/",
     "sourceSlide": 31
@@ -363,7 +363,7 @@ const portfolioProjects = [
     "number": "42",
     "title": "VR Chinese History",
     "category": "Virtual Reality / Simulation",
-    "description": "協助小學生認識歷史，利用生動及具有創意的VR活動，增加學生興趣之餘，引導他們主動思考，透過思索營造他們的創造力，突破思維空間，並從中提升協作、溝通、創意、解難及批判思考的能力。",
+    "description": "協助小學生認識歷史，利用生動及具有創意的VR活動，增加學生興趣之餘，引導他們主動思考，透過思索營造他們的創造力，突破思維空間，並從中提升協作，溝通，創意，解難及批判思考的能力。",
     "media": "/assets/projects/42-vr-chinese-history.png",
     "link": "https://aesir.hk/",
     "sourceSlide": 49
@@ -417,7 +417,7 @@ const portfolioProjects = [
     "number": "48",
     "title": "ProTrain Warm-up Exercise",
     "category": "Virtual Reality / Simulation",
-    "description": "這是一款結合人工智能體感偵測的互動式體能訓練遊戲。系統透過攝影機即時捕捉你的動作，引導你完成兩個訓練關卡： 第一關 — 原地踏步 🦵 有節奏地抬高膝蓋踏步，累積進度至 100%。過程中會隨機出現「定格」指令，你必須立刻停止所有動作並保持靜止 2 秒，才能繼續訓練。 第二關 — 開合跳 🙌 將雙手高舉越過頭頂，再放回身側，完成 10 次即可過關。同樣設有定格挑戰，考驗你的反應能力與自我控制。 系統會智能判斷你的動作幅度，區分「完全靜止」、「自然晃動」與「動作過大」三種狀態，讓定格挑戰更加公平合理。 完成全部訓練後，系統將顯示各關卡用時及總時間，記錄你的訓練成果。",
+    "description": "這是一款結合人工智能體感偵測的互動式體能訓練遊戲。系統透過攝影機即時捕捉你的動作，引導你完成兩個訓練關卡：第一關 — 原地踏步 🦵 有節奏地抬高膝蓋踏步，累積進度至 100%。過程中會隨機出現「定格」指令，你必須立刻停止所有動作並保持靜止 2 秒，才能繼續訓練。第二關 — 開合跳 🙌 將雙手高舉越過頭頂，再放回身側，完成 10 次即可過關。同樣設有定格挑戰，考驗你的反應能力與自我控制。系統會智能判斷你的動作幅度，區分「完全靜止」，「自然晃動」與「動作過大」三種狀態，讓定格挑戰更加公平合理。完成全部訓練後，系統將顯示各關卡用時及總時間，記錄你的訓練成果。",
     "media": "/assets/projects/48-protrain-warm-up-exercise.jpg",
     "link": "https://aesir.hk/",
     "sourceSlide": 57
@@ -813,7 +813,7 @@ const portfolioProjects = [
     "number": "91",
     "title": "EdUHK Online Classes Platform",
     "category": "Web Platforms / Digital Infrastructure",
-    "description": "作為香港教師教育的先導，香港教育大學於2020年5月開發了一個名為“香港教育大學網上教育平台(EOCP)”，以應對疫情。最初，該平台旨在與本地學校共享可即時使用的在線教學影片教材，以滿足在職教師的迫切需求。後來，EOCP擴展了其功能，涵蓋了校長和前線在職教師分享的線上研討會和工作坊、特定學科內容的在線教學影片和其他資源，促進教學新常態交流的實踐社群(CoP)，以及在線教學體驗計劃。",
+    "description": "作為香港教師教育的先導，香港教育大學於2020年5月開發了一個名為“香港教育大學網上教育平台(EOCP)”，以應對疫情。最初，該平台旨在與本地學校共享可即時使用的在線教學影片教材，以滿足在職教師的迫切需求。後來，EOCP擴展了其功能，涵蓋了校長和前線在職教師分享的線上研討會和工作坊，特定學科內容的在線教學影片和其他資源，促進教學新常態交流的實踐社群(CoP)，以及在線教學體驗計劃。",
     "media": "/assets/projects/91-eduhk-online-classes-platform.png",
     "link": "https://eocp2.eduhk.hk/zh/index.html",
     "sourceSlide": 104
@@ -849,7 +849,7 @@ const portfolioProjects = [
     "number": "95",
     "title": "Bravo Music & Arts",
     "category": "Web Platforms / Digital Infrastructure",
-    "description": "Bravo Music &Arts 從兒童教育到成人學習，為想學音樂的你客製化音樂夢想，找到音樂課程、家教，各種多元曲風，從創作編曲彈唱到學樂器，基礎入門介紹到進階學習，讓音樂教學變得更適合",
+    "description": "Bravo Music &Arts 從兒童教育到成人學習，為想學音樂的你客製化音樂夢想，找到音樂課程，家教，各種多元曲風，從創作編曲彈唱到學樂器，基礎入門介紹到進階學習，讓音樂教學變得更適合",
     "media": "/assets/projects/95-bravo-music-arts.png",
     "link": "https://bravohomework.com/index.php",
     "sourceSlide": 108
@@ -858,7 +858,7 @@ const portfolioProjects = [
     "number": "96",
     "title": "EdUHK Website SEN Center",
     "category": "Web Platforms / Digital Infrastructure",
-    "description": "EdUHK Website - SEN Center 香港教育大學整全成長發展中心 (簡稱 “I-WELL”) 於2015年12月正式啟用。中心是一所跨層面、跨專科及實證為本的支援服務、科研及資源中心，旨在為本地各年齡層的人士提供全面支援，促進他們的整全發展。 I-WELL 團隊善於把本地及海外的實證研究應用於各項特殊需要的預防、評估、教育和介入服務。中心亦夥拍多間社福機構，為有特殊教育需要的學童及其家長以及持份者提供多元化評估及臨床治療服務、專業顧問服務。",
+    "description": "EdUHK Website - SEN Center 香港教育大學整全成長發展中心 (簡稱 “I-WELL”) 於2015年12月正式啟用。中心是一所跨層面，跨專科及實證為本的支援服務，科研及資源中心，旨在為本地各年齡層的人士提供全面支援，促進他們的整全發展。I-WELL 團隊善於把本地及海外的實證研究應用於各項特殊需要的預防，評估，教育和介入服務。中心亦夥拍多間社福機構，為有特殊教育需要的學童及其家長以及持份者提供多元化評估及臨床治療服務，專業顧問服務。",
     "media": "/assets/projects/96-eduhk-website-sen-center.png",
     "link": "https://www.eduhk.hk/iwell/zh/index.html",
     "sourceSlide": 109

@@ -70,7 +70,6 @@ export const installPredictiveMediaScheduler = ({
   };
 
   const prepareMedia = (element, priority = "auto") => {
-    if (!heroReady) return;
     if (!element || element.tagName !== "IMG") return;
     if (element.complete && element.naturalWidth > 0) {
       forgetMedia(element);
@@ -202,14 +201,14 @@ export const installPredictiveMediaScheduler = ({
 
   const onHeroReady = () => {
     heroReady = true;
-    evaluateScroll();
     startIdleWarm();
   };
   registerTree(documentRef);
+  evaluateScroll();
   mutationObserver?.observe(documentRef.body, { childList: true, subtree: true });
   windowRef.addEventListener("scroll", onScroll, { passive: true });
   windowRef.addEventListener("aesir:hero-ready", onHeroReady, { once: true });
-  if (heroReady) onHeroReady();
+  if (heroReady) startIdleWarm();
 
   return () => {
     windowRef.removeEventListener("scroll", onScroll);

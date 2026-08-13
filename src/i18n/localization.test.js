@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { aesirProjects } from "../projectPortfolio.js";
@@ -10,6 +11,12 @@ import {
 import { LANGUAGE_KEYS, languages } from "./translations.js";
 
 const sectionIds = ["top", "research", "method", "evidence", "projects", "leadership", "contact"];
+const chineseCopySources = [
+  new URL("./translations.js", import.meta.url),
+  new URL("./projectTranslations.js", import.meta.url),
+  new URL("../projectPortfolio.js", import.meta.url),
+  new URL("../../public/project-viewer.html", import.meta.url),
+];
 
 test("all supported languages expose complete site content", () => {
   assert.deepEqual(LANGUAGE_KEYS, ["en", "traditional", "simplified"]);
@@ -61,4 +68,12 @@ test("English localization remains byte-for-byte source copy", () => {
   assert.equal(localized.title, original.title);
   assert.equal(localized.category, original.category);
   assert.equal(localized.description, original.description);
+});
+
+test("Chinese source copy uses natural punctuation spacing", () => {
+  for (const sourceUrl of chineseCopySources) {
+    const source = readFileSync(sourceUrl, "utf8");
+    assert.doesNotMatch(source, /[，。；：！？][ \t]+/u, `${sourceUrl.pathname} has a space after Chinese punctuation`);
+    assert.doesNotMatch(source, /\u3001/u, `${sourceUrl.pathname} still uses enumeration commas`);
+  }
 });

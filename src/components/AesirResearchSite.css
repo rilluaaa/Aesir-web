@@ -345,7 +345,70 @@ html[data-language="simplified"] .aesir-site blockquote {
   letter-spacing: normal;
   text-transform: none;
   word-break: normal;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+}
+
+html[data-language="traditional"] .aesir-site h1,
+html[data-language="traditional"] .aesir-site h2,
+html[data-language="traditional"] .aesir-site h3,
+html[data-language="traditional"] .aesir-site h4,
+html[data-language="traditional"] .aesir-site h5,
+html[data-language="traditional"] .aesir-site h6,
+html[data-language="simplified"] .aesir-site h1,
+html[data-language="simplified"] .aesir-site h2,
+html[data-language="simplified"] .aesir-site h3,
+html[data-language="simplified"] .aesir-site h4,
+html[data-language="simplified"] .aesir-site h5,
+html[data-language="simplified"] .aesir-site h6 {
+  overflow-wrap: normal;
+  word-break: normal;
+  line-break: strict;
+  text-wrap: pretty;
+}
+
+html[data-language="traditional"] .thesis-heading h2,
+html[data-language="traditional"] .section-intro h2,
+html[data-language="traditional"] .method-heading h2,
+html[data-language="traditional"] .projects-heading h2,
+html[data-language="traditional"] .leadership-intro h2,
+html[data-language="traditional"] .contact-layout h2,
+html[data-language="simplified"] .thesis-heading h2,
+html[data-language="simplified"] .section-intro h2,
+html[data-language="simplified"] .method-heading h2,
+html[data-language="simplified"] .projects-heading h2,
+html[data-language="simplified"] .leadership-intro h2,
+html[data-language="simplified"] .contact-layout h2 {
+  font-size: clamp(2.9rem, 5vw, 5.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+@media (min-width: 901px) {
+  html[data-language="traditional"] .thesis-section,
+  html[data-language="simplified"] .thesis-section {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    column-gap: 70px;
+  }
+}
+
+html[data-language="traditional"] .thesis-section blockquote,
+html[data-language="simplified"] .thesis-section blockquote {
+  font-size: clamp(2.4rem, 3.8vw, 4.2rem);
+  line-height: 1.1;
+  text-wrap: pretty;
+}
+
+html[data-language="traditional"] .research-journey__content h4,
+html[data-language="traditional"] .research-cases__heading h4,
+html[data-language="traditional"] .leadership-feature h3,
+html[data-language="simplified"] .research-journey__content h4,
+html[data-language="simplified"] .research-cases__heading h4,
+html[data-language="simplified"] .leadership-feature h3 {
+  font-size: clamp(2.25rem, 3.5vw, 3.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
 }
 
 html[data-language="traditional"] .aesir-site button,
@@ -1781,6 +1844,38 @@ html[data-language="simplified"] .aesir-site p {
     font-size: clamp(2.65rem, 11.3vw, 3rem);
     line-height: 1.02;
     letter-spacing: -0.04em;
+  }
+
+  html[data-language="traditional"] .hero-copy h1,
+  html[data-language="simplified"] .hero-copy h1 {
+    font-size: clamp(2.45rem, 10.4vw, 2.85rem);
+    line-height: 1.1;
+  }
+
+  html[data-language="traditional"] .thesis-heading h2,
+  html[data-language="traditional"] .section-intro h2,
+  html[data-language="traditional"] .method-heading h2,
+  html[data-language="traditional"] .projects-heading h2,
+  html[data-language="traditional"] .leadership-intro h2,
+  html[data-language="traditional"] .contact-layout h2,
+  html[data-language="simplified"] .thesis-heading h2,
+  html[data-language="simplified"] .section-intro h2,
+  html[data-language="simplified"] .method-heading h2,
+  html[data-language="simplified"] .projects-heading h2,
+  html[data-language="simplified"] .leadership-intro h2,
+  html[data-language="simplified"] .contact-layout h2 {
+    font-size: clamp(2.2rem, 9vw, 3.15rem);
+    line-height: 1.12;
+  }
+
+  html[data-language="traditional"] .research-journey__content h4,
+  html[data-language="traditional"] .research-cases__heading h4,
+  html[data-language="traditional"] .leadership-feature h3,
+  html[data-language="simplified"] .research-journey__content h4,
+  html[data-language="simplified"] .research-cases__heading h4,
+  html[data-language="simplified"] .leadership-feature h3 {
+    font-size: clamp(2rem, 8vw, 2.75rem);
+    line-height: 1.14;
   }
 
   .hero-copy > p {

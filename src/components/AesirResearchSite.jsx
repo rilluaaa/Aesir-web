@@ -1244,7 +1244,8 @@ function HeroEvidence() {
           alt={copy.heroEvidence.imageAlt}
           width="1600"
           height="1200"
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
           decoding="async"
           data-predictive-media
         />
@@ -1573,7 +1574,7 @@ function ProjectLibrary() {
         <div id="project-grid" className="project-grid" key={`${category}-${query}`}>
           {visibleProjects.map((project) => (
             <a
-              key={`${project.number}-${project.title}-${project.media}`}
+              key={`${project.number}-${project.originalTitle}-${project.media}`}
               className="project-card"
               href={projectViewer(project, language)}
               target="_blank"
